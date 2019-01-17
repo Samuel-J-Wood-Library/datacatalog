@@ -18,18 +18,46 @@ class Keyword(models.Model):
     record_author = models.ForeignKey(User, on_delete=models.CASCADE)
  
     # keyword
+    keyword = models.CharField(max_length=32)
+    
     # definition / elaboration of keyword
+    definitiion = models.TextField()
 
 class Dataprovider(models.Model):
     """
     This class defines data providers.
     """
     # provider organization name
+    name = models.CharField(max_length=128)
+    
     # provider department
+    name = models.CharField(max_length=128)
+    
     # contact phone number
+    name = models.CharField(max_length=32)
+    
     # contact email 
+    email = models.EmailField()
+    
     # provider country of origin
+    country = models.CharField(max_length=64)
+    
     # provider affiliation: Academic, Hospital, Government, Private
+    ACADEMIC = 'AC'
+    MEDICAL = 'ME'
+    GOVERNMENT = 'GV'
+    PRIVATE = 'PR'
+    AFFILIATION_CHOICES = (
+            (ACADEMIC, "Academic"),
+            (MEDICAL, "Medical provider / Hospital"),
+            (GOVERNMENT, "Government"),
+            (PRIVATE, "Private institution"),
+    )
+    affiliation = models.CharField(
+                        max_length=2,
+                        choices = AFFILIATION_CHOICES,
+                        default = GOVERNMENT,
+    )
     
     
 class Datauseagreement(models.Model):
@@ -53,6 +81,7 @@ class Datauseagreement(models.Model):
     # data provider / publisher
     # provider contact individual
     # principal investigator
+    # all authorized individuals (may be irrelevant depending on level of auth.)
     # separate attestation form required for each user?
     # level at which the project applies: User, PI, Project, Institutional
     # date DUA signed
@@ -93,7 +122,7 @@ class Dataset(models.Model):
     # description of dataset
     # beginning of temporal coverage (time of earliest data record)
     # end of temporal coverage (time of latest data record)
-    # keywords
+    # keywords or topics related to the data
     # URL of landing page to access data
     # typical time period from request to access of data
     # publicly available
