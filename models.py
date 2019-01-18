@@ -31,16 +31,16 @@ class DataProvider(models.Model):
     name = models.CharField(max_length=256)
     
     # provider department
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, null=True)
     
     # contact phone number
-    name = models.CharField(max_length=32)
+    name = models.CharField(max_length=32, null=True)
     
     # contact email 
-    email = models.EmailField()
+    email = models.EmailField(null=True)
     
     # provider country of origin
-    country = models.CharField(max_length=64)
+    country = models.CharField(max_length=64, null=True)
     
     # provider affiliation: Academic, Hospital, Government, or Private
     ACADEMIC = 'AC'
@@ -58,6 +58,35 @@ class DataProvider(models.Model):
                         choices = AFFILIATION_CHOICES,
                         default = GOVERNMENT,
     )
+
+class DataAccess(models.model):
+    """
+    This class defines the processes and information required in order to gain access 
+    to a dataset. These instructions are generic, in as much as they define how anyone
+    may gain access, and are not intended to only specify for a particular user/project. 
+    """
+    # is a DUA agreement required?
+    dua_required = models.BooleanField(null=True)
+    
+    # is a description of the project required?
+    prj_desc_required = models.BooleanField(null=True)
+    
+    # is a description of the storage and handling required?
+    sys_desc_required = models.BooleanField(null=True)
+    
+    # will other WCM people or departments be required in order to gain access?
+    help_required = models.BooleanField(null=True)
+    
+    # Charge for access (in US dollars, approximate, 0 for no cost)
+    access_cost = models.IntegerField(null=True)
+
+    # publicly available
+    public = models.BooleanField(null=True)
+    
+    # typical time period from request to access of data
+    time_required = models.DurationField(null=True)
+            
+    
     
 class Dataset(models.Model):
     """
@@ -101,20 +130,11 @@ class Dataset(models.Model):
     # URL of landing page to access data
     landing_url = models.URLField(max_length=256,null=True)
     
-    # typical time period from request to access of data
-    request_time = models.DurationField(null=True)
-    
-    # publicly available
-    public = models.BooleanField(null=True)
-    
-    # DUA required for access
-    dua_required = models.BooleanField(null=True)
-    
-    # Charge for access (in US dollars, approximate, 0 for no cost)
-    access_cost = models.IntegerField(null=True)
-    
     # notes or general comments
     comments = models.TextField(null=True)
+        
+    # pointer to the generic instructions required for accessing this data
+    access_requirements = models.ForeignKeyField(DataAccess, null=True)    
         
 class DataUseAgreement(models.Model):
     """
@@ -147,10 +167,10 @@ class DataUseAgreement(models.Model):
     contact = models.ForeignKeyField(Person, related_name='contact_person)
     
     # principal investigator
-    contact = models.ForeignKeyField(Person, related_name='pi_person')
+    pi = models.ForeignKeyField(Person, related_name='pi_person')
     
     # all authorized individuals (may be irrelevant depending on level of auth.)
-    contact = models.ManyToManyField(Person,)
+    users = models.ManyToManyField(Person, null=True)
     
     # separate attestation form required for each user?
     separate_attestation = models.BooleanField(null=True)
@@ -195,6 +215,9 @@ class DataUseAgreement(models.Model):
     
     # datasets included in governance terms
     datasets = models.ManyToManyField(Dataset,)
+
+    # pointer to the generic instructions required for accessing this data
+    access_requirements = models.ForeignKeyField(DataAccess, null=True)    
     
     def __str__(self):
         return "DUA {}: {}".format(self.duaid, self.title)
