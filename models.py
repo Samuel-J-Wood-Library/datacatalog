@@ -2,7 +2,7 @@ from django.db import models
 
 from django.contrib.auth.models import User
 
-from dc_management import Individual 
+from dc_management import Person 
 
 class Keyword(models.Model):
     """
@@ -144,13 +144,13 @@ class DataUseAgreement(models.Model):
     publisher = models.ForeignKeyField(DataProvider)
     
     # provider contact individual
-    contact = models.ForeignKeyField(Individual, related_name='contact_individual')
+    contact = models.ForeignKeyField(Person, related_name='contact_person)
     
     # principal investigator
-    contact = models.ForeignKeyField(Individual, related_name='pi_individual')
+    contact = models.ForeignKeyField(Person, related_name='pi_person')
     
     # all authorized individuals (may be irrelevant depending on level of auth.)
-    contact = models.ManyToManyField(Individual,)
+    contact = models.ManyToManyField(Person,)
     
     # separate attestation form required for each user?
     separate_attestation = models.BooleanField(null=True)
