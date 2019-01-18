@@ -2,7 +2,7 @@ from django.db import models
 
 from django.contrib.auth.models import User
 
-from dc_management import Person 
+from dc_management.models import Person 
 
 class Keyword(models.Model):
     """
@@ -59,7 +59,7 @@ class DataProvider(models.Model):
                         default = GOVERNMENT,
     )
 
-class DataAccess(models.model):
+class DataAccess(models.Model):
     """
     This class defines the processes and information required in order to gain access 
     to a dataset. These instructions are generic, in as much as they define how anyone
@@ -125,7 +125,7 @@ class Dataset(models.Model):
     period_end = models.DateField(null=True)
     
     # keywords or topics related to the data
-    keywords = models.ManyToManyField(Keyword,null=True)
+    keywords = models.ManyToManyField(Keyword,)
     
     # URL of landing page to access data
     landing_url = models.URLField(max_length=256,null=True)
@@ -134,7 +134,10 @@ class Dataset(models.Model):
     comments = models.TextField(null=True)
         
     # pointer to the generic instructions required for accessing this data
-    access_requirements = models.ForeignKeyField(DataAccess, null=True)    
+    access_requirements = models.ForeignKey(DataAccess, 
+                                            null=True, 
+                                            on_delete=models.CASCADE
+                                            )    
         
 class DataUseAgreement(models.Model):
     """
@@ -161,16 +164,19 @@ class DataUseAgreement(models.Model):
     description = models.TextField(null=True, blank=True)
     
     # data provider / publisher
-    publisher = models.ForeignKeyField(DataProvider)
+    publisher = models.ForeignKey(DataProvider, on_delete=models.CASCADE)
     
     # provider contact individual
-    contact = models.ForeignKeyField(Person, related_name='contact_person)
+    contact = models.ForeignKey(Person, 
+                                related_name='contact_person',
+                                on_delete=models.CASCADE
+                                )
     
     # principal investigator
-    pi = models.ForeignKeyField(Person, related_name='pi_person')
+    pi = models.ForeignKey(Person, related_name='pi_person', on_delete=models.CASCADE)
     
     # all authorized individuals (may be irrelevant depending on level of auth.)
-    users = models.ManyToManyField(Person, null=True)
+    users = models.ManyToManyField(Person,)
     
     # separate attestation form required for each user?
     separate_attestation = models.BooleanField(null=True)
@@ -217,7 +223,9 @@ class DataUseAgreement(models.Model):
     datasets = models.ManyToManyField(Dataset,)
 
     # pointer to the generic instructions required for accessing this data
-    access_requirements = models.ForeignKeyField(DataAccess, null=True)    
+    access_requirements = models.ForeignKey(DataAccess, 
+                                            null=True, 
+                                            on_delete=models.CASCADE)    
     
     def __str__(self):
         return "DUA {}: {}".format(self.duaid, self.title)
