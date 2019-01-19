@@ -7,10 +7,11 @@ from . import views
 app_name = 'datacatalog'
 urlpatterns = [
     # index showing top items and search bar:
-    path('', views.IndexDatasetView.as_view(), name='datasets'),
+    path('', views.IndexView.as_view(), name='index'),
+    path('datasets', views.IndexDatasetView.as_view(), name='datasets'),
     path('duas', views.IndexDUAView.as_view(), name='duas'),
     path('access', views.IndexDataAccessView.as_view(), name='access'),
-    path('keywords', views.IndexDatasetView.as_view(), name='keywords'),
+    path('keywords', views.IndexKeywordView.as_view(), name='keywords'),
     path('providers', views.IndexDataProviderView.as_view(), name='providers'),
     
     # detail views

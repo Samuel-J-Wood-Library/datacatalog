@@ -13,6 +13,24 @@ from .models import Dataset, DataUseAgreement, DataAccess, Keyword, DataProvider
 ### Index views ###
 ###################
 
+class IndexView(LoginRequiredMixin, generic.ListView):
+    login_url='/login/'
+    
+    template_name = 'datacatalog/index.html'
+    context_object_name = 'dataset_list'
+
+    def get_queryset(self):
+        ds = Dataset.objects.all()
+        # ds.sort()
+        return ds
+        
+    def get_context_data(self, **kwargs):
+        context = super(IndexView, self).get_context_data(**kwargs)
+        context.update({
+                        'empty_list'    : [],  
+        })
+        return context
+
 class IndexDatasetView(LoginRequiredMixin, generic.ListView):
     login_url='/login/'
     
@@ -71,7 +89,7 @@ class IndexDataAccessView(LoginRequiredMixin, generic.ListView):
     login_url='/login/'
     
     template_name = 'datacatalog/index_dataaccess.html'
-    context_object_name = 'instructions_list'
+    context_object_name = 'access_list'
 
     def get_queryset(self):
         ins = DataAccess.objects.all()

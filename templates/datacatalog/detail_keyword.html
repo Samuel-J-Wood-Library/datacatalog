@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{# Load the tag library #}
+{% load bootstrap4 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+{% block content %}
+
+<style>
+/* styling of the tabs*/
+#exTab1 .tab-content {
+  color : black;
+  padding : 5px 15px;
+}
+
+#exTab1 .nav-tabs > li > a {
+  border-radius: 4px 4px 0 0;
+}
+</style>
+
+
+
+<h1>
+    Keyword: {{ keyword.keyword }} 
+</h1>
+<p class="text-muted">{{ keyword.definition }}</p>
+
+
+
+<a type="button" class="btn btn-primary" href="{% url 'datacatalog:keyword-update' keyword.pk %}">Update keyword</a>
+
+
+</br></br>
+
+
+<h2> {{ keyword.dataset_set.all.count }} Datasets with keyword {{ dataset }}:</h2>
+
+    {% with keyword.dataset_set.all as dataset_list %}
+        {% include 'datacatalog/table_datasets.html' %}
+    {% endwith %}
+
+
+{% endblock %}
+
