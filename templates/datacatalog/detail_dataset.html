@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{# Load the tag library #}
+{% load bootstrap4 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+{% block content %}
+
+<style>
+/* styling of the tabs*/
+#exTab1 .tab-content {
+  color : black;
+  padding : 5px 15px;
+}
+
+#exTab1 .nav-tabs > li > a {
+  border-radius: 4px 4px 0 0;
+}
+</style>
+
+
+
+<h1>
+    {{ dataset.title }} 
+<small class="text-muted">{{ dataset.ds_id }}</small>
+</h1>
+{% if dataset.affiliation %}
+<h2>
+    <small class="text-muted">{{ dataset.affiliation }}</small>
+</h2>
+{% endif %}
+
+<h4>description</h4>
+<p> {{ dataset.description|linebreaks }}</p>
+
+<table class="table table-striped table-hover">
+    <thead class="thead-default">
+    <tr>
+        <th>Record Period Start</th>
+        <th>Record Period End</th>
+    </tr>
+    </thead>
+
+    <tr>
+        <td>{{ dataset.period_start }}</td>
+        <td>{{ dataset.period_end }}</td>
+    </tr>
+</table>
+
+
+<a type="button" class="btn btn-primary" href="{% url 'datacatalog:dataset-update' dataset.pk %}">Update dataset details</a>
+
+
+</br></br>
+
+
+<h2>DUAs for {{ dataset }}</h2>
+
+    {% with dataset.datauseagreement_set.all as dua_list %}
+        {% include 'datacatalog/table_duas.html' %}
+    {% endwith %}
+
+
+{% endblock %}
+

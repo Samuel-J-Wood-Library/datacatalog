@@ -11,11 +11,10 @@
 
 {% for ds in dataset_list %}
     <tr>
-    <td><a href="{% url 'datacore:dataset-view' ds.pk %}">{{ ds }}</a></td>
-    <td>{{ ds.ds_id }}</td>
-    <td> {{ ds.title }}</td>
+    <td><a href="{% url 'datacatalog:dataset-view' ds.pk %}">{{ ds.ds_id }}</a></td>
+    <td>{{ ds.title }}</td>
     <td> {{ ds.period_start }} - {{ ds.period_start }}</td>
-    <td> {% for kw in ds.keywords %}{{ kw.keywords }}</br>{% endfor %}</td>
+    <td> {% for kw in ds.keywords.all %}{{ kw.keywords }}</br>{% endfor %}</td>
     </tr>
 {% endfor %}
 </table>

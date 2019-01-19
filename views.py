@@ -109,27 +109,27 @@ class IndexDataProviderView(LoginRequiredMixin, generic.ListView):
 
 class DatasetDetailView(LoginRequiredMixin, generic.DetailView):
     model = Dataset
-    template_name = 'dc_management/detail_dataset.html'
+    template_name = 'datacatalog/detail_dataset.html'
 
 class DataAccessDetailView(LoginRequiredMixin, generic.DetailView):
     model = DataAccess
-    template_name = 'dc_management/detail_access.html'
+    template_name = 'datacatalog/detail_access.html'
 
 class DataUseAgreementDetailView(LoginRequiredMixin, generic.DetailView):
     model = DataUseAgreement
-    template_name = 'dc_management/detail_dua.html'
+    template_name = 'datacatalog/detail_dua.html'
 
 class KeywordDetailView(LoginRequiredMixin, generic.DetailView):
     model = Keyword
-    template_name = 'dc_management/detail_keyword.html'
+    template_name = 'datacatalog/detail_keyword.html'
 
 class DataProviderDetailView(LoginRequiredMixin, generic.DetailView):
     model = DataProvider
-    template_name = 'dc_management/detail_provider.html'
+    template_name = 'datacatalog/detail_provider.html'
 
-###############################
-### Create and Update views ###
-###############################
+####################
+### Create views ###
+####################
 
 class DatasetCreateView(LoginRequiredMixin, CreateView):
     model = Dataset
@@ -143,11 +143,14 @@ class DatasetCreateView(LoginRequiredMixin, CreateView):
                 'comments',
                 'access_requirements',
     ]
-    template_name = "datacatalog/basic_crispy_form.html"
+    template_name = "datacatalog/basic_form.html"
     # default success_url should be to the object page defined in model.
     
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        # update who last edited record
+        self.object.record_author = self.request.user
+
         self.object.save()
         return super(DatasetCreateView, self).form_valid(form)
 
@@ -160,11 +163,13 @@ class DataProviderCreateView(LoginRequiredMixin, CreateView):
                 'country',
                 'affiliation',
     ]
-    template_name = "datacatalog/basic_crispy_form.html"
+    template_name = "datacatalog/basic_form.html"
     # default success_url should be to the object page defined in model.
     
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        # update who last edited record
+        self.object.record_author = self.request.user
         self.object.save()
         return super(DataProviderCreateView, self).form_valid(form)
 
@@ -179,11 +184,13 @@ class DataAccessCreateView(LoginRequiredMixin, CreateView):
                 'public',
                 'time_required',
     ]
-    template_name = "datacatalog/basic_crispy_form.html"
+    template_name = "datacatalog/basic_form.html"
     # default success_url should be to the object page defined in model.
     
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        # update who last edited record
+        self.object.record_author = self.request.user
         self.object.save()
         return super(DataAccessCreateView, self).form_valid(form)
 
@@ -208,27 +215,36 @@ class DataUseAgreementCreateView(LoginRequiredMixin, CreateView):
                 'datasets',
                 'access_requirements',
     ]
-    template_name = "datacatalog/basic_crispy_form.html"
+    template_name = "datacatalog/basic_form.html"
     # default success_url should be to the object page defined in model.
     
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        # update who last edited record
+        self.object.record_author = self.request.user
         self.object.save()
         return super(DataUseAgreementCreateView, self).form_valid(form)
 
 class KeywordCreateView(LoginRequiredMixin, CreateView):
     model = Keyword
     fields = ['keyword', 'definition', ]
-    template_name = "datacatalog/basic_crispy_form.html"
+    template_name = "datacatalog/basic_form.html"
     # default success_url should be to the object page defined in model.
     
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        # update who last edited record
+        self.object.record_author = self.request.user
         self.object.save()
         return super(KeywordCreateView, self).form_valid(form)
 
+####################
+### Update views ###
+####################
+
 class DatasetUpdateView(LoginRequiredMixin, UpdateView):
     model = Dataset
+    template_name = "datacatalog/basic_form.html"
     fields = [  'ds_id',
                 'title',
                 'description',
@@ -242,6 +258,7 @@ class DatasetUpdateView(LoginRequiredMixin, UpdateView):
 
 class DataAccessUpdateView(LoginRequiredMixin, UpdateView):
     model = DataAccess
+    template_name = "datacatalog/basic_form.html"
     fields = [  'name',
                 'dua_required',
                 'prj_desc_required',
@@ -254,6 +271,7 @@ class DataAccessUpdateView(LoginRequiredMixin, UpdateView):
 
 class DataProviderUpdateView(LoginRequiredMixin, UpdateView):
     model = DataProvider
+    template_name = "datacatalog/basic_form.html"
     fields = [  'name',
                 'dept',
                 'phone',
@@ -264,6 +282,7 @@ class DataProviderUpdateView(LoginRequiredMixin, UpdateView):
   
 class DataUseAgreementUpdateView(LoginRequiredMixin, UpdateView):
     model = DataUseAgreement
+    template_name = "datacatalog/basic_form.html"
     fields = [  'duaid',
                 'title',
                 'description',
@@ -286,6 +305,7 @@ class DataUseAgreementUpdateView(LoginRequiredMixin, UpdateView):
     
 class KeywordUpdateView(LoginRequiredMixin, UpdateView):
     model = Keyword
+    template_name = "datacatalog/basic_form.html"
     fields = ['keyword', 'definition', ]               
  
  
@@ -294,7 +314,7 @@ class KeywordUpdateView(LoginRequiredMixin, UpdateView):
 ##############################
 
 class FullSearch(LoginRequiredMixin, generic.TemplateView):
-    template_name = 'dc_management/search_results.html'
+    template_name = 'datacatalog/search_results.html'
     def post(self, request, *args, **kwargs):
         st = request.POST['srch_term']
         qs_prj = Project.objects.all()

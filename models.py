@@ -48,16 +48,16 @@ class DataProvider(models.Model):
     name = models.CharField(max_length=256)
     
     # provider department
-    dept = models.CharField(max_length=128, null=True)
+    dept = models.CharField(max_length=128, null=True, blank=True)
     
     # contact phone number
-    phone = models.CharField(max_length=32, null=True)
+    phone = models.CharField(max_length=32, null=True, blank=True)
     
     # contact email 
-    email = models.EmailField(null=True)
+    email = models.EmailField(null=True, blank=True)
     
     # provider country of origin
-    country = models.CharField(max_length=64, null=True)
+    country = models.CharField(max_length=64, null=True, blank=True)
     
     # provider affiliation: Academic, Hospital, Government, or Private
     ACADEMIC = 'AC'
@@ -101,25 +101,25 @@ class DataAccess(models.Model):
     name = models.CharField(max_length=128)
         
     # is a DUA agreement required?
-    dua_required = models.BooleanField(null=True)
+    dua_required = models.BooleanField(null=True, blank=True)
     
     # is a description of the project required?
-    prj_desc_required = models.BooleanField(null=True)
+    prj_desc_required = models.BooleanField(null=True, blank=True)
     
     # is a description of the storage and handling required?
-    sys_desc_required = models.BooleanField(null=True)
+    sys_desc_required = models.BooleanField(null=True, blank=True)
     
     # will other WCM people or departments be required in order to gain access?
-    help_required = models.BooleanField(null=True)
+    help_required = models.BooleanField(null=True, blank=True)
     
     # Charge for access (in US dollars, approximate, 0 for no cost)
-    access_cost = models.IntegerField(null=True)
+    access_cost = models.IntegerField(null=True, blank=True)
 
     # publicly available
-    public = models.BooleanField(null=True)
+    public = models.BooleanField(null=True, blank=True)
     
     # typical time period from request to access of data
-    time_required = models.DurationField(null=True)
+    time_required = models.DurationField(null=True, blank=True)
 
     def __str__(self):
         return "Access: {}".format(self.name)
@@ -150,7 +150,8 @@ class Dataset(models.Model):
     record_author = models.ForeignKey(User, on_delete=models.CASCADE)
     
     # dataset ID
-    ds_id = models.CharField("Dataset ID", max_length=128, unique=True, null=True)
+    ds_id = models.CharField("Dataset ID", max_length=128, unique=True, 
+                                null=True, blank=True)
     
     # dataset title/brief descriptor
     title = models.CharField(max_length=256, unique=True)
@@ -159,23 +160,24 @@ class Dataset(models.Model):
     description = models.TextField(null=True, blank=True)
     
     # beginning of temporal coverage (time of earliest data record)
-    period_start = models.DateField(null=True)
+    period_start = models.DateField(null=True, blank=True)
     
     # end of temporal coverage (time of latest data record)
-    period_end = models.DateField(null=True)
+    period_end = models.DateField(null=True, blank=True)
     
     # keywords or topics related to the data
-    keywords = models.ManyToManyField(Keyword,)
+    keywords = models.ManyToManyField(Keyword, null=True, blank=True)
     
     # URL of landing page to access data
-    landing_url = models.URLField(max_length=256,null=True)
+    landing_url = models.URLField(max_length=256,null=True, blank=True)
     
     # notes or general comments
-    comments = models.TextField(null=True)
+    comments = models.TextField(null=True, blank=True)
         
     # pointer to the generic instructions required for accessing this data
     access_requirements = models.ForeignKey(DataAccess, 
                                             null=True, 
+                                            blank=True,
                                             on_delete=models.CASCADE
                                             )    
 
