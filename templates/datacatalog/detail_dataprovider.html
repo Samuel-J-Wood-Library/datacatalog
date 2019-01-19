@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{# Load the tag library #}
+{% load bootstrap4 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+{% block content %}
+
+<style>
+/* styling of the tabs*/
+#exTab1 .tab-content {
+  color : black;
+  padding : 5px 15px;
+}
+
+#exTab1 .nav-tabs > li > a {
+  border-radius: 4px 4px 0 0;
+}
+</style>
+
+
+
+<h1>
+    {{ dataprovider.name }} 
+<small class="text-muted">{{ dataprovider.dept }}</small>
+</h1>
+{% if dataprovider.affiliation %}
+<h2>
+    <small class="text-muted">{{ dataprovider.affiliation }}</small>
+</h2>
+{% endif %}
+
+
+
+<table class="table table-striped table-hover">
+    <thead class="thead-default">
+    <tr>
+        <th>Phone</th>
+        <th>Email</th>
+    </tr>
+    </thead>
+
+    <tr>
+        <td>{{ dataprovider.phone }}</td>
+        <td>{{ dataprovider.email }}</td>
+    </tr>
+</table>
+
+
+<a type="button" class="btn btn-primary" href="{% url 'datacatalog:provider-update' dataprovider.pk %}">Update provider details</a>
+
+<a type="button" class="btn btn-default" href="{% url 'datacatalog:providerdataset-add' dataprovider.pk %}">Add dataset to provider</a>
+
+</br></br>
+
+
+<h2>Provider for {{ dataprovider.dataset_set.all.count }} datasets</h2>
+
+    {% with dataprovider.dataset_set.all as dataset_list %}
+        {% include 'datacatalog/table_dataset.html' %}
+    {% endwith %}
+
+
+{% endblock %}
+

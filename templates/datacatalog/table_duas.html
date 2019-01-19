@@ -1,0 +1,22 @@
+
+<table class="table table-striped table-hover" id="DatasetTable">
+<thead class="thead-default">
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Data Provider</th>
+        <th>Scope</th>
+        <th>Period</th>
+    </tr>
+</thead>
+
+{% for dua in dua_list %}
+    <tr>
+    <td><a href="{% url 'datacore:dua-view' dua.pk %}">{{ dua.duaid }}</a></td>
+    <td> {{ dua.title }}</td>
+    <td> {{ dua.publisher }}</td>
+    <td>{{ dua.scope }}</td>
+    <td>{{ dua.start_date }} - {{ dua.end_date }}</td>
+    </tr>
+{% endfor %}
+</table>

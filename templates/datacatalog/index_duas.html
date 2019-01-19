@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>
+All {{ dua_list|length }} Data Use Agreements:
+</h1>
+
+{% include 'datacatalog/table_duas.html' %}
+
+<a type="button" class="btn btn-primary" href="{% url 'datacatalog:dua-add'  %}">Add new DUA</a>
+
+{% endblock content %}

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>
+All {{ dataset_list|length }} Datasets:
+</h1>
+
+{% include 'datacatalog/table_datasets.html' %}
+
+<a type="button" class="btn btn-primary" href="{% url 'datacatalog:dataset-add' %}">Add new dataset</a>
+
+{% endblock content %}

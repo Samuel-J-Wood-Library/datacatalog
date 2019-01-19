@@ -1,5 +1,7 @@
 from django.db import models
 
+from django.urls import reverse
+
 from django.contrib.auth.models import User
 
 from dc_management.models import Person 
@@ -23,18 +25,33 @@ class Keyword(models.Model):
     # definition / elaboration of keyword
     definition = models.TextField()
 
+    def __str__(self):
+        return "Keyword: {}".format(self.keyword,)
+
+    def get_absolute_url(self):
+        return reverse('datacatalog:keyword-view', kwargs={'pk': self.pk})
+
 class DataProvider(models.Model):
     """
     This class defines data providers.
     """
+    # date the record was created
+    record_creation = models.DateField(auto_now_add=True)
+    
+    # date the record was most recently modified
+    record_update = models.DateField(auto_now=True)
+    
+    # the user who was signed in at time of record modification
+    record_author = models.ForeignKey(User, on_delete=models.CASCADE)
+ 
     # provider organization name
     name = models.CharField(max_length=256)
     
     # provider department
-    name = models.CharField(max_length=128, null=True)
+    dept = models.CharField(max_length=128, null=True)
     
     # contact phone number
-    name = models.CharField(max_length=32, null=True)
+    phone = models.CharField(max_length=32, null=True)
     
     # contact email 
     email = models.EmailField(null=True)
@@ -59,12 +76,30 @@ class DataProvider(models.Model):
                         default = GOVERNMENT,
     )
 
+    def __str__(self):
+        return "Provider {}".format(self.name,)
+
+    def get_absolute_url(self):
+        return reverse('datacatalog:provider-view', kwargs={'pk': self.pk})
+
 class DataAccess(models.Model):
     """
     This class defines the processes and information required in order to gain access 
     to a dataset. These instructions are generic, in as much as they define how anyone
     may gain access, and are not intended to only specify for a particular user/project. 
     """
+    # date the record was created
+    record_creation = models.DateField(auto_now_add=True)
+    
+    # date the record was most recently modified
+    record_update = models.DateField(auto_now=True)
+    
+    # the user who was signed in at time of record modification
+    record_author = models.ForeignKey(User, on_delete=models.CASCADE)
+ 
+    # general name for identification of access models
+    name = models.CharField(max_length=128)
+        
     # is a DUA agreement required?
     dua_required = models.BooleanField(null=True)
     
@@ -85,7 +120,12 @@ class DataAccess(models.Model):
     
     # typical time period from request to access of data
     time_required = models.DurationField(null=True)
+
+    def __str__(self):
+        return "Access: {}".format(self.name)
             
+    def get_absolute_url(self):
+        return reverse('datacatalog:access-view', kwargs={'pk': self.pk})
     
     
 class Dataset(models.Model):
@@ -138,6 +178,13 @@ class Dataset(models.Model):
                                             null=True, 
                                             on_delete=models.CASCADE
                                             )    
+
+    def __str__(self):
+        return "Dataset {}: {}".format(self.ds_id, self.title)
+
+    def get_absolute_url(self):
+        return reverse('datacatalog:dataset-view', kwargs={'pk': self.pk})
+
         
 class DataUseAgreement(models.Model):
     """
@@ -230,3 +277,5 @@ class DataUseAgreement(models.Model):
     def __str__(self):
         return "DUA {}: {}".format(self.duaid, self.title)
 
+    def get_absolute_url(self):
+        return reverse('datacatalog:dua-view', kwargs={'pk': self.pk})

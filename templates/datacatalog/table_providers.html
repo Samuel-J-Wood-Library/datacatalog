@@ -1,0 +1,22 @@
+
+<table class="table table-striped table-hover" id="DatasetTable">
+<thead class="thead-default">
+    <tr>
+        <th>Name</th>
+        <th>Dept</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Affiliation</th>
+    </tr>
+</thead>
+
+{% for pv in provider_list %}
+    <tr>
+    <td><a href="{% url 'datacore:provider-view' pv.pk %}">{{ pv.name }}</a></td>
+    <td> {{ pv.dept }}</td>
+    <td> {{ pv.phone }}</td>
+    <td>{{ pv.email }}</td>
+    <td>{{ pv.get_affiliation_display }}</td>
+    </tr>
+{% endfor %}
+</table>

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load bootstrap4 %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+        
+{{ form.media }}
+
+<form action="" method="post">
+	{% csrf_token %}
+    {% crispy form %}
+    {% comment %}
+    {{ form|crispy }}
+    {% endcomment %}
+</form>    
+    
+
+
+{% endblock %}

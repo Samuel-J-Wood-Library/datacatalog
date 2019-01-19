@@ -15,7 +15,15 @@
 }
 </style>
 
+<a type="button" class="btn btn-primary" href="{% url 'datacatalog:datasets' %}">View datasets</a>
 
+<a type="button" class="btn btn-primary" href="{% url 'datacatalog:providers' %}">View data providers</a>
+
+<a type="button" class="btn btn-primary" href="{% url 'datacatalog:duas' %}">View data use agreements</a>
+
+<a type="button" class="btn btn-primary" href="{% url 'datacatalog:access' %}">View data access requirements</a>
+
+<a type="button" class="btn btn-primary" href="{% url 'datacatalog:keywords' %}">View keywords</a>
 
     <div class="container">
      <div class="panel panel-info">
@@ -29,8 +37,6 @@
       </div>
      </div>
     </div>
-    
-
   
 
 {% endblock %}
