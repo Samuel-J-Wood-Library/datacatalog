@@ -16,7 +16,7 @@
                     {% if user.is_authenticated %}
                     <ul class="nav navbar-nav">
                         <li>
-                          <a href="{% url 'dc_management:index' %}">Dashboard</a>
+                          <a href="{% url 'datacatalog:index' %}">Data Catalog</a>
                         </li>
                     </ul>
                     
@@ -32,20 +32,20 @@
                                 <ul class="dropdown-menu" 
                                     role="menu" 
                                     aria-labelledby="dropblast">
-                                    <li><a href="{% url 'dc_management:idx-project' %}">
-                                        Projects</a>
+                                    <li><a href="{% url 'datacatalog:datasets' %}">
+                                        Datasets</a>
                                     </li>
-                                    <li><a href="{% url 'dc_management:idx-server' %}">
-                                        Servers</a>
+                                    <li><a href="{% url 'datacatalog:duas' %}">
+                                        DUAs</a>
                                     </li>
-                                    <li><a href="{% url 'dc_management:idx-user' %}">
-                                        Users</a>
+                                    <li><a href="{% url 'datacatalog:access' %}">
+                                        Access guides</a>
                                     </li>
-                                    <li><a href="{% url 'dc_management:idx-software' %}">
-                                        Software</a>
+                                    <li><a href="{% url 'datacatalog:providers' %}">
+                                        Providers</a>
                                     </li>
-                                    <li><a href="{% url 'dc_management:idx-govdoc' %}">
-                                        Governance Docs</a>
+                                    <li><a href="{% url 'datacatalog:keywords' %}">
+                                        Keywords</a>
                                     </li>
                                     
                                 </ul>
@@ -59,7 +59,7 @@
                     <div class="col-sm-3 col-md-3 pull-right">
                         <form   class="navbar-form" 
                                 role="search" 
-                                action="{% url 'dc_management:full-search' %}" 
+                                action="{% url 'datacatalog:full-search' %}" 
                                 method="post">{% csrf_token %}
                 
                             <div class="input-group">
@@ -94,6 +94,8 @@
                                            target="_blank">Change password</a>
                                     </li>
                                     <li><a href="/logout/">Logout </a></li>
+                                    <li><a href="{% url 'frontpage' %}">
+                                        Data Core Frontpage</a></li>
                               </ul>
                               
                             </li>
@@ -115,20 +117,20 @@
                                     <li><a href="{% url 'password_reset' %}">
                                         Reset password</a>
                                     </li>
-                                    <li><a href="{% url 'dc_management:url_generator' %}">
-                                        DCUA generator</a>
+                                    <li><a href="{% url 'datacatalog:dataset-add' %}">
+                                        Add dataset</a>
                                     </li>
-                                    <li><a href="{% url 'dc_management:change_software' %}">
-                                        Install/remove software</a>
+                                    <li><a href="{% url 'datacatalog:dua-add' %}">
+                                        Add DUA</a>
                                     </li>
-                                    <li><a href="{% url 'dc_management:finances-active' %}">
-                                        View finances</a>
+                                    <li><a href="{% url 'datacatalog:provider-add' %}">
+                                        Add provider</a>
                                     </li>
-                                    <li><a href="{% url 'dc_management:outlook' %}">
-                                        Outlook</a>
+                                    <li><a href="{% url 'datacatalog:keyword-add' %}">
+                                        Add keyword</a>
                                     </li>
-                                    <li><a href="{% url 'dc_management:reset-outlook' %}">
-                                        Reset Outlook</a>
+                                    <li><a href="{% url 'datacatalog:access-add' %}">
+                                        Add access guide</a>
                                     </li>
                                 </ul>
                             </li>
