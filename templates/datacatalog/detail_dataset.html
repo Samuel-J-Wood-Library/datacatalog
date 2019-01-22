@@ -39,19 +39,29 @@
 <h4>description</h4>
 <p> {{ dataset.description|linebreaks }}</p>
 
-<table class="table table-striped table-hover">
-    <thead class="thead-default">
-    <tr>
-        <th>Record Period Start</th>
-        <th>Record Period End</th>
-    </tr>
-    </thead>
 
+<table class="table table-striped table-hover">
     <tr>
+        <td>Record Period Start</td>
         <td>{{ dataset.period_start }}</td>
+    </tr>
+    <tr>
+        <td>Record Period End</td>
         <td>{{ dataset.period_end }}</td>
     </tr>
+    <tr>
+        <td>Keywords</td>
+        <td>{% for kw in dataset.keywords.all %}
+                <a href="{% url 'datacatalog:keyword-view' kw.pk %}">
+                    {{ kw.keyword }}
+                </a></br>
+            {% endfor %}
+        </td>
+    </tr>
+
 </table>
+
+
 
 
 <a type="button" class="btn btn-primary" href="{% url 'datacatalog:dataset-update' dataset.pk %}">Update dataset details</a>
