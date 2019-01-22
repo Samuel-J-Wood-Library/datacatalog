@@ -1,0 +1,144 @@
+
+{% extends "base.html" %}
+
+{% block navblock %}
+        <div class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">{{ APPTITLE }}</a>
+                    <button class="navbar-toggle" data-target="#navbar-main" data-toggle="collapse" type="button">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div id="navbar-main" class="navbar-collapse collapse">
+                    {% if user.is_authenticated %}
+                    <ul class="nav navbar-nav">
+                        <li>
+                          <a href="{% url 'dc_management:index' %}">Dashboard</a>
+                        </li>
+                    </ul>
+                    
+                    <ul class="nav navbar-nav navbar-left">
+                        <li class="dropdown">
+                
+                            <a class="dropdown-toggle" 
+                                id="dropblast" 
+                                data-toggle="dropdown"
+                                href="#">
+                                View Details <b class="caret"></b>
+                            </a>
+                                <ul class="dropdown-menu" 
+                                    role="menu" 
+                                    aria-labelledby="dropblast">
+                                    <li><a href="{% url 'dc_management:idx-project' %}">
+                                        Projects</a>
+                                    </li>
+                                    <li><a href="{% url 'dc_management:idx-server' %}">
+                                        Servers</a>
+                                    </li>
+                                    <li><a href="{% url 'dc_management:idx-user' %}">
+                                        Users</a>
+                                    </li>
+                                    <li><a href="{% url 'dc_management:idx-software' %}">
+                                        Software</a>
+                                    </li>
+                                    <li><a href="{% url 'dc_management:idx-govdoc' %}">
+                                        Governance Docs</a>
+                                    </li>
+                                    
+                                </ul>
+                            </li>
+                    </ul>
+                    
+                    <ul class="nav navbar-nav navbar-left">
+                        <li>{% block pagetitle %}{% endblock %}</li>
+                    </ul>
+                    
+                    <div class="col-sm-3 col-md-3 pull-right">
+                        <form   class="navbar-form" 
+                                role="search" 
+                                action="{% url 'dc_management:full-search' %}" 
+                                method="post">{% csrf_token %}
+                
+                            <div class="input-group">
+                                <input  type="text" 
+                                        class="form-control" 
+                                        placeholder="Search database" 
+                                        name="srch_term" 
+                                        id="srch_term">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-default" type="submit">
+                                            <i class="glyphicon glyphicon-search">
+                                            </i>
+                                        </button>
+                                    </div>
+                            </div>
+                        </form>
+                    </div>                    
+                    {% endif %}
+                    <ul class="nav navbar-nav navbar-right">
+                        {% if user.is_authenticated %}
+                            <li class="dropdown">
+                              <a class="dropdown-toggle" 
+                                id="dropblast" 
+                                data-toggle="dropdown"
+                                href="#">
+                                {{ user.get_username }} <b class="caret"></b>
+                              </a>
+                              <ul class="dropdown-menu" 
+                                    role="menu" 
+                                    aria-labelledby="dropblast">
+                                    <li><a href="{% url 'admin:index' %}" 
+                                           target="_blank">Change password</a>
+                                    </li>
+                                    <li><a href="/logout/">Logout </a></li>
+                              </ul>
+                              
+                            </li>
+                          
+                            <li class="dropdown">
+                
+                            <a class="dropdown-toggle" 
+                                id="dropblast" 
+                                data-toggle="dropdown"
+                                href="#">
+                                Options <b class="caret"></b>
+                            </a>
+                                <ul class="dropdown-menu" 
+                                    role="menu" 
+                                    aria-labelledby="dropblast">
+                                    <li><a href="{% url 'admin:index' %}" 
+                                           target="_blank">DC Admin</a>
+                                    </li>
+                                    <li><a href="{% url 'password_reset' %}">
+                                        Reset password</a>
+                                    </li>
+                                    <li><a href="{% url 'dc_management:url_generator' %}">
+                                        DCUA generator</a>
+                                    </li>
+                                    <li><a href="{% url 'dc_management:change_software' %}">
+                                        Install/remove software</a>
+                                    </li>
+                                    <li><a href="{% url 'dc_management:finances-active' %}">
+                                        View finances</a>
+                                    </li>
+                                    <li><a href="{% url 'dc_management:outlook' %}">
+                                        Outlook</a>
+                                    </li>
+                                    <li><a href="{% url 'dc_management:reset-outlook' %}">
+                                        Reset Outlook</a>
+                                    </li>
+                                </ul>
+                            </li>
+                       
+                        {% else %}
+                            <li><a href="/login/">Login</a></li>
+                            
+                        {% endif %}
+                    </ul> 
+                </div>
+            </div>
+        </div>
+{% endblock %}
