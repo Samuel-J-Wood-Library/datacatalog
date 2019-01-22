@@ -1,0 +1,16 @@
+
+<table class="table table-striped table-hover" id="DatasetTable">
+<thead class="thead-default">
+    <tr>
+        <th>Keyword</th>
+        <th>Definition</th>
+    </tr>
+</thead>
+
+{% for kw in keyword_list %}
+    <tr>
+    <td><a href="{% url 'datacatalog:keyword-view' kw.pk %}">{{ kw.keyword }}</a></td>
+    <td> {{ kw.definition }}</td>
+    </tr>
+{% endfor %}
+</table>

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'datacatalog/base-catalog.html' %}
 
 {# Load the tag library #}
 {% load bootstrap4 %}
@@ -55,7 +55,9 @@
 
 <a type="button" class="btn btn-primary" href="{% url 'datacatalog:provider-update' dataprovider.pk %}">Update provider details</a>
 
+{% comment %}
 <a type="button" class="btn btn-default" href="{% url 'datacatalog:providerdataset-add' dataprovider.pk %}">Add dataset to provider</a>
+{% endcomment %}
 
 </br></br>
 
@@ -63,7 +65,7 @@
 <h2>Provider for {{ dataprovider.dataset_set.all.count }} datasets</h2>
 
     {% with dataprovider.dataset_set.all as dataset_list %}
-        {% include 'datacatalog/table_dataset.html' %}
+        {% include 'datacatalog/table_datasets.html' %}
     {% endwith %}
 
 

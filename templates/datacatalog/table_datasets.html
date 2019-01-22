@@ -13,8 +13,11 @@
     <tr>
     <td><a href="{% url 'datacatalog:dataset-view' ds.pk %}">{{ ds.ds_id }}</a></td>
     <td>{{ ds.title }}</td>
-    <td> {{ ds.period_start }} - {{ ds.period_start }}</td>
-    <td> {% for kw in ds.keywords.all %}{{ kw.keywords }}</br>{% endfor %}</td>
+    <td> {{ ds.period_start }} - {{ ds.period_end }}</td>
+    <td> {% for kw in ds.keywords.all %}
+            <a href="{% url 'datacatalog:keyword-view' kw.pk %}">
+                {{ kw.keyword }}
+            </a></br>{% endfor %}</td>
     </tr>
 {% endfor %}
 </table>

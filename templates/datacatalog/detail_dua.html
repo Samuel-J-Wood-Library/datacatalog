@@ -1,0 +1,69 @@
+{% extends 'datacatalog/base-catalog.html' %}
+
+{# Load the tag library #}
+{% load bootstrap4 %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+{% block content %}
+
+<style>
+/* styling of the tabs*/
+#exTab1 .tab-content {
+  color : black;
+  padding : 5px 15px;
+}
+
+#exTab1 .nav-tabs > li > a {
+  border-radius: 4px 4px 0 0;
+}
+</style>
+
+
+
+<h1>
+    {{ datauseagreement.title }} 
+<small class="text-muted">{{ datauseagreement.duaid }}</small>
+</h1>
+{% if datauseagreement.publisher %}
+<h2>
+    <small class="text-muted">{{ datauseagreement.publisher }}</small>
+</h2>
+{% endif %}
+
+<h4>description</h4>
+<p> {{ datauseagreement.description|linebreaks }}</p>
+
+<table class="table table-striped table-hover">
+    <tr>
+        <td>Start date</td>
+        <td>{{ datauseagreement.start_date }}</td>
+    </tr>
+    <tr>
+        <td>End date</td>
+        <td>{{ datauseagreement.end_date }}</td>
+    </tr>
+    <tr>
+        <td>Data destruction required?</td>
+        <td>{{ datauseagreement.destruction_required }}</td>
+    </tr>
+
+</table>
+
+
+<a type="button" class="btn btn-primary" href="{% url 'datacatalog:dua-update' datauseagreement.pk %}">Update DUA details</a>
+
+
+</br></br>
+
+
+<h2>Datasets for {{ datauseagreement }}</h2>
+
+    {% with datauseagreement.datasets.all as dataset_list %}
+        {% include 'datacatalog/table_datasets.html' %}
+    {% endwith %}
+
+
+{% endblock %}
+

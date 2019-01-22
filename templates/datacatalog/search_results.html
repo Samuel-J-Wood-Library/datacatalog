@@ -1,0 +1,40 @@
+{% extends 'datacatalog/base-catalog.html' %}
+
+{% load bootstrap4 %}
+
+{% block content %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+<h1>Search results for "{{ search_str }}"</h1>
+
+{% if qs_ds|length > 0 %}
+<h2>Datasets</h2>
+{% with qs_ds as dataset_list %}
+    {% include "datacatalog/table_datasets.html" %}
+{% endwith %}
+{% else %}
+<h2>No results found among datasets</h2>
+{% endif %}
+
+{% if qs_dua|length > 0 %}
+<h2>DUAs</h2>
+{% with qs_dua as dua_list %}
+    {% include "datacatalog/table_duas.html" %}
+{% endwith %}
+{% else %}
+<h2>No results found among DUAs</h2>
+{% endif %}
+
+{% if qs_kw|length > 0 %}
+<h2>Keywords</h2>
+{% with qs_kw as keyword_list %}
+    {% include "datacatalog/table_keywords.html" %}
+{% endwith %}
+{% else %}
+<h2>No results found among Keywords</h2>
+{% endif %}
+
+{% endblock %}
+ 

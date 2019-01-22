@@ -12,7 +12,7 @@
 
 {% for dua in dua_list %}
     <tr>
-    <td><a href="{% url 'datacore:dua-view' dua.pk %}">{{ dua.duaid }}</a></td>
+    <td><a href="{% url 'datacatalog:dua-view' dua.pk %}">{{ dua.duaid }}</a></td>
     <td> {{ dua.title }}</td>
     <td> {{ dua.publisher }}</td>
     <td>{{ dua.scope }}</td>
