@@ -15,7 +15,7 @@
     <td><a href="{% url 'datacatalog:dua-view' dua.pk %}">{{ dua.duaid }}</a></td>
     <td> {{ dua.title }}</td>
     <td> {{ dua.publisher }}</td>
-    <td>{{ dua.scope }}</td>
+    <td>{{ dua.get_scope_display }}</td>
     <td>{{ dua.start_date }} - {{ dua.end_date }}</td>
     </tr>
 {% endfor %}

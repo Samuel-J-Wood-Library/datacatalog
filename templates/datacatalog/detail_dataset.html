@@ -28,11 +28,10 @@
 
 <h1>
     {{ dataset.title }} 
-<small class="text-muted">{{ dataset.ds_id }}</small>
 </h1>
-{% if dataset.affiliation %}
+{% if dataset.publisher %}
 <h2>
-    <small class="text-muted">{{ dataset.affiliation }}</small>
+    <small class="text-muted"><a href="{% url 'datacatalog:provider-view' dataset.publisher.pk %}">{{ dataset.publisher }}</a></small>
 </h2>
 {% endif %}
 
