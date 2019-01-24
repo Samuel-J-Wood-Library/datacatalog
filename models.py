@@ -165,6 +165,9 @@ class Dataset(models.Model):
     # end of temporal coverage (time of latest data record)
     period_end = models.DateField(null=True, blank=True)
     
+    # dataset publisher
+    publisher = models.ForeignKey(DataProvider, on_delete=models.CASCADE)
+    
     # keywords or topics related to the data
     keywords = models.ManyToManyField(Keyword, blank=True)
     
@@ -211,10 +214,7 @@ class DataUseAgreement(models.Model):
     
     # brief description of DUA
     description = models.TextField(null=True, blank=True)
-    
-    # data provider / publisher
-    publisher = models.ForeignKey(DataProvider, on_delete=models.CASCADE)
-    
+        
     # provider contact individual
     contact = models.ForeignKey(Person, 
                                 related_name='contact_person',
