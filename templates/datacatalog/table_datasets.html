@@ -2,8 +2,8 @@
 <table class="table table-striped table-hover" id="DatasetTable">
 <thead class="thead-default">
     <tr>
-        <th>ID</th>
         <th>Title</th>
+        <th>Provider</th>
         <th>Period </th>
         <th>Keywords</th>
     </tr>
@@ -11,8 +11,8 @@
 
 {% for ds in dataset_list %}
     <tr>
-    <td><a href="{% url 'datacatalog:dataset-view' ds.pk %}">{{ ds.ds_id }}</a></td>
-    <td>{{ ds.title }}</td>
+    <td><a href="{% url 'datacatalog:dataset-view' ds.pk %}">{{ ds.title }}</a></td>
+    <td>{{ ds.publisher }}</td>
     <td> {{ ds.period_start }} - {{ ds.period_end }}</td>
     <td> {% for kw in ds.keywords.all %}
             <a href="{% url 'datacatalog:keyword-view' kw.pk %}">

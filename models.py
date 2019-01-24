@@ -77,7 +77,7 @@ class DataProvider(models.Model):
     )
 
     def __str__(self):
-        return "Provider {}".format(self.name,)
+        return "{}".format(self.name,)
 
     def get_absolute_url(self):
         return reverse('datacatalog:provider-view', kwargs={'pk': self.pk})
