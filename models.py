@@ -166,7 +166,7 @@ class Dataset(models.Model):
     period_end = models.DateField(null=True, blank=True)
     
     # keywords or topics related to the data
-    keywords = models.ManyToManyField(Keyword, null=True, blank=True)
+    keywords = models.ManyToManyField(Keyword, blank=True)
     
     # URL of landing page to access data
     landing_url = models.URLField(max_length=256,null=True, blank=True)
