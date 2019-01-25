@@ -3,6 +3,7 @@
 <thead class="thead-default">
     <tr>
         <th>Name</th>
+        <th># Datasets</th>
         <th>Dept</th>
         <th>Phone</th>
         <th>Email</th>
@@ -13,6 +14,7 @@
 {% for pv in provider_list %}
     <tr>
     <td><a href="{% url 'datacatalog:provider-view' pv.pk %}">{{ pv.name }}</a></td>
+    <td>{{ pv.dataset_set.count }}</td>
     <td> {{ pv.dept }}</td>
     <td> {{ pv.phone }}</td>
     <td>{{ pv.email }}</td>

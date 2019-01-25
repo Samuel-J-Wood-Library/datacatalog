@@ -5,6 +5,7 @@
         <th>ID</th>
         <th>Title</th>
         <th>Data Provider</th>
+        <th># Datasets</th>
         <th>Scope</th>
         <th>Period</th>
     </tr>
@@ -15,6 +16,7 @@
     <td><a href="{% url 'datacatalog:dua-view' dua.pk %}">{{ dua.duaid }}</a></td>
     <td> {{ dua.title }}</td>
     <td> {{ dua.publisher }}</td>
+    <td>{{ dua.datasets.count }}</td>
     <td>{{ dua.get_scope_display }}</td>
     <td>{{ dua.start_date }} - {{ dua.end_date }}</td>
     </tr>
