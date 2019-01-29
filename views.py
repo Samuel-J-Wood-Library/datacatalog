@@ -4,21 +4,23 @@ from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.db.models import Q
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from django.urls import reverse_lazy, reverse
 
 from .models import Dataset, DataUseAgreement, DataAccess, Keyword, DataProvider
 
+
 ###################
 ### Index views ###
 ###################
 
-class IndexView(LoginRequiredMixin, generic.ListView):
+class IndexView(PermissionRequiredMixin, generic.ListView):
     login_url='/login/'
     
     template_name = 'datacatalog/index.html'
     context_object_name = 'dataset_list'
+    permission_required = 'datacatalog.view_dataset'
 
     def get_queryset(self):
         ds = Dataset.objects.all()
@@ -32,11 +34,12 @@ class IndexView(LoginRequiredMixin, generic.ListView):
         })
         return context
 
-class IndexDatasetView(LoginRequiredMixin, generic.ListView):
+class IndexDatasetView(PermissionRequiredMixin, generic.ListView):
     login_url='/login/'
     
     template_name = 'datacatalog/index_datasets.html'
     context_object_name = 'dataset_list'
+    permission_required = 'datacatalog.view_dataset'
 
     def get_queryset(self):
         ds = Dataset.objects.all()
@@ -50,11 +53,12 @@ class IndexDatasetView(LoginRequiredMixin, generic.ListView):
         })
         return context
         
-class IndexDUAView(LoginRequiredMixin, generic.ListView):
+class IndexDUAView(PermissionRequiredMixin, generic.ListView):
     login_url='/login/'
     
     template_name = 'datacatalog/index_duas.html'
     context_object_name = 'dua_list'
+    permission_required = 'datacatalog.view_datauseagreement'
 
     def get_queryset(self):
         duas = DataUseAgreement.objects.all()
@@ -68,11 +72,12 @@ class IndexDUAView(LoginRequiredMixin, generic.ListView):
         })
         return context
         
-class IndexKeywordView(LoginRequiredMixin, generic.ListView):
+class IndexKeywordView(PermissionRequiredMixin, generic.ListView):
     login_url='/login/'
     
     template_name = 'datacatalog/index_keywords.html'
     context_object_name = 'keyword_list'
+    permission_required = 'datacatalog.view_keyword'
 
     def get_queryset(self):
         kws = Keyword.objects.all()
@@ -86,11 +91,12 @@ class IndexKeywordView(LoginRequiredMixin, generic.ListView):
         })
         return context
         
-class IndexDataAccessView(LoginRequiredMixin, generic.ListView):
+class IndexDataAccessView(PermissionRequiredMixin, generic.ListView):
     login_url='/login/'
     
     template_name = 'datacatalog/index_dataaccess.html'
     context_object_name = 'access_list'
+    permission_required = 'datacatalog.view_dataaccess'
 
     def get_queryset(self):
         ins = DataAccess.objects.all()
@@ -104,11 +110,12 @@ class IndexDataAccessView(LoginRequiredMixin, generic.ListView):
         })
         return context
         
-class IndexDataProviderView(LoginRequiredMixin, generic.ListView):
+class IndexDataProviderView(PermissionRequiredMixin, generic.ListView):
     login_url='/login/'
     
     template_name = 'datacatalog/index_dataproviders.html'
     context_object_name = 'provider_list'
+    permission_required = 'datacatalog.view_dataprovider'
 
     def get_queryset(self):
         pvs = DataProvider.objects.all()
@@ -126,31 +133,36 @@ class IndexDataProviderView(LoginRequiredMixin, generic.ListView):
 ### Detail views ###
 ####################
 
-class DatasetDetailView(LoginRequiredMixin, generic.DetailView):
+class DatasetDetailView(PermissionRequiredMixin, generic.DetailView):
     model = Dataset
     template_name = 'datacatalog/detail_dataset.html'
-
-class DataAccessDetailView(LoginRequiredMixin, generic.DetailView):
+    permission_required = 'datacatalog.view_dataset'
+    
+class DataAccessDetailView(PermissionRequiredMixin, generic.DetailView):
     model = DataAccess
     template_name = 'datacatalog/detail_access.html'
+    permission_required = 'datacatalog.view_dataaccess'
 
-class DataUseAgreementDetailView(LoginRequiredMixin, generic.DetailView):
+class DataUseAgreementDetailView(PermissionRequiredMixin, generic.DetailView):
     model = DataUseAgreement
     template_name = 'datacatalog/detail_dua.html'
+    permission_required = 'datacatalog.view_datauseagreement'
 
-class KeywordDetailView(LoginRequiredMixin, generic.DetailView):
+class KeywordDetailView(PermissionRequiredMixin, generic.DetailView):
     model = Keyword
     template_name = 'datacatalog/detail_keyword.html'
+    permission_required = 'datacatalog.view_keyword'
 
-class DataProviderDetailView(LoginRequiredMixin, generic.DetailView):
+class DataProviderDetailView(PermissionRequiredMixin, generic.DetailView):
     model = DataProvider
     template_name = 'datacatalog/detail_dataprovider.html'
+    permission_required = 'datacatalog.view_dataprovider'
 
 ####################
 ### Create views ###
 ####################
 
-class DatasetCreateView(LoginRequiredMixin, CreateView):
+class DatasetCreateView(PermissionRequiredMixin, CreateView):
     model = Dataset
     fields = [  'ds_id',
                 'title',
@@ -164,6 +176,7 @@ class DatasetCreateView(LoginRequiredMixin, CreateView):
                 'access_requirements',
     ]
     template_name = "datacatalog/basic_form.html"
+    permission_required = 'datacatalog.create_dataset'
     # default success_url should be to the object page defined in model.
     
     def form_valid(self, form):
@@ -174,7 +187,7 @@ class DatasetCreateView(LoginRequiredMixin, CreateView):
         self.object.save()
         return super(DatasetCreateView, self).form_valid(form)
 
-class DataProviderCreateView(LoginRequiredMixin, CreateView):
+class DataProviderCreateView(PermissionRequiredMixin, CreateView):
     model = DataProvider
     fields = [  'name',
                 'dept',
@@ -184,6 +197,7 @@ class DataProviderCreateView(LoginRequiredMixin, CreateView):
                 'affiliation',
     ]
     template_name = "datacatalog/basic_form.html"
+    permission_required = 'datacatalog.create_dataprovider'
     # default success_url should be to the object page defined in model.
     
     def form_valid(self, form):
@@ -193,7 +207,7 @@ class DataProviderCreateView(LoginRequiredMixin, CreateView):
         self.object.save()
         return super(DataProviderCreateView, self).form_valid(form)
 
-class DataAccessCreateView(LoginRequiredMixin, CreateView):
+class DataAccessCreateView(PermissionRequiredMixin, CreateView):
     model = DataAccess
     fields = [  'name',
                 'dua_required',
@@ -205,6 +219,7 @@ class DataAccessCreateView(LoginRequiredMixin, CreateView):
                 'time_required',
     ]
     template_name = "datacatalog/basic_form.html"
+    permission_required = 'datacatalog.create_dataaccess'
     # default success_url should be to the object page defined in model.
     
     def form_valid(self, form):
@@ -214,7 +229,7 @@ class DataAccessCreateView(LoginRequiredMixin, CreateView):
         self.object.save()
         return super(DataAccessCreateView, self).form_valid(form)
 
-class DataUseAgreementCreateView(LoginRequiredMixin, CreateView):
+class DataUseAgreementCreateView(PermissionRequiredMixin, CreateView):
     model = DataUseAgreement
     fields = [  'duaid',
                 'title',
@@ -236,6 +251,7 @@ class DataUseAgreementCreateView(LoginRequiredMixin, CreateView):
                 'access_requirements',
     ]
     template_name = "datacatalog/basic_form.html"
+    permission_required = 'datacatalog.create_datauseagreement'
     # default success_url should be to the object page defined in model.
     
     def form_valid(self, form):
@@ -245,10 +261,11 @@ class DataUseAgreementCreateView(LoginRequiredMixin, CreateView):
         self.object.save()
         return super(DataUseAgreementCreateView, self).form_valid(form)
 
-class KeywordCreateView(LoginRequiredMixin, CreateView):
+class KeywordCreateView(PermissionRequiredMixin, CreateView):
     model = Keyword
     fields = ['keyword', 'definition', ]
     template_name = "datacatalog/basic_form.html"
+    permission_required = 'datacatalog.create_keyword'
     # default success_url should be to the object page defined in model.
     
     def form_valid(self, form):
@@ -262,7 +279,7 @@ class KeywordCreateView(LoginRequiredMixin, CreateView):
 ### Update views ###
 ####################
 
-class DatasetUpdateView(LoginRequiredMixin, UpdateView):
+class DatasetUpdateView(PermissionRequiredMixin, UpdateView):
     model = Dataset
     template_name = "datacatalog/basic_form.html"
     fields = [  'ds_id',
@@ -276,8 +293,9 @@ class DatasetUpdateView(LoginRequiredMixin, UpdateView):
                 'comments',
                 'access_requirements',
     ]
+    permission_required = 'datacatalog.update_dataset'
 
-class DataAccessUpdateView(LoginRequiredMixin, UpdateView):
+class DataAccessUpdateView(PermissionRequiredMixin, UpdateView):
     model = DataAccess
     template_name = "datacatalog/basic_form.html"
     fields = [  'name',
@@ -289,8 +307,9 @@ class DataAccessUpdateView(LoginRequiredMixin, UpdateView):
                 'public',
                 'time_required',
     ]
+    permission_required = 'datacatalog.update_dataaccess'
 
-class DataProviderUpdateView(LoginRequiredMixin, UpdateView):
+class DataProviderUpdateView(PermissionRequiredMixin, UpdateView):
     model = DataProvider
     template_name = "datacatalog/basic_form.html"
     fields = [  'name',
@@ -300,8 +319,9 @@ class DataProviderUpdateView(LoginRequiredMixin, UpdateView):
                 'country',
                 'affiliation',
     ]
+    permission_required = 'datacatalog.update_dataprovider'
   
-class DataUseAgreementUpdateView(LoginRequiredMixin, UpdateView):
+class DataUseAgreementUpdateView(PermissionRequiredMixin, UpdateView):
     model = DataUseAgreement
     template_name = "datacatalog/basic_form.html"
     fields = [  'duaid',
@@ -323,11 +343,13 @@ class DataUseAgreementUpdateView(LoginRequiredMixin, UpdateView):
                 'datasets',
                 'access_requirements',
     ]
+    permission_required = 'datacatalog.update_datauseagreement'
     
-class KeywordUpdateView(LoginRequiredMixin, UpdateView):
+class KeywordUpdateView(PermissionRequiredMixin, UpdateView):
     model = Keyword
     template_name = "datacatalog/basic_form.html"
     fields = ['keyword', 'definition', ]               
+    permission_required = 'datacatalog.update_keyword'
  
  
 ##############################
