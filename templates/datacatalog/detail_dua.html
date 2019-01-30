@@ -2,7 +2,7 @@
 
 {# Load the tag library #}
 {% load bootstrap4 %}
-
+{% load project_tags %}
 {# Display django.contrib.messages as Bootstrap alerts #}
 {% bootstrap_messages %}
 
@@ -106,8 +106,9 @@
 
 </br>
 
+{% if request.user|has_group:"datacatalog_editor" %}
 <a type="button" class="btn btn-primary" href="{% url 'datacatalog:dua-update' datauseagreement.pk %}">Update DUA details</a>
-
+{% endif %}
 
 </br></br>
 
