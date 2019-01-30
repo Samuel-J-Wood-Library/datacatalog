@@ -382,4 +382,25 @@ class FullSearch(LoginRequiredMixin, generic.TemplateView):
         }
         return render(request, self.template_name, context)
         
+############################
+### Error handling views ###
+############################
     
+def handler403(request, exception, template_name="403.html"):
+    """
+    Error 403 = Forbidden 
+    
+    """
+    response = render_to_response("403.html")
+    response.status_code = 403
+    return response
+    
+def handler404(request, exception, template_name="404.html"):
+    """
+    Error 404 = Not found 
+    
+    """
+    response = render_to_response("404.html")
+    response.status_code = 404
+    return response
+        
