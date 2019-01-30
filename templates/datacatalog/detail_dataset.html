@@ -2,6 +2,7 @@
 
 {# Load the tag library #}
 {% load bootstrap4 %}
+{% load project_tags %}
 
 {# Load CSS and JavaScript #}
 {% bootstrap_css %}
@@ -40,6 +41,12 @@
 
 
 <table class="table table-striped table-hover">
+    {% if dataset.ds_id %}
+    <tr>
+        <td>Dataset ID</td>
+        <td>{{ dataset.ds_id }}</td>
+    </tr>
+    {% endif %}
     <tr>
         <td>Record Period Start</td>
         <td>{{ dataset.period_start }}</td>
@@ -48,23 +55,82 @@
         <td>Record Period End</td>
         <td>{{ dataset.period_end }}</td>
     </tr>
+    {% if dataset.landing_url %}
+    <tr>
+        <td>Landing URL</td>
+        <td><a href="{{ dataset.landing_url }}">{{ dataset.landing_url }}</a></td>
+    </tr>
+    {% endif %}
     <tr>
         <td>Keywords</td>
         <td>{% for kw in dataset.keywords.all %}
-                <a href="{% url 'datacatalog:keyword-view' kw.pk %}">
+                <span class="badge progress-bar-info">
+                <a  href="{% url 'datacatalog:keyword-view' kw.pk %}"
+                    style="color:white;">
                     {{ kw.keyword }}
-                </a></br>
+                </a></span>
             {% endfor %}
         </td>
     </tr>
 
 </table>
 
+<div class="container col-xl-12">
+{% for dua in dataset.datauseagreement_set.all %}
+    {% if dua.reuse_scope %}
+        <div class="container col-md-6">
+         <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h4>Data Reuse Scope: {{ dua.duaid }}</h4>
+          </div>
+          <div class="panel-body">
 
+                <p> {{ dua.reuse_scope|linebreaks }}</p>
+       
+          </div>
+         </div>
+        </div>
+    {% endif %}
+{% endfor %}
+{% for dua in dataset.datauseagreement_set.all %}
+    {% if dua.storage_requirements %}
+        <div class="container col-md-6">
+         <div class="panel panel-warning">
+          <div class="panel-heading">
+            <h4>Data Storage Requirements: {{ dua.duaid }}</h4>
+          </div>
+          <div class="panel-body">
 
+                <p> {{ dua.storage_requirements|linebreaks }}</p>
+       
+          </div>
+         </div>
+        </div>
+    {% endif %}
+{% endfor %}
+{% for dua in dataset.datauseagreement_set.all %}
+    {% if dua.access_conditions %}
+        <div class="container col-md-6">
+         <div class="panel panel-danger">
+          <div class="panel-heading">
+            <h4>Data Access Conditions: {{ dua.duaid }}</h4>
+          </div>
+          <div class="panel-body">
 
+                <p> {{ dua.access_conditions|linebreaks }}</p>
+       
+          </div>
+         </div>
+        </div>
+    {% endif %}
+{% endfor %}
+</div>
+
+</br>
+
+{% if request.user|has_group:"datacatalog_editor" %}
 <a type="button" class="btn btn-primary" href="{% url 'datacatalog:dataset-update' dataset.pk %}">Update dataset details</a>
-
+{% endif %}
 
 </br></br>
 

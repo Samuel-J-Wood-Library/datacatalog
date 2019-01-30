@@ -15,9 +15,11 @@
     <td>{{ ds.publisher }}</td>
     <td> {{ ds.period_start }} - {{ ds.period_end }}</td>
     <td> {% for kw in ds.keywords.all %}
-            <a href="{% url 'datacatalog:keyword-view' kw.pk %}">
+            <span class="badge progress-bar-info">
+            <a  href="{% url 'datacatalog:keyword-view' kw.pk %}"
+                style="color:white;">
                 {{ kw.keyword }}
-            </a></br>{% endfor %}</td>
+            </a></span>{% endfor %}</td>
     </tr>
 {% endfor %}
 </table>
