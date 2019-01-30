@@ -176,7 +176,7 @@ class DatasetCreateView(PermissionRequiredMixin, CreateView):
                 'access_requirements',
     ]
     template_name = "datacatalog/basic_form.html"
-    permission_required = 'datacatalog.create_dataset'
+    permission_required = 'datacatalog.add_dataset'
     # default success_url should be to the object page defined in model.
     
     def form_valid(self, form):
@@ -197,7 +197,7 @@ class DataProviderCreateView(PermissionRequiredMixin, CreateView):
                 'affiliation',
     ]
     template_name = "datacatalog/basic_form.html"
-    permission_required = 'datacatalog.create_dataprovider'
+    permission_required = 'datacatalog.add_dataprovider'
     # default success_url should be to the object page defined in model.
     
     def form_valid(self, form):
@@ -219,7 +219,7 @@ class DataAccessCreateView(PermissionRequiredMixin, CreateView):
                 'time_required',
     ]
     template_name = "datacatalog/basic_form.html"
-    permission_required = 'datacatalog.create_dataaccess'
+    permission_required = 'datacatalog.add_dataaccess'
     # default success_url should be to the object page defined in model.
     
     def form_valid(self, form):
@@ -251,7 +251,7 @@ class DataUseAgreementCreateView(PermissionRequiredMixin, CreateView):
                 'access_requirements',
     ]
     template_name = "datacatalog/basic_form.html"
-    permission_required = 'datacatalog.create_datauseagreement'
+    permission_required = 'datacatalog.add_datauseagreement'
     # default success_url should be to the object page defined in model.
     
     def form_valid(self, form):
@@ -265,7 +265,7 @@ class KeywordCreateView(PermissionRequiredMixin, CreateView):
     model = Keyword
     fields = ['keyword', 'definition', ]
     template_name = "datacatalog/basic_form.html"
-    permission_required = 'datacatalog.create_keyword'
+    permission_required = 'datacatalog.add_keyword'
     # default success_url should be to the object page defined in model.
     
     def form_valid(self, form):
@@ -293,7 +293,7 @@ class DatasetUpdateView(PermissionRequiredMixin, UpdateView):
                 'comments',
                 'access_requirements',
     ]
-    permission_required = 'datacatalog.update_dataset'
+    permission_required = 'datacatalog.change_dataset'
 
 class DataAccessUpdateView(PermissionRequiredMixin, UpdateView):
     model = DataAccess
@@ -307,7 +307,7 @@ class DataAccessUpdateView(PermissionRequiredMixin, UpdateView):
                 'public',
                 'time_required',
     ]
-    permission_required = 'datacatalog.update_dataaccess'
+    permission_required = 'datacatalog.change_dataaccess'
 
 class DataProviderUpdateView(PermissionRequiredMixin, UpdateView):
     model = DataProvider
@@ -319,7 +319,7 @@ class DataProviderUpdateView(PermissionRequiredMixin, UpdateView):
                 'country',
                 'affiliation',
     ]
-    permission_required = 'datacatalog.update_dataprovider'
+    permission_required = 'datacatalog.change_dataprovider'
   
 class DataUseAgreementUpdateView(PermissionRequiredMixin, UpdateView):
     model = DataUseAgreement
@@ -349,7 +349,7 @@ class KeywordUpdateView(PermissionRequiredMixin, UpdateView):
     model = Keyword
     template_name = "datacatalog/basic_form.html"
     fields = ['keyword', 'definition', ]               
-    permission_required = 'datacatalog.update_keyword'
+    permission_required = 'datacatalog.change_keyword'
  
  
 ##############################
