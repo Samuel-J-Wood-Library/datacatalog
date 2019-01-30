@@ -274,9 +274,13 @@ class DataUseAgreement(models.Model):
     # datasets included in governance terms
     datasets = models.ManyToManyField(Dataset,)
 
+    # description of types of experiments allowed under reuse terms
+    reuse_scope = models.TextField(null=True, blank=True)
+    
     # pointer to the generic instructions required for accessing this data
     access_requirements = models.ForeignKey(DataAccess, 
                                             null=True, 
+                                            blank=True,
                                             on_delete=models.CASCADE)    
     
     def __str__(self):
