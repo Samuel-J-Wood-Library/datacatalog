@@ -26,7 +26,7 @@ class Keyword(models.Model):
     definition = models.TextField()
 
     def __str__(self):
-        return "Keyword: {}".format(self.keyword,)
+        return "{}".format(self.keyword,)
 
     def get_absolute_url(self):
         return reverse('datacatalog:keyword-view', kwargs={'pk': self.pk})
@@ -122,7 +122,7 @@ class DataAccess(models.Model):
     time_required = models.DurationField(null=True, blank=True)
 
     def __str__(self):
-        return "Access: {}".format(self.name)
+        return "{}".format(self.name)
             
     def get_absolute_url(self):
         return reverse('datacatalog:access-view', kwargs={'pk': self.pk})
@@ -185,7 +185,7 @@ class Dataset(models.Model):
                                             )    
 
     def __str__(self):
-        return "Dataset {}: {}".format(self.ds_id, self.title)
+        return "{}".format(self.title)
 
     def get_absolute_url(self):
         return reverse('datacatalog:dataset-view', kwargs={'pk': self.pk})
@@ -280,7 +280,7 @@ class DataUseAgreement(models.Model):
                                             on_delete=models.CASCADE)    
     
     def __str__(self):
-        return "DUA {}: {}".format(self.duaid, self.title)
+        return "{}: {}".format(self.duaid, self.title)
 
     def get_absolute_url(self):
         return reverse('datacatalog:dua-view', kwargs={'pk': self.pk})
