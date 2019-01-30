@@ -45,12 +45,66 @@
         <td>{{ datauseagreement.end_date }}</td>
     </tr>
     <tr>
+        <td>PI</td>
+        <td>{{ datauseagreement.pi }}</td>
+    </tr>
+    <tr>
+        <td>Mixing of different datasets allowed?</td>
+        <td>{{ datauseagreement.mixing_allowed }}</td>
+    </tr>
+    <tr>
         <td>Data destruction required?</td>
         <td>{{ datauseagreement.destruction_required }}</td>
     </tr>
 
 </table>
 
+<div class="container col-xl-12">
+{% if datauseagreement.reuse_scope %}
+    <div class="container col-md-6">
+     <div class="panel panel-warning">
+      <div class="panel-heading">
+        <h4>Data Reuse Scope</h4>
+      </div>
+      <div class="panel-body">
+
+            <p> {{ datauseagreement.reuse_scope|linebreaks }}</p>
+       
+      </div>
+     </div>
+    </div>
+{% endif %}
+{% if datauseagreement.storage_requirements %}
+    <div class="container col-md-6">
+     <div class="panel panel-warning">
+      <div class="panel-heading">
+        <h4>Data Storage Requirements</h4>
+      </div>
+      <div class="panel-body">
+
+            <p> {{ datauseagreement.storage_requirements|linebreaks }}</p>
+       
+      </div>
+     </div>
+    </div>
+{% endif %}
+{% if datauseagreement.access_conditions %}
+    <div class="container col-md-6">
+     <div class="panel panel-warning">
+      <div class="panel-heading">
+        <h4>Data Access Conditions</h4>
+      </div>
+      <div class="panel-body">
+
+            <p> {{ datauseagreement.access_conditions|linebreaks }}</p>
+       
+      </div>
+     </div>
+    </div>
+{% endif %}
+</div>
+
+</br>
 
 <a type="button" class="btn btn-primary" href="{% url 'datacatalog:dua-update' datauseagreement.pk %}">Update DUA details</a>
 

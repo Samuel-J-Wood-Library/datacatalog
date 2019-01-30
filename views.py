@@ -342,8 +342,9 @@ class DataUseAgreementUpdateView(PermissionRequiredMixin, UpdateView):
                 'access_conditions',
                 'datasets',
                 'access_requirements',
+                'reuse_scope',
     ]
-    permission_required = 'datacatalog.update_datauseagreement'
+    permission_required = 'datacatalog.change_datauseagreement'
     
 class KeywordUpdateView(PermissionRequiredMixin, UpdateView):
     model = Keyword
