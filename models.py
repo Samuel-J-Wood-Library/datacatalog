@@ -76,6 +76,9 @@ class DataProvider(models.Model):
                         default = GOVERNMENT,
     )
 
+    # this is set to true after being checked by the Data Catalog curation team
+    curated = models.BooleanField(null=True, blank=True)
+
     def __str__(self):
         return "{}".format(self.name,)
 
@@ -120,6 +123,9 @@ class DataAccess(models.Model):
     
     # typical time period from request to access of data
     time_required = models.DurationField(null=True, blank=True)
+
+    # this is set to true after being checked by the Data Catalog curation team
+    curated = models.BooleanField(null=True, blank=True)
 
     def __str__(self):
         return "{}".format(self.name)
@@ -183,6 +189,9 @@ class Dataset(models.Model):
                                             blank=True,
                                             on_delete=models.CASCADE
                                             )    
+
+    # this is set to true after being checked by the Data Catalog curation team
+    curated = models.BooleanField(null=True, blank=True)
 
     def __str__(self):
         return "{}".format(self.title)
@@ -282,6 +291,9 @@ class DataUseAgreement(models.Model):
                                             null=True, 
                                             blank=True,
                                             on_delete=models.CASCADE)    
+
+    # this is set to true after being checked by the Data Catalog curation team
+    curated = models.BooleanField(null=True, blank=True)
     
     def __str__(self):
         return "{}: {}".format(self.duaid, self.title)
