@@ -52,8 +52,9 @@
     </tr>
 </table>
 
-
+{% if request.user|has_group:"datacatalog_editor" %}
 <a type="button" class="btn btn-primary" href="{% url 'datacatalog:provider-update' dataprovider.pk %}">Update provider details</a>
+{% endif %}
 
 {% comment %}
 <a type="button" class="btn btn-default" href="{% url 'datacatalog:providerdataset-add' dataprovider.pk %}">Add dataset to provider</a>

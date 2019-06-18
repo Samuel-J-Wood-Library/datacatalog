@@ -133,30 +133,26 @@ class IndexDataProviderView(PermissionRequiredMixin, generic.ListView):
 ### Detail views ###
 ####################
 
-class DatasetDetailView(PermissionRequiredMixin, generic.DetailView):
+class DatasetDetailView(LoginRequiredMixin, generic.DetailView):
     model = Dataset
     template_name = 'datacatalog/detail_dataset.html'
-    permission_required = 'datacatalog.view_dataset'
     
-class DataAccessDetailView(PermissionRequiredMixin, generic.DetailView):
+class DataAccessDetailView(LoginRequiredMixin, generic.DetailView):
     model = DataAccess
     template_name = 'datacatalog/detail_access.html'
-    permission_required = 'datacatalog.view_dataaccess'
 
 class DataUseAgreementDetailView(PermissionRequiredMixin, generic.DetailView):
     model = DataUseAgreement
     template_name = 'datacatalog/detail_dua.html'
     permission_required = 'datacatalog.view_datauseagreement'
 
-class KeywordDetailView(PermissionRequiredMixin, generic.DetailView):
+class KeywordDetailView(LoginRequiredMixin, generic.DetailView):
     model = Keyword
     template_name = 'datacatalog/detail_keyword.html'
-    permission_required = 'datacatalog.view_keyword'
 
-class DataProviderDetailView(PermissionRequiredMixin, generic.DetailView):
+class DataProviderDetailView(LoginRequiredMixin, generic.DetailView):
     model = DataProvider
     template_name = 'datacatalog/detail_dataprovider.html'
-    permission_required = 'datacatalog.view_dataprovider'
 
 ####################
 ### Create views ###

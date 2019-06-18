@@ -134,13 +134,14 @@
 
 </br></br>
 
-
+{% if request.user|has_group:"dua_viewing_privileges" %}
 <h2>DUAs for {{ dataset }}</h2>
 
     {% with dataset.datauseagreement_set.all as dua_list %}
         {% include 'datacatalog/table_duas.html' %}
     {% endwith %}
 
+{% endif %}
 
 {% endblock %}
 

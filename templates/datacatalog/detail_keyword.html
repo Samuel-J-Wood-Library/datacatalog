@@ -32,9 +32,9 @@
 <p class="text-muted">{{ keyword.definition }}</p>
 
 
-
+{% if request.user|has_group:"datacatalog_editor" %}
 <a type="button" class="btn btn-primary" href="{% url 'datacatalog:keyword-update' keyword.pk %}">Update keyword</a>
-
+{% endif %}
 
 </br></br>
 
