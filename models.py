@@ -187,11 +187,21 @@ class Dataset(models.Model):
     access_requirements = models.ForeignKey(DataAccess, 
                                             null=True, 
                                             blank=True,
-                                            on_delete=models.CASCADE
+                                            on_delete=models.CASCADE,
                                             )    
 
+    # local contact person who is an expert on this dataset
+    expert = models.ForeignKey(Person,
+                                null=True,
+                                blank=True, 
+                                on_delete=models.CASCADE,
+                                )
+    
     # this is set to true after being checked by the Data Catalog curation team
     curated = models.BooleanField(null=True, blank=True)
+
+    # field to designate whether data should be published
+    published = models.BooleanField(null=True, blank=True)
 
     def __str__(self):
         return "{}".format(self.title)
