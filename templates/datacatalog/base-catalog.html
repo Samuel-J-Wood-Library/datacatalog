@@ -1,5 +1,6 @@
 
 {% extends "base.html" %}
+{% load project_tags %}
 
 {% block navblock %}
         <div class="navbar navbar-default navbar-fixed-top">
@@ -93,7 +94,7 @@
                                     role="menu" 
                                     aria-labelledby="dropblast">
                                     <li><a href="{% url 'admin:index' %}" 
-                                           target="_blank">Change password</a>
+                                           target="_blank">Admin</a>
                                     </li>
                                     <li><a href="/logout/">Logout </a></li>
                                     <li><a href="{% url 'frontpage' %}">
