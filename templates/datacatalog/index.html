@@ -19,7 +19,9 @@
 
 <a type="button" class="btn btn-primary" href="{% url 'datacatalog:providers' %}">View data providers</a>
 
+{% if request.user|has_group:"dua_viewing_privileges" %}
 <a type="button" class="btn btn-primary" href="{% url 'datacatalog:duas' %}">View data use agreements</a>
+{% endif %}
 
 <a type="button" class="btn btn-primary" href="{% url 'datacatalog:access' %}">View data access requirements</a>
 

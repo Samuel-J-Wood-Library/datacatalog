@@ -35,9 +35,11 @@
                                     <li><a href="{% url 'datacatalog:datasets' %}">
                                         Datasets</a>
                                     </li>
+                                    {% if request.user|has_group:"dua_viewing_privileges" %}
                                     <li><a href="{% url 'datacatalog:duas' %}">
                                         DUAs</a>
                                     </li>
+                                    {% endif %}
                                     <li><a href="{% url 'datacatalog:access' %}">
                                         Access guides</a>
                                     </li>
@@ -99,7 +101,7 @@
                               </ul>
                               
                             </li>
-                          
+                            {% if request.user|has_group:"datacatalog_editor" %}
                             <li class="dropdown">
                 
                             <a class="dropdown-toggle" 
@@ -112,13 +114,9 @@
                                     role="menu" 
                                     aria-labelledby="dropblast">
                                     <li><a href="{% url 'admin:index' %}" 
-                                           target="_blank">DC Admin</a>
+                                           target="_blank">Admin page</a>
                                     </li>
-                                    {% comment %}
-                                    <li><a href="{% url 'password_reset' %}">
-                                        Reset password</a>
-                                    </li>
-                                    {% endcomment %}
+                                    
                                     <li><a href="{% url 'datacatalog:dataset-add' %}">
                                         Add dataset</a>
                                     </li>
@@ -134,8 +132,10 @@
                                     <li><a href="{% url 'datacatalog:access-add' %}">
                                         Add access guide</a>
                                     </li>
+                                    
                                 </ul>
                             </li>
+                            {% endif %}
                        
                         {% else %}
                             <li><a href="/login/">Login</a></li>
