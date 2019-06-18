@@ -15,12 +15,11 @@ from .models import Dataset, DataUseAgreement, DataAccess, Keyword, DataProvider
 ### Index views ###
 ###################
 
-class IndexView(PermissionRequiredMixin, generic.ListView):
+class IndexView(LoginRequiredMixin, generic.ListView):
     login_url='/login/'
     
     template_name = 'datacatalog/index.html'
     context_object_name = 'dataset_list'
-    permission_required = 'datacatalog.view_dataset'
 
     def get_queryset(self):
         ds = Dataset.objects.all()
@@ -34,12 +33,11 @@ class IndexView(PermissionRequiredMixin, generic.ListView):
         })
         return context
 
-class IndexDatasetView(PermissionRequiredMixin, generic.ListView):
+class IndexDatasetView(LoginRequiredMixin, generic.ListView):
     login_url='/login/'
     
     template_name = 'datacatalog/index_datasets.html'
     context_object_name = 'dataset_list'
-    permission_required = 'datacatalog.view_dataset'
 
     def get_queryset(self):
         ds = Dataset.objects.all()
@@ -72,12 +70,11 @@ class IndexDUAView(PermissionRequiredMixin, generic.ListView):
         })
         return context
         
-class IndexKeywordView(PermissionRequiredMixin, generic.ListView):
+class IndexKeywordView(LoginRequiredMixin, generic.ListView):
     login_url='/login/'
     
     template_name = 'datacatalog/index_keywords.html'
     context_object_name = 'keyword_list'
-    permission_required = 'datacatalog.view_keyword'
 
     def get_queryset(self):
         kws = Keyword.objects.all()
@@ -91,12 +88,11 @@ class IndexKeywordView(PermissionRequiredMixin, generic.ListView):
         })
         return context
         
-class IndexDataAccessView(PermissionRequiredMixin, generic.ListView):
+class IndexDataAccessView(LoginRequiredMixin, generic.ListView):
     login_url='/login/'
     
     template_name = 'datacatalog/index_dataaccess.html'
     context_object_name = 'access_list'
-    permission_required = 'datacatalog.view_dataaccess'
 
     def get_queryset(self):
         ins = DataAccess.objects.all()
@@ -110,12 +106,11 @@ class IndexDataAccessView(PermissionRequiredMixin, generic.ListView):
         })
         return context
         
-class IndexDataProviderView(PermissionRequiredMixin, generic.ListView):
+class IndexDataProviderView(LoginRequiredMixin, generic.ListView):
     login_url='/login/'
     
     template_name = 'datacatalog/index_dataproviders.html'
     context_object_name = 'provider_list'
-    permission_required = 'datacatalog.view_dataprovider'
 
     def get_queryset(self):
         pvs = DataProvider.objects.all()
