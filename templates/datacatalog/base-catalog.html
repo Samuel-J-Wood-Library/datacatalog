@@ -114,9 +114,11 @@
                                     <li><a href="{% url 'admin:index' %}" 
                                            target="_blank">DC Admin</a>
                                     </li>
+                                    {% comment %}
                                     <li><a href="{% url 'password_reset' %}">
                                         Reset password</a>
                                     </li>
+                                    {% endcomment %}
                                     <li><a href="{% url 'datacatalog:dataset-add' %}">
                                         Add dataset</a>
                                     </li>

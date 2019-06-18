@@ -14,7 +14,7 @@
 
 {% for ac in access_list %}
     <tr>
-    <td><a href="{% url 'datacatalog:dataset-view' ac.pk %}">{{ ac.name }}</a></td>
+    <td><a href="{% url 'datacatalog:access-view' ac.pk %}">{{ ac.name }}</a></td>
     <td>{{ ac.public }}</td>
     <td>{{ ac.dua_required }}</td>
     <td>{{ ac.prj_desc_required }}</td>
