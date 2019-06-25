@@ -12,14 +12,14 @@ admin.site.index_title = "Back end administration"
 class DatasetAdmin(admin.ModelAdmin):
     date_hierarchy = 'period_start'
     list_display = ("title",
-                    "description",
                     "period_start",
                     "period_end" ,
                     "landing_url" ,
                     "comments" ,
                     "curated",
+                    "published",
                     )
-    list_filter = ('curated',)
+    list_filter = ('curated', 'published',)
     search_fields = ('title', 'description', 'comments')
     
 admin.site.register(DataUseAgreement)

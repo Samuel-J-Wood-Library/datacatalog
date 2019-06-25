@@ -22,7 +22,7 @@ class IndexView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'dataset_list'
 
     def get_queryset(self):
-        ds = Dataset.objects.all()
+        ds = Dataset.objects.filter(published=True)
         # ds.sort()
         return ds
         
@@ -40,7 +40,7 @@ class IndexDatasetView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'dataset_list'
 
     def get_queryset(self):
-        ds = Dataset.objects.all()
+        ds = Dataset.objects.filter(published=True)
         # ds.sort()
         return ds
         

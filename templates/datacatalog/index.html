@@ -34,7 +34,9 @@
     <div class="container">
      <div class="panel panel-info">
       <div class="panel-heading">
-        <h4>{{ dataset.title }}</h4>
+        <a href="{% url 'datacatalog:dataset-view' dataset.pk %}">
+            <h4>{{ dataset.title }}</h4>
+        </a>
       </div>
       <div class="panel-body">
       

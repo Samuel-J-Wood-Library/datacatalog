@@ -47,6 +47,12 @@
         <td>{{ dataset.ds_id }}</td>
     </tr>
     {% endif %}
+    {% if dataset.expert %}
+    <tr>
+        <td>Dataset local expert</td>
+        <td>{{ dataset.expert }}</td>
+    </tr>
+    {% endif %}
     <tr>
         <td>Record Period Start</td>
         <td>{{ dataset.period_start }}</td>
