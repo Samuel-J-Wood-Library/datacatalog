@@ -3,7 +3,23 @@
 {% load project_tags %}
 
 {% block navblock %}
-        <div class="navbar navbar-default navbar-fixed-top">
+<style>
+.navbar-custom {
+    background-color: #CF4520;
+}
+/* Link */
+.navbar-custom .navbar-nav > li > a {
+    color: #ffffff;
+}
+.navbar-custom .navbar-nav > li > a:hover,
+.navbar-custom .navbar-nav > li > a:focus {
+    color: #ffffff;
+    background-color: #E87722;
+}
+</style>
+
+
+        <div class="navbar navbar-custom navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
                     <a class="navbar-brand" href="/">{{ APPTITLE }}</a>
