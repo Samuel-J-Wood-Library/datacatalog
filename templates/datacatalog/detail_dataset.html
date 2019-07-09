@@ -82,7 +82,7 @@
 </table>
 
 <div class="container col-xl-12">
-{% for dua in dataset.datauseagreement_set.all %}
+{% for dua in published_duas %}
     {% if dua.reuse_scope %}
         <div class="container col-md-6">
          <div class="panel panel-primary">
@@ -98,7 +98,7 @@
         </div>
     {% endif %}
 {% endfor %}
-{% for dua in dataset.datauseagreement_set.all %}
+{% for dua in published_duas %}
     {% if dua.storage_requirements %}
         <div class="container col-md-6">
          <div class="panel panel-warning">
@@ -114,7 +114,7 @@
         </div>
     {% endif %}
 {% endfor %}
-{% for dua in dataset.datauseagreement_set.all %}
+{% for dua in published_duas %}
     {% if dua.access_conditions %}
         <div class="container col-md-6">
          <div class="panel panel-danger">
@@ -141,13 +141,15 @@
 </br></br>
 
 {% if request.user|has_group:"dua_viewing_privileges" %}
+{% if published_duas.count > 0 %}
 <h2>DUAs for {{ dataset }}</h2>
 
-    {% with dataset.datauseagreement_set.all as dua_list %}
+    {% with published_duas as dua_list %}
         {% include 'datacatalog/table_duas.html' %}
     {% endwith %}
-
+{% else%}
+<h2>No DUAs for {{ dataset }}</h2>
 {% endif %}
-
+{% endif %}
 {% endblock %}
 

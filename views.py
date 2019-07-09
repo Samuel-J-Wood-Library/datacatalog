@@ -59,8 +59,7 @@ class IndexDUAView(PermissionRequiredMixin, generic.ListView):
     permission_required = 'datacatalog.view_datauseagreement'
 
     def get_queryset(self):
-        duas = DataUseAgreement.objects.all()
-        # duas.sort()
+        duas = DataUseAgreement.objects.filter(published=True)
         return duas
         
     def get_context_data(self, **kwargs):
@@ -134,8 +133,10 @@ class DatasetDetailView(LoginRequiredMixin, generic.DetailView):
     
     def get_context_data(self, **kwargs):
         published_data = Dataset.objects.filter(published=True)
+        published_duas = self.object.datauseagreement_set.filter(published=True)
         context = super(DatasetDetailView, self).get_context_data(**kwargs)
-        context.update({'published_data'    : published_data,  
+        context.update({'published_data'    : published_data, 
+                        'published_duas'    : published_duas, 
         })
         return context
         

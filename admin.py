@@ -21,8 +21,21 @@ class DatasetAdmin(admin.ModelAdmin):
                     )
     list_filter = ('curated', 'published',)
     search_fields = ('title', 'description', 'comments')
+
+@admin.register(DataUseAgreement)
+class DataUseAgreementAdmin(admin.ModelAdmin):
+    list_display = ("duaid", 
+                    "title",
+                    "start_date",
+                    "end_date", 
+                    "destruction_required", 
+                    "mixing_allowed",
+                    "curated",
+                    "published",
+    )
+    list_filter = ('curated', 'published',)
+    search_fields = ('title', 'description', 'duaid')
     
-admin.site.register(DataUseAgreement)
 admin.site.register(DataAccess)
 admin.site.register(DataProvider)
 admin.site.register(Keyword)
