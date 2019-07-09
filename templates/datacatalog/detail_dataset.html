@@ -68,6 +68,17 @@
     </tr>
     {% endif %}
     <tr>
+        <td>Local contact</td>
+        <td>{% if dataset.expert %}
+                {{ dataset.expert }}
+            {% else %}
+                None provided
+            {% endif %}
+        </td>
+    </tr>
+    
+    
+    <tr>
         <td>Keywords</td>
         <td>{% for kw in dataset.keywords.all %}
                 <span class="badge progress-bar-info">
@@ -80,6 +91,11 @@
     </tr>
 
 </table>
+{% if dataset.comments %}
+<div class="alert alert-warning" role="alert">{{ dataset.comments }}</div>
+{% endif %}
+
+</br>
 
 <div class="container col-xl-12">
 {% for dua in published_duas %}
