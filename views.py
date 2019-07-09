@@ -132,22 +132,65 @@ class DatasetDetailView(LoginRequiredMixin, generic.DetailView):
     model = Dataset
     template_name = 'datacatalog/detail_dataset.html'
     
+    def get_context_data(self, **kwargs):
+        published_data = Dataset.objects.filter(published=True)
+        context = super(DatasetDetailView, self).get_context_data(**kwargs)
+        context.update({'published_data'    : published_data,  
+        })
+        return context
+        
 class DataAccessDetailView(LoginRequiredMixin, generic.DetailView):
     model = DataAccess
     template_name = 'datacatalog/detail_access.html'
+    
+    def get_context_data(self, **kwargs):
+        da_obj = self.object
+        published_data = Dataset.objects.filter(published=True, 
+                                                access_requirements=da_obj.pk
+        )
+        context = super(DatasetDetailView, self).get_context_data(**kwargs)
+        context.update({'published_data'    : published_data,  
+        })
+        return context
 
 class DataUseAgreementDetailView(PermissionRequiredMixin, generic.DetailView):
     model = DataUseAgreement
     template_name = 'datacatalog/detail_dua.html'
     permission_required = 'datacatalog.view_datauseagreement'
 
+    def get_context_data(self, **kwargs):
+        dua_obj = self.object
+        published_data = dua_obj.datasets.filter(published=True)
+        context = super(DataUseAgreementDetailView, self).get_context_data(**kwargs)
+        context.update({'published_data'    : published_data,  
+        })
+        return context
+        
 class KeywordDetailView(LoginRequiredMixin, generic.DetailView):
     model = Keyword
     template_name = 'datacatalog/detail_keyword.html'
-
+    
+    def get_context_data(self, **kwargs):
+        kw_obj = self.object
+        published_data = kw_obj.dataset_set.filter(published=True)
+        context = super(KeywordDetailView, self).get_context_data(**kwargs)
+        context.update({'published_data'    : published_data,  
+        })
+        return context
+        
 class DataProviderDetailView(LoginRequiredMixin, generic.DetailView):
     model = DataProvider
     template_name = 'datacatalog/detail_dataprovider.html'
+    
+    def get_context_data(self, **kwargs):
+        dp_obj = self.object
+        published_data = Dataset.objects.filter(published=True, 
+                                                publisher=dp_obj.pk
+        )
+        context = super(DataProviderDetailView, self).get_context_data(**kwargs)
+        context.update({'published_data'    : published_data,  
+        })
+        return context
 
 ####################
 ### Create views ###

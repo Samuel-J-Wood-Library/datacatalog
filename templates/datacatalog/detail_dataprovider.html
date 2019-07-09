@@ -64,9 +64,9 @@
 </br></br>
 
 
-<h2>Provider for {{ dataprovider.dataset_set.all.count }} datasets</h2>
+<h2>Provider for {{ published_data.count }} datasets</h2>
 
-    {% with dataprovider.dataset_set.all as dataset_list %}
+    {% with published_data as dataset_list %}
         {% include 'datacatalog/table_datasets.html' %}
     {% endwith %}
 

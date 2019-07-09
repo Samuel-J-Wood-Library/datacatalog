@@ -10,6 +10,7 @@
 </thead>
 
 {% for ds in dataset_list %}
+{% if ds.published %}
     <tr>
     <td><a href="{% url 'datacatalog:dataset-view' ds.pk %}">{{ ds.title }}</a></td>
     <td>{{ ds.publisher }}</td>
@@ -21,5 +22,6 @@
                 {{ kw.keyword }}
             </a></span>{% endfor %}</td>
     </tr>
+{% endif %}
 {% endfor %}
 </table>
