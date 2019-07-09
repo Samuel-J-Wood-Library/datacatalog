@@ -305,6 +305,9 @@ class DataUseAgreement(models.Model):
     # this is set to true after being checked by the Data Catalog curation team
     curated = models.BooleanField(null=True, blank=True)
     
+    # this is set to true after when ready to be displayed on the website
+    published = models.BooleanField(null=True, blank=True)
+    
     def __str__(self):
         return "{}: {}".format(self.duaid, self.title)
 
