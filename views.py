@@ -113,8 +113,9 @@ class IndexDataProviderView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         pvs = DataProvider.objects.all()
-        # pvs.sort()
-        return pvs
+        pvs_with_data = [pv for pv in pvs if pv.dataset_set.filter(published=True
+                                                           ).count() > 0 ]
+        return pvs_with_data
         
     def get_context_data(self, **kwargs):
         context = super(IndexDataProviderView, self).get_context_data(**kwargs)
