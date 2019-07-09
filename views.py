@@ -208,6 +208,7 @@ class DatasetCreateView(PermissionRequiredMixin, CreateView):
                 'period_end',
                 'keywords',
                 'landing_url',
+                'expert',
                 'comments',
                 'access_requirements',
     ]
@@ -326,6 +327,7 @@ class DatasetUpdateView(PermissionRequiredMixin, UpdateView):
                 'period_end',
                 'keywords',
                 'landing_url',
+                'expert',
                 'comments',
                 'access_requirements',
     ]
