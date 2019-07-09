@@ -402,11 +402,13 @@ class FullSearch(LoginRequiredMixin, generic.TemplateView):
                                 Q(title__icontains=st) | 
                                 Q(description__icontains=st) |
                                 Q(comments__icontains=st)
+                     ).filter(published=True
         )
         qs_dua = DataUseAgreement.objects.all()
         qs_dua = qs_dua.filter( Q(duaid__icontains=st) |
                                 Q(title__icontains=st) |
                                 Q(description__icontains=st) 
+                      ).filter(published=True
         )
         qs_kw = Keyword.objects.all()
         qs_kw = qs_kw.filter( Q(keyword__icontains=st) |
