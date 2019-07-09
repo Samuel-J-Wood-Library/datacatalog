@@ -40,9 +40,9 @@
 </br></br>
 
 
-<h2> {{ keyword.dataset_set.all.count }} Datasets with keyword {{ dataset }}:</h2>
+<h2> {{ published_data.count }} Datasets with keyword {{ keyword.keyword }}:</h2>
 
-    {% with keyword.dataset_set.all as dataset_list %}
+    {% with published_data as dataset_list %}
         {% include 'datacatalog/table_datasets.html' %}
     {% endwith %}
 
