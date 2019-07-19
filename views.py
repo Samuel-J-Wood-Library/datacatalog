@@ -83,9 +83,19 @@ class IndexView(LoginRequiredMixin, generic.ListView):
         return ds
         
     def get_context_data(self, **kwargs):
+        ds_count = Dataset.objects.filter(published=True).count()
+        pub_count = DataProvider.objects.filter(published=True).count()
+        kw_count = Keyword.objects.filter(published=True).count()
+        dua_count = DataUseAgreement.objects.filter(published=True).count()
+        access_count = DataAccess.objects.filter(published=True).count()
+        
         context = super(IndexView, self).get_context_data(**kwargs)
         context.update({
-                        'empty_list'    : [],  
+                        'ds_count'    : ds_count, 
+                        'pub_count'   : pub_count,
+                        'kw_count'    : kw_count,
+                        'dua_count'   : dua_count,
+                        'access_count': access_count,
         })
         return context
 
@@ -132,7 +142,7 @@ class IndexKeywordView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'keyword_list'
 
     def get_queryset(self):
-        kws = Keyword.objects.all()
+        kws = Keyword.objects.filter(published=True)
         # kws.sort()
         return kws
         
@@ -150,7 +160,7 @@ class IndexDataAccessView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'access_list'
 
     def get_queryset(self):
-        ins = DataAccess.objects.all()
+        ins = DataAccess.objects.filter(published=True)
         # ins.sort()
         return ins
         
@@ -168,7 +178,7 @@ class IndexDataProviderView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'provider_list'
 
     def get_queryset(self):
-        pvs = DataProvider.objects.all()
+        pvs = DataProvider.objects.filter(published=True)
         pvs_with_data = [pv for pv in pvs if pv.dataset_set.filter(published=True
                                                            ).count() > 0 ]
         return pvs_with_data
@@ -191,6 +201,7 @@ class DatasetDetailView(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         published_data = Dataset.objects.filter(published=True)
         published_duas = self.object.datauseagreement_set.filter(published=True)
+        
         context = super(DatasetDetailView, self).get_context_data(**kwargs)
         context.update({'published_data'    : published_data, 
                         'published_duas'    : published_duas, 
