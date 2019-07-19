@@ -1,5 +1,7 @@
 {% extends 'datacatalog/base-catalog.html' %}
 
+{% load project_tags %}
+
 {% block content %}
 <h1>
 All {{ keyword_list|length }} Keywords:
@@ -7,6 +9,9 @@ All {{ keyword_list|length }} Keywords:
 
 {% include "datacatalog/table_keywords.html" %}
 
+
+{% if request.user|has_group:"datacatalog_editor" %}
 <a type="button" class="btn btn-primary" href="{% url 'datacatalog:keyword-add' %}">Add new keyword</a>
+{% endif %}
 
 {% endblock content %}

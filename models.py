@@ -25,6 +25,12 @@ class Keyword(models.Model):
     # definition / elaboration of keyword
     definition = models.TextField()
 
+    # this is set to true after being checked by the Data Catalog curation team
+    curated = models.BooleanField(null=True, blank=True)
+
+    # field to designate whether data should be published
+    published = models.BooleanField(null=True, blank=True)
+
     def __str__(self):
         return "{}".format(self.keyword,)
 
@@ -79,6 +85,9 @@ class DataProvider(models.Model):
     # this is set to true after being checked by the Data Catalog curation team
     curated = models.BooleanField(null=True, blank=True)
 
+    # field to designate whether data should be published
+    published = models.BooleanField(null=True, blank=True)
+
     def __str__(self):
         return "{}".format(self.name,)
 
@@ -126,6 +135,9 @@ class DataAccess(models.Model):
 
     # this is set to true after being checked by the Data Catalog curation team
     curated = models.BooleanField(null=True, blank=True)
+
+    # field to designate whether data should be published
+    published = models.BooleanField(null=True, blank=True)
 
     def __str__(self):
         return "{}".format(self.name)

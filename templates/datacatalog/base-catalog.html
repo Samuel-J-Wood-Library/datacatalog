@@ -114,45 +114,41 @@
                                     </li>
                                     <li><a href="/logout/">Logout </a></li>
                                     <li><a href="{% url 'frontpage' %}">
-                                        Data Core Frontpage</a></li>
+                                        Data Catalog Frontpage</a></li>
                               </ul>
                               
                             </li>
-                            {% if request.user|has_group:"datacatalog_editor" %}
+                            
                             <li class="dropdown">
                 
                             <a class="dropdown-toggle" 
                                 id="dropblast" 
                                 data-toggle="dropdown"
                                 href="#">
-                                Options <b class="caret"></b>
+                                Submit new... <b class="caret"></b>
                             </a>
                                 <ul class="dropdown-menu" 
                                     role="menu" 
                                     aria-labelledby="dropblast">
-                                    <li><a href="{% url 'admin:index' %}" 
-                                           target="_blank">Admin page</a>
-                                    </li>
-                                    
                                     <li><a href="{% url 'datacatalog:dataset-add' %}">
-                                        Add dataset</a>
+                                        dataset</a>
                                     </li>
                                     <li><a href="{% url 'datacatalog:dua-add' %}">
-                                        Add DUA</a>
+                                        DUA</a>
                                     </li>
                                     <li><a href="{% url 'datacatalog:provider-add' %}">
-                                        Add provider</a>
+                                        provider</a>
                                     </li>
                                     <li><a href="{% url 'datacatalog:keyword-add' %}">
-                                        Add keyword</a>
+                                        keyword</a>
                                     </li>
                                     <li><a href="{% url 'datacatalog:access-add' %}">
-                                        Add access guide</a>
+                                        access guide</a>
                                     </li>
                                     
                                 </ul>
                             </li>
-                            {% endif %}
+                            
                        
                         {% else %}
                             <li><a href="/login/">Login</a></li>
