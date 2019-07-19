@@ -5,7 +5,7 @@ from django.urls import path
 from . import views
 
 app_name = 'datacatalog'
-urlpatterns = [
+urlpatterns = [ 
     # index showing top items and search bar:
     path('', views.IndexView.as_view(), name='index'),
     path('datasets', views.IndexDatasetView.as_view(), name='datasets'),
@@ -14,6 +14,28 @@ urlpatterns = [
     path('keywords', views.IndexKeywordView.as_view(), name='keywords'),
     path('providers', views.IndexDataProviderView.as_view(), name='providers'),
     
+    # autocomplete functions:
+    path('autocomplete-dataset', 
+        views.DatasetAutocomplete.as_view(), 
+        name='autocomplete-dataset',
+        ),
+    path('autocomplete-publisher', 
+        views.PublisherAutocomplete.as_view(), 
+        name='autocomplete-publisher',
+        ),
+    path('autocomplete-access', 
+        views.AccessAutocomplete.as_view(),
+        name='autocomplete-access',
+        ),
+    path('autocomplete-dua', 
+        views.DUAAutocomplete.as_view(),
+        name='autocomplete-dua',
+        ),
+    path('autocomplete-keyword', 
+        views.KeywordAutocomplete.as_view(),
+        name='autocomplete-keyword',
+        ),
+
     # detail views
     path('datasets/<int:pk>', views.DatasetDetailView.as_view(), name='dataset-view'),
     path('access/<int:pk>', views.DataAccessDetailView.as_view(), name='access-view'),

@@ -1,3 +1,5 @@
+from dal import autocomplete
+
 from django.shortcuts import render
 
 from django.views import generic
@@ -10,6 +12,60 @@ from django.urls import reverse_lazy, reverse
 
 from .models import Dataset, DataUseAgreement, DataAccess, Keyword, DataProvider
 
+from .forms import DatasetForm
+
+####################################
+######  AUTOCOMPLETE  VIEWS   ######
+####################################
+
+class DatasetAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = Dataset.objects.all()
+
+        if self.q:
+            qs = qs.filter(
+                            Q(ds_id__istartswith=self.q) | 
+                            Q(title__istartswith=self.q)
+                            )
+        return qs
+
+class PublisherAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = DataProvider.objects.all()
+
+        if self.q:
+            qs =  qs.filter(name__icontains=self.q)
+        return qs
+
+class AccessAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = DataAccess.objects.all()
+
+        if self.q:
+            qs =  qs.filter(name__icontains=self.q)
+        return qs
+
+class DUAAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = DataUseAgreement.objects.all()
+
+        if self.q:
+            qs =  qs.filter(
+                            Q(duaid__icontains=self.q) |
+                            Q(title__icontains=self.q)
+            ) 
+        return qs
+        
+class KeywordAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = Keyword.objects.all()
+
+        if self.q:
+            qs =  qs.filter(
+                            Q(keyword__icontains=self.q) |
+                            Q(definition__icontains=self.q)
+            ) 
+        return qs        
 
 ###################
 ### Index views ###
@@ -200,19 +256,8 @@ class DataProviderDetailView(LoginRequiredMixin, generic.DetailView):
 
 class DatasetCreateView(PermissionRequiredMixin, CreateView):
     model = Dataset
-    fields = [  'ds_id',
-                'title',
-                'description',
-                'publisher',
-                'period_start',
-                'period_end',
-                'keywords',
-                'landing_url',
-                'expert',
-                'comments',
-                'access_requirements',
-    ]
-    template_name = "datacatalog/basic_form.html"
+    form_class = DatasetForm
+    template_name = "datacatalog/basic_crispy_form.html"
     permission_required = 'datacatalog.add_dataset'
     # default success_url should be to the object page defined in model.
     
@@ -318,19 +363,8 @@ class KeywordCreateView(PermissionRequiredMixin, CreateView):
 
 class DatasetUpdateView(PermissionRequiredMixin, UpdateView):
     model = Dataset
-    template_name = "datacatalog/basic_form.html"
-    fields = [  'ds_id',
-                'title',
-                'description',
-                'publisher',
-                'period_start',
-                'period_end',
-                'keywords',
-                'landing_url',
-                'expert',
-                'comments',
-                'access_requirements',
-    ]
+    form_class = DatasetForm
+    template_name = "datacatalog/basic_crispy_form.html"
     permission_required = 'datacatalog.change_dataset'
 
 class DataAccessUpdateView(PermissionRequiredMixin, UpdateView):
