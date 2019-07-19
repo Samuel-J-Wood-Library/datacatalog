@@ -4,7 +4,7 @@ from django.urls import reverse
 
 from django.contrib.auth.models import User
 
-from dc_management.models import Person 
+from persons.models import Person, Department, Organization, Role 
 
 class Keyword(models.Model):
     """
