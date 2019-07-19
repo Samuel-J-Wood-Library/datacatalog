@@ -7,6 +7,20 @@ admin.site.site_header = 'Data Catalog Management Page'
 admin.site.site_title = "DCMP"
 admin.site.index_title = "Back end administration"
 
+# create custom actions:
+def make_published(modeladmin, request, queryset):
+    queryset.update(published=True)
+make_published.short_description = "Publish selected items"
+
+def make_unpublished(modeladmin, request, queryset):
+    queryset.update(published=False)
+make_unpublished.short_description = "Un-publish selected items"
+
+def make_curated(modeladmin, request, queryset):
+    queryset.update(curated=True)
+make_curated.short_description = "Mark selected items as curated"
+
+
 # customize the individual model views:
 @admin.register(Dataset)
 class DatasetAdmin(admin.ModelAdmin):
@@ -21,7 +35,8 @@ class DatasetAdmin(admin.ModelAdmin):
                     )
     list_filter = ('curated', 'published',)
     search_fields = ('title', 'description', 'comments')
-
+    actions = [make_published, make_unpublished, make_curated]
+    
 @admin.register(DataUseAgreement)
 class DataUseAgreementAdmin(admin.ModelAdmin):
     list_display = ("duaid", 
@@ -35,7 +50,39 @@ class DataUseAgreementAdmin(admin.ModelAdmin):
     )
     list_filter = ('curated', 'published',)
     search_fields = ('title', 'description', 'duaid')
+    actions = [make_published, make_unpublished, make_curated]
     
-admin.site.register(DataAccess)
-admin.site.register(DataProvider)
-admin.site.register(Keyword)
+@admin.register(DataAccess)
+class DataAccessAdmin(admin.ModelAdmin):
+    list_display = ("name", 
+                    "dua_required",
+                    "prj_desc_required",
+                    "curated",
+                    "published",
+    )
+    list_filter = ('curated', 'published',)
+    search_fields = ('name',)
+    actions = [make_published, make_unpublished, make_curated]
+    
+@admin.register(DataProvider)
+class DataProviderAdmin(admin.ModelAdmin):
+    list_display = ("name", 
+                    "dept",
+                    "curated",
+                    "published",
+    )
+    list_filter = ('curated', 'published','dept')
+    search_fields = ('name',)
+    actions = [make_published, make_unpublished, make_curated]
+
+@admin.register(Keyword)
+class KeywordAdmin(admin.ModelAdmin):
+    list_display = ("keyword", 
+                    "curated",
+                    "published",
+                    "definition",
+    )
+    list_filter = ('curated', 'published',)
+    search_fields = ('keyword', 'definition',)
+    actions = [make_published, make_unpublished, make_curated]
+    
