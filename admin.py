@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from .models import Dataset, DataUseAgreement, DataAccess, DataProvider, Keyword
+from .models import MediaSubType, DataField
 
 # customize the look of the admin site:
 admin.site.site_header = 'Data Catalog Management Page'
@@ -86,3 +87,20 @@ class KeywordAdmin(admin.ModelAdmin):
     search_fields = ('keyword', 'definition',)
     actions = [make_published, make_unpublished, make_curated]
     
+@admin.register(MediaSubType)
+class MediaSubTypeAdmin(admin.ModelAdmin):
+    list_display = ("name", 
+                    "template",
+                    "reference",
+                    "obsolete",
+    )
+    list_filter = ('obsolete', )
+    search_fields = ('name', 'template',)
+
+@admin.register(DataField)
+class DataFieldAdmin(admin.ModelAdmin):
+    list_display = ("name", 
+                    "description",
+                    "scope",
+    )
+    search_fields = ('name', 'description',)
