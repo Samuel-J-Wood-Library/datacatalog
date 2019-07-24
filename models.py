@@ -55,7 +55,6 @@ class MediaSubType(models.Model):
     
     # iana reference
     reference = models.CharField(max_length=256, 
-                                 unique=True,
                                  null=True,
                                  blank=True,
     )
