@@ -157,6 +157,10 @@ class Dataset(models.Model):
     While there is no minimum criteria for a dataset, it is recommended that each dataset
     be defined as the largest collection possible that can be defined within a single 
     instance.
+    
+    fields are mapped to BioCaddie DATS standard 2.2, from which the help_text has been
+    drawn. 
+    
     """
     # date the record was created
     record_creation = models.DateField(auto_now_add=True)
@@ -168,29 +172,55 @@ class Dataset(models.Model):
     record_author = models.ForeignKey(User, on_delete=models.CASCADE)
     
     # dataset ID
-    ds_id = models.CharField("Dataset ID", max_length=128, unique=True, 
-                                null=True, blank=True)
+    ds_id = models.CharField(   "Dataset ID", 
+                                max_length=128, 
+                                unique=True, 
+                                null=True, 
+                                blank=True,
+                                help_text="http://schema.org/identifier"
+    )
     
     # dataset title/brief descriptor
-    title = models.CharField(max_length=256, unique=True)
+    title = models.CharField(max_length=256, 
+                                unique=True,
+                                help_text="The name of the dataset, usually one sentence or short description of the dataset.",
+    )
     
     # description of dataset
-    description = models.TextField(null=True, blank=True)
+    description = models.TextField( null=True, 
+                                    blank=True,
+                                    help_text="https://schema.org/description",
+    )
     
     # beginning of temporal coverage (time of earliest data record)
-    period_start = models.DateField(null=True, blank=True)
+    period_start = models.DateField(null=True, 
+                                    blank=True,
+                                    help_text="https://schema.org/Date",
+    )
     
     # end of temporal coverage (time of latest data record)
-    period_end = models.DateField(null=True, blank=True)
+    period_end = models.DateField(  null=True, 
+                                    blank=True,
+                                    help_text="https://schema.org/Date"
+    )
     
     # dataset publisher
-    publisher = models.ForeignKey(DataProvider, on_delete=models.CASCADE)
+    publisher = models.ForeignKey(  DataProvider, 
+                                    on_delete=models.CASCADE,
+                                    help_text="https://schema.org/publisher",
+    )
     
     # keywords or topics related to the data
-    keywords = models.ManyToManyField(Keyword, blank=True)
+    keywords = models.ManyToManyField(  Keyword, 
+                                        blank=True,
+                                        help_text="https://schema.org/codeValue",
+    )
     
     # URL of landing page to access data
-    landing_url = models.URLField(max_length=256,null=True, blank=True)
+    landing_url = models.URLField(  max_length=256,
+                                    null=True, 
+                                    blank=True,
+    )
     
     # notes or general comments
     comments = models.TextField(null=True, blank=True)
