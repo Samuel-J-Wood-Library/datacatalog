@@ -60,7 +60,33 @@ class MediaSubType(models.Model):
     
     # indicates now obsolete models
     obsolete = models.BinaryField(null=True, blank=True)
-                                
+
+class DataField(models.Model):
+    # date the record was created
+    record_creation = models.DateField(auto_now_add=True)
+    
+    # date the record was most recently modified
+    record_update = models.DateField(auto_now=True)
+    
+    # the user who was signed in at time of record modification
+    record_author = models.ForeignKey(User, on_delete=models.PROTECT)
+    
+    # field name
+    name = models.CharField(max_length=256, 
+                                help_text="The name of the field as it appears in schema",
+    )
+    
+    # field description
+    description = models.CharField(max_length=256, 
+                                    unique=True,
+                                    help_text="Description of the field",
+    )
+    
+    # descriptions defining scope of data
+    scope = models.CharField(max_length=256, 
+                                    help_text="Descriptions of the scope of the data (eg. min, max, number of records, number of null values, number of unique values)",
+    )                                
+    
 class DataProvider(models.Model):
     """
     This class defines data providers.
@@ -192,7 +218,7 @@ class Dataset(models.Model):
     record_update = models.DateField(auto_now=True)
     
     # the user who was signed in at time of record modification
-    record_author = models.ForeignKey(User, on_delete=models.CASCADE)
+    record_author = models.ForeignKey(User, on_delete=models.PROTECT)
     
     # dataset ID
     ds_id = models.CharField(   "Dataset ID", 
@@ -216,9 +242,9 @@ class Dataset(models.Model):
     )
     
     # a field to explicitly capture the fields present in a data model (if applicable)
-    data_fields = models.TextField( null=True, 
-                                    blank=True,
-                                    help_text="https://schema.org/description",
+    data_fields = models.ManyToManyField(DataField, 
+                                         blank=True,
+                                         help_text="list of fields present in schema",
     )
     
     # beginning of temporal coverage (time of earliest data record)
