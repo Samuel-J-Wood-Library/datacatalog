@@ -37,6 +37,30 @@ class Keyword(models.Model):
     def get_absolute_url(self):
         return reverse('datacatalog:keyword-view', kwargs={'pk': self.pk})
 
+class MediaSubType(models.Model):
+    """
+    This model holds values from www.iana.org media types (formally MIME types).
+    """
+    # description of the subtype
+    name = models.CharField(max_length=256, 
+                                unique=True,
+    )
+    
+    # template indicates the type/subtype id
+    template = models.CharField(max_length=256, 
+                                unique=True,
+    )
+    
+    # iana reference
+    reference = models.CharField(max_length=256, 
+                                 unique=True,
+                                 null=True,
+                                 blank=True,
+    )
+    
+    # indicates now obsolete models
+    obsolete = models.BinaryField(null=True, blank=True)
+                                
 class DataProvider(models.Model):
     """
     This class defines data providers.
