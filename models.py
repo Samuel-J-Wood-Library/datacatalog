@@ -49,6 +49,8 @@ class MediaSubType(models.Model):
     # template indicates the type/subtype id
     template = models.CharField(max_length=256, 
                                 unique=True,
+                                null=True,
+                                blank=True,
     )
     
     # iana reference
