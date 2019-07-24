@@ -312,7 +312,6 @@ class Dataset(models.Model):
 
     def get_absolute_url(self):
         return reverse('datacatalog:dataset-view', kwargs={'pk': self.pk})
-
         
 class DataUseAgreement(models.Model):
     """

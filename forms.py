@@ -8,7 +8,7 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from persons.models import Person
-from .models import Dataset
+from .models import Dataset, MediaSubType, DataField
 
 div_name = Div(
                 Div('ds_id',
@@ -43,6 +43,8 @@ class DatasetForm(forms.ModelForm):
                     Fieldset('<div class="alert alert-info">Dataset Details</div>',
                             div_name,
                             'description',
+                            'data_fields',
+                            'media_subtype',
                             'landing_url',
                             'publisher',
                             'keywords',
@@ -63,7 +65,9 @@ class DatasetForm(forms.ModelForm):
         model = Dataset
         fields = [  'ds_id',
                     'title',
-                    'description', 
+                    'description',
+                    'media_subtype',
+                    'data_fields', 
                     'period_start', 
                     'period_end',
                     'publisher', 
@@ -85,5 +89,11 @@ class DatasetForm(forms.ModelForm):
                                         ),  
                     'access_requirements' : autocomplete.ModelSelect2(
                                         url='datacatalog:autocomplete-access'
-                                        ),                   
+                                        ),   
+                    'data_fields' : autocomplete.ModelSelect2(
+                                        url='datacatalog:autocomplete-datafield'
+                                        ),  
+                    'media_subtype' : autocomplete.ModelSelect2(
+                                        url='datacatalog:autocomplete-mediatype'
+                                        ),                                      
                     }

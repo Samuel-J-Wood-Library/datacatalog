@@ -11,6 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.urls import reverse_lazy, reverse
 
 from .models import Dataset, DataUseAgreement, DataAccess, Keyword, DataProvider
+from .models import MediaSubType, DataField
 
 from .forms import DatasetForm
 
@@ -64,6 +65,28 @@ class KeywordAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
             qs =  qs.filter(
                             Q(keyword__icontains=self.q) |
                             Q(definition__icontains=self.q)
+            ) 
+        return qs        
+
+class DataFieldAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = DataField.objects.all()
+
+        if self.q:
+            qs =  qs.filter(
+                            Q(name__icontains=self.q) |
+                            Q(description__icontains=self.q)
+            ) 
+        return qs        
+
+class MediaSubTypeAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = MediaSubType.objects.all()
+
+        if self.q:
+            qs =  qs.filter(
+                            Q(name__icontains=self.q) |
+                            Q(template__istartswith=self.q)
             ) 
         return qs        
 

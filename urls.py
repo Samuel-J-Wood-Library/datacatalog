@@ -35,6 +35,14 @@ urlpatterns = [
         views.KeywordAutocomplete.as_view(),
         name='autocomplete-keyword',
         ),
+    path('autocomplete-datafield', 
+        views.DataFieldAutocomplete.as_view(),
+        name='autocomplete-datafield',
+        ),
+    path('autocomplete-mediatype', 
+        views.MediaSubTypeAutocomplete.as_view(),
+        name='autocomplete-mediatype',
+        ),
 
     # detail views
     path('datasets/<int:pk>', views.DatasetDetailView.as_view(), name='dataset-view'),
