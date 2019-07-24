@@ -169,7 +169,6 @@ class DataAccess(models.Model):
     def get_absolute_url(self):
         return reverse('datacatalog:access-view', kwargs={'pk': self.pk})
     
-    
 class Dataset(models.Model):
     """
     Each instance of Dataset defines a single collection of data. The minimum unit of a
@@ -212,6 +211,12 @@ class Dataset(models.Model):
     
     # description of dataset
     description = models.TextField( null=True, 
+                                    blank=True,
+                                    help_text="https://schema.org/description",
+    )
+    
+    # a field to explicitly capture the fields present in a data model (if applicable)
+    data_fields = models.TextField( null=True, 
                                     blank=True,
                                     help_text="https://schema.org/description",
     )
@@ -262,6 +267,13 @@ class Dataset(models.Model):
                                 blank=True, 
                                 on_delete=models.CASCADE,
                                 )
+    
+    # media subtype (according to ontology at www.iana.org)
+    media_subtype = models.ManyToManyField( MediaSubType,
+                                            blank=True,
+                                            
+    )
+    
     
     # this is set to true after being checked by the Data Catalog curation team
     curated = models.BooleanField(null=True, blank=True)
