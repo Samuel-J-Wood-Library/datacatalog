@@ -36,10 +36,19 @@
 </h2>
 {% endif %}
 
-<h4>description</h4>
+
 <p> {{ dataset.description|linebreaks }}</p>
 
+{% if dataset.data_fields.count %}
+</br>
 
+{% with dataset.data_fields.all as datafield_list %}
+    {% include 'datacatalog/table_datafield.html' %}
+{% endwith %}
+{% endif %}
+
+</br>
+<h4>Details</h4>
 <table class="table table-striped table-hover">
     {% if dataset.ds_id %}
     <tr>
@@ -91,7 +100,11 @@
     </tr>
 
 </table>
+
+
 {% if dataset.comments %}
+</br>
+</br>
 <div class="alert alert-warning" role="alert">{{ dataset.comments }}</div>
 {% endif %}
 

@@ -52,6 +52,10 @@ urlpatterns = [
     ),
     path('duas/<int:pk>', views.DataUseAgreementDetailView.as_view(), name='dua-view'),
     path('keywords/<int:pk>', views.KeywordDetailView.as_view(), name='keyword-view'),
+    path('datafield/<int:pk>', 
+            views.DataFieldDetailView.as_view(), 
+            name='datafield-view'
+    ),
 
     # create views
     path('datasets/add', views.DatasetCreateView.as_view(), name='dataset-add'),
@@ -59,6 +63,7 @@ urlpatterns = [
     path('providers/add', views.DataProviderCreateView.as_view(),name='provider-add'),
     path('duas/add', views.DataUseAgreementCreateView.as_view(), name='dua-add'),
     path('keywords/add', views.KeywordCreateView.as_view(), name='keyword-add'),
+    path('datafield/add', views.DataFieldCreateView.as_view(), name='datafield-add'),
     
     # update views
     path('datasets/update/<int:pk>', views.DatasetUpdateView.as_view(),

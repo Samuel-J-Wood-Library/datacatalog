@@ -284,15 +284,27 @@ class DataProviderDetailView(LoginRequiredMixin, generic.DetailView):
         })
         return context
 
+class DataFieldDetailView(LoginRequiredMixin, generic.DetailView):
+    model = DataField
+    template_name = 'datacatalog/detail_datafield.html'
+    
+    def get_context_data(self, **kwargs):
+        df_obj = self.object
+        containing_datasets = df_obj.dataset_set.filter(published=True,)
+        
+        context = super(DataFieldDetailView, self).get_context_data(**kwargs)
+        context.update({'containing_datasets'    : containing_datasets,  
+        })
+        return context
+
 ####################
 ### Create views ###
 ####################
 
-class DatasetCreateView(PermissionRequiredMixin, CreateView):
+class DatasetCreateView(LoginRequiredMixin, CreateView):
     model = Dataset
     form_class = DatasetForm
     template_name = "datacatalog/basic_crispy_form.html"
-    permission_required = 'datacatalog.add_dataset'
     # default success_url should be to the object page defined in model.
     
     def form_valid(self, form):
@@ -323,7 +335,7 @@ class DataProviderCreateView(PermissionRequiredMixin, CreateView):
         self.object.save()
         return super(DataProviderCreateView, self).form_valid(form)
 
-class DataAccessCreateView(PermissionRequiredMixin, CreateView):
+class DataAccessCreateView(LoginRequiredMixin, CreateView):
     model = DataAccess
     fields = [  'name',
                 'dua_required',
@@ -335,7 +347,6 @@ class DataAccessCreateView(PermissionRequiredMixin, CreateView):
                 'time_required',
     ]
     template_name = "datacatalog/basic_form.html"
-    permission_required = 'datacatalog.add_dataaccess'
     # default success_url should be to the object page defined in model.
     
     def form_valid(self, form):
@@ -345,7 +356,7 @@ class DataAccessCreateView(PermissionRequiredMixin, CreateView):
         self.object.save()
         return super(DataAccessCreateView, self).form_valid(form)
 
-class DataUseAgreementCreateView(PermissionRequiredMixin, CreateView):
+class DataUseAgreementCreateView(LoginRequiredMixin, CreateView):
     model = DataUseAgreement
     fields = [  'duaid',
                 'title',
@@ -367,7 +378,6 @@ class DataUseAgreementCreateView(PermissionRequiredMixin, CreateView):
                 'access_requirements',
     ]
     template_name = "datacatalog/basic_form.html"
-    permission_required = 'datacatalog.add_datauseagreement'
     # default success_url should be to the object page defined in model.
     
     def form_valid(self, form):
@@ -377,11 +387,10 @@ class DataUseAgreementCreateView(PermissionRequiredMixin, CreateView):
         self.object.save()
         return super(DataUseAgreementCreateView, self).form_valid(form)
 
-class KeywordCreateView(PermissionRequiredMixin, CreateView):
+class KeywordCreateView(LoginRequiredMixin, CreateView):
     model = Keyword
     fields = ['keyword', 'definition', ]
     template_name = "datacatalog/basic_form.html"
-    permission_required = 'datacatalog.add_keyword'
     # default success_url should be to the object page defined in model.
     
     def form_valid(self, form):
@@ -391,6 +400,19 @@ class KeywordCreateView(PermissionRequiredMixin, CreateView):
         self.object.save()
         return super(KeywordCreateView, self).form_valid(form)
 
+class DataFieldCreateView(LoginRequiredMixin, CreateView):
+    model = DataField
+    fields = ['name', 'description','scope' ]
+    template_name = "datacatalog/basic_form.html"
+    # default success_url should be to the object page defined in model.
+    
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        # update who last edited record
+        self.object.record_author = self.request.user
+        self.object.save()
+        return super(DataFieldCreateView, self).form_valid(form)
+        
 ####################
 ### Update views ###
 ####################

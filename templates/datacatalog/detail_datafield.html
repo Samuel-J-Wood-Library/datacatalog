@@ -1,0 +1,50 @@
+{% extends 'datacatalog/base-catalog.html' %}
+
+{# Load the tag library #}
+{% load bootstrap4 %}
+{% load project_tags %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+{% block content %}
+
+<style>
+/* styling of the tabs*/
+#exTab1 .tab-content {
+  color : black;
+  padding : 5px 15px;
+}
+
+#exTab1 .nav-tabs > li > a {
+  border-radius: 4px 4px 0 0;
+}
+</style>
+
+
+
+<h1>
+    Data field: {{ datafield.name }} 
+</h1>
+<p>{{ datafield.description }}</p>
+Scope:<p class="text-muted">{{ datafield.scope }}</p>
+
+
+
+
+</br></br>
+
+
+<h2> Data Field present in {{ containing_datasets.count }} datasets:</h2>
+
+    {% with containing_datasets as dataset_list %}
+        {% include 'datacatalog/table_datasets.html' %}
+    {% endwith %}
+
+
+{% endblock %}
+

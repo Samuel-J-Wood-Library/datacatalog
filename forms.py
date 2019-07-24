@@ -90,10 +90,10 @@ class DatasetForm(forms.ModelForm):
                     'access_requirements' : autocomplete.ModelSelect2(
                                         url='datacatalog:autocomplete-access'
                                         ),   
-                    'data_fields' : autocomplete.ModelSelect2(
+                    'data_fields' : autocomplete.ModelSelect2Multiple(
                                         url='datacatalog:autocomplete-datafield'
                                         ),  
-                    'media_subtype' : autocomplete.ModelSelect2(
+                    'media_subtype' : autocomplete.ModelSelect2Multiple(
                                         url='datacatalog:autocomplete-mediatype'
                                         ),                                      
                     }

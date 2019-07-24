@@ -1,0 +1,18 @@
+
+<table class="table table-striped table-hover" id="DatasetTable">
+<thead class="thead-default">
+    <tr>
+        <th>Field name</th>
+        <th>Description</th>
+        <th>Scope</th>
+    </tr>
+</thead>
+
+{% for df in datafield_list %}
+    <tr>
+    <td><a href="{% url 'datacatalog:datafield-view' df.pk %}">{{ df.name }}</a></td>
+    <td> {{ df.description }}</td>
+    <td> {{ df.scope }}</td>
+    </tr>
+{% endfor %}
+</table>

@@ -61,6 +61,13 @@ class MediaSubType(models.Model):
     
     # indicates now obsolete models
     obsolete = models.BinaryField(null=True, blank=True)
+    
+    def __str__(self):
+        if self.template:
+            n = self.template
+        else:
+            n = self.name
+        return "{}".format(n)
 
 class DataField(models.Model):
     # date the record was created
@@ -79,14 +86,28 @@ class DataField(models.Model):
     
     # field description
     description = models.CharField(max_length=256, 
-                                    unique=True,
                                     help_text="Description of the field",
     )
     
     # descriptions defining scope of data
     scope = models.CharField(max_length=256, 
-                                    help_text="Descriptions of the scope of the data (eg. min, max, number of records, number of null values, number of unique values)",
+                            null=True,
+                            blank=True,
+                            help_text="Descriptions of the scope of the data (eg. min, max, number of records, number of null values, number of unique values)",
     )                                
+    
+    def __str__(self):
+        if self.scope:
+            s = "{}...".format(self.scope[:20])
+        else:
+            s = "---"
+        return "{} ({}...); {}".format(  self.name, 
+                                            self.description[:10],
+                                            s,
+                                            )
+
+    def get_absolute_url(self):
+        return reverse('datacatalog:datafield-view', kwargs={'pk': self.pk})
     
 class DataProvider(models.Model):
     """
