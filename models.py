@@ -102,7 +102,7 @@ class DataField(models.Model):
         else:
             s = "---"
         return "{} ({}...); {}".format(  self.name, 
-                                            self.description[:10],
+                                            self.description[:20],
                                             s,
                                             )
 

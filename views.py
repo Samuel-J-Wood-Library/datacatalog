@@ -202,8 +202,18 @@ class IndexDataProviderView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         pvs = DataProvider.objects.filter(published=True)
-        pvs_with_data = [pv for pv in pvs if pv.dataset_set.filter(published=True
-                                                           ).count() > 0 ]
+        
+        # only show published providers that themselves have published datasets
+        pvs_with_data = []
+        for pv in pvs:
+            # see if provider has any published datasets which it is related to 
+            # either as publisher or as source
+            as_source = pv.dataset_source.filter(published=True).count()
+            as_publisher = pv.dataset_publisher.filter(published=True).count()
+
+            if as_source > 0 or as_publisher > 0:
+                pvs_with_data.append(pv)
+
         return pvs_with_data
         
     def get_context_data(self, **kwargs):
