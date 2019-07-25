@@ -243,60 +243,83 @@ class Dataset(models.Model):
     record_author = models.ForeignKey(User, on_delete=models.PROTECT)
     
     # dataset ID
+    # http://schema.org/identifier
     ds_id = models.CharField(   "Dataset ID", 
                                 max_length=128, 
                                 unique=True, 
                                 null=True, 
                                 blank=True,
-                                help_text="http://schema.org/identifier"
+                                help_text="Unique identifer of the data set"
     )
     
     # dataset title/brief descriptor
     title = models.CharField(max_length=256, 
                                 unique=True,
-                                help_text="The name of the dataset, usually one sentence or short description of the dataset.",
+                                help_text="The name of the dataset, usually one sentence or short description of the dataset",
     )
     
     # description of dataset
+    # https://schema.org/description
     description = models.TextField( null=True, 
                                     blank=True,
-                                    help_text="https://schema.org/description",
+                                    help_text="Description of dataset, including purpose, scope, etc",
     )
     
     # a field to explicitly capture the fields present in a data model (if applicable)
     data_fields = models.ManyToManyField(DataField, 
                                          blank=True,
-                                         help_text="list of fields present in schema",
+                                         help_text="List of all fields present in any schema",
     )
     
     # beginning of temporal coverage (time of earliest data record)
+    # https://schema.org/Date
     period_start = models.DateField(null=True, 
                                     blank=True,
-                                    help_text="https://schema.org/Date",
+                                    help_text="Date of earliest data record",
     )
     
-    # end of temporal coverage (time of latest data record)
+    # end of temporal coverage (time of latest data record) 
+    # https://schema.org/Date
     period_end = models.DateField(  null=True, 
                                     blank=True,
-                                    help_text="https://schema.org/Date"
+                                    help_text="Date of latest data record"
     )
     
-    # dataset publisher
+    # date the data set was published
+    # https://schema.org/Date
+    publication_date = models.DateField(null=True, 
+                                        blank=True,
+                                        help_text="Publication date of the dataset"
+    )
+    # dataset publisher 
+    # https://schema.org/publisher
     publisher = models.ForeignKey(  DataProvider, 
-                                    on_delete=models.CASCADE,
-                                    help_text="https://schema.org/publisher",
+                                    on_delete=models.PROTECT,
+                                    related_name='dataset_publisher',
+                                    help_text="Group responsible for publication of the data set",
+    )
+    
+    # dataset source, which can be different to the publisher
+    data_source = models.ForeignKey(DataProvider,
+                                    null=True,
+                                    blank=True, 
+                                    on_delete=models.PROTECT,
+                                    related_name='dataset_source',
+                                    help_text="Group responsible for production of the data",
     )
     
     # keywords or topics related to the data
+    # https://schema.org/codeValue
     keywords = models.ManyToManyField(  Keyword, 
                                         blank=True,
-                                        help_text="https://schema.org/codeValue",
+                                        help_text="Add keywords related to data set",
     )
     
     # URL of landing page to access data
     landing_url = models.URLField(  max_length=256,
                                     null=True, 
                                     blank=True,
+                                    help_text="URL of page that allows access of data"
     )
     
     # notes or general comments
@@ -306,19 +329,21 @@ class Dataset(models.Model):
     access_requirements = models.ForeignKey(DataAccess, 
                                             null=True, 
                                             blank=True,
-                                            on_delete=models.CASCADE,
+                                            on_delete=models.PROTECT,
                                             )    
 
     # local contact person who is an expert on this dataset
     expert = models.ForeignKey(Person,
                                 null=True,
                                 blank=True, 
-                                on_delete=models.CASCADE,
+                                on_delete=models.PROTECT,
+                                help_text="A local contact who is an expert on the data"
                                 )
     
     # media subtype (according to ontology at www.iana.org)
     media_subtype = models.ManyToManyField( MediaSubType,
                                             blank=True,
+                                            help_text="The media types of all files in data set"
                                             
     )
     
