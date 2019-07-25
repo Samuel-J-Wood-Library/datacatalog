@@ -19,6 +19,15 @@
 <h2>No results found among datasets</h2>
 {% endif %}
 
+{% if qs_df|length > 0 %}
+<h2>Data Fields</h2>
+{% with qs_df as datafield_list %}
+    {% include "datacatalog/table_datafield.html" %}
+{% endwith %}
+{% else %}
+<h2>No results found among data fields</h2>
+{% endif %}
+
 {% if request.user|has_group:"dua_viewing_privileges" %}
 {% if qs_dua|length > 0 %}
 <h2>DUAs</h2>
@@ -38,6 +47,8 @@
 {% else %}
 <h2>No results found among Keywords</h2>
 {% endif %}
+
+
 
 {% endblock %}
  

@@ -8,7 +8,7 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from persons.models import Person
-from .models import Dataset, MediaSubType, DataField
+from .models import Dataset, MediaSubType, DataField, DataUseAgreement
 
 div_datafields = Div(
                     Div('data_fields',
@@ -127,5 +127,135 @@ class DatasetForm(forms.ModelForm):
                                         ),  
                     'media_subtype' : autocomplete.ModelSelect2Multiple(
                                         url='datacatalog:autocomplete-mediatype'
+                                        ),                                      
+                    }
+
+div_duaname = Div(
+                Div('duaid',
+                    css_class='col-xs-3',
+                ),
+                Div('title',
+                    css_class='col-xs-9',
+                ),
+                css_class="row"
+)
+div_provider_details = Div(
+                            Div('publisher',
+                                css_class='col-xs-8',
+                            ),
+                            Div('contact',
+                                css_class='col-xs-4',
+                            ),
+                            css_class="row"
+)
+div_dua_dates =  Div(
+                    Div('date_signed',
+                        css_class='col-xs-4',
+                    ),
+                    Div('start_date',
+                        css_class='col-xs-4',
+                    ),
+                    Div('end_date',
+                        css_class='col-xs-4',
+                    ),
+                    css_class="row"
+)
+
+div_attestation =  Div(
+                        Div('separate_attestation',
+                            css_class='col-xs-6',
+                        ),
+                        Div('scope',
+                            css_class='col-xs-6',
+                        ),
+                        css_class="row"
+)
+div_handling = Div(
+                        Div('destruction_required',
+                            css_class='col-xs-6',
+                        ),
+                        Div('mixing_allowed',
+                            css_class='col-xs-6',
+                        ),
+                        css_class="row"
+)
+
+class DUAForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(DUAForm, self).__init__(*args, **kwargs)
+        self.fields['publisher'].label = "DUA publisher"
+        self.fields['contact'].label = "DUA contact"
+        self.fields['pi'].label = "PI"
+        self.fields['separate_attestation'].label = "Individual attestation required"
+        self.fields['scope'].label = "DUA authorization level"
+        self.helper = FormHelper()
+        self.helper.form_id = 'duaForm'
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submit', 'Submit'))
+        self.helper.layout = Layout(
+                    Fieldset('<div class="alert alert-info">DUA Form</div>',
+                            div_duaname,
+                            'description',
+                            div_provider_details,
+                            'datasets',
+                            'pi',
+                            'users',
+                            div_attestation,
+                            div_dua_dates,
+                            style="font-weight: bold;",
+                    ),
+                    Fieldset('<div class="alert alert-info">Data handling conditions</div>',
+                            div_handling,
+                            'access_requirements',
+                            'storage_requirements',
+                            'access_conditions', 
+                            'reuse_scope',                           
+                            style="font-weight: bold;",
+                    ),
+        )
+    
+    class Meta:
+        model = DataUseAgreement
+        fields = [  'duaid',
+                    'title',
+                    'description',
+                    'publisher',
+                    'contact',
+                    'pi',
+                    'users',
+                    'separate_attestation',
+                    'scope',
+                    'date_signed',
+                    'start_date',
+                    'end_date',
+                    'destruction_required',
+                    'mixing_allowed',
+                    'storage_requirements',
+                    'access_conditions',
+                    'datasets',
+                    'access_requirements',
+                    'reuse_scope',
+                ]
+
+        widgets =  {'publisher' : autocomplete.ModelSelect2(
+                                        url='datacatalog:autocomplete-publisher'
+                                        ),
+                    'data_source' : autocomplete.ModelSelect2(
+                                        url='datacatalog:autocomplete-publisher'
+                                        ),
+                    'contact' : autocomplete.ModelSelect2(
+                                        url='persons:autocomplete-person'
+                                        ),
+                    'users' : autocomplete.ModelSelect2Multiple(
+                                        url='persons:autocomplete-person'
+                                        ),  
+                    'pi' : autocomplete.ModelSelect2(
+                                        url='persons:autocomplete-person'
+                                        ),               
+                    'access_requirements' : autocomplete.ModelSelect2(
+                                        url='datacatalog:autocomplete-access'
+                                        ),   
+                    'datasets' : autocomplete.ModelSelect2Multiple(
+                                        url='datacatalog:autocomplete-dataset'
                                         ),                                      
                     }

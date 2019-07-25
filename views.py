@@ -13,7 +13,7 @@ from django.urls import reverse_lazy, reverse
 from .models import Dataset, DataUseAgreement, DataAccess, Keyword, DataProvider
 from .models import MediaSubType, DataField
 
-from .forms import DatasetForm
+from .forms import DatasetForm, DUAForm
 
 ####################################
 ######  AUTOCOMPLETE  VIEWS   ######
@@ -368,26 +368,8 @@ class DataAccessCreateView(LoginRequiredMixin, CreateView):
 
 class DataUseAgreementCreateView(LoginRequiredMixin, CreateView):
     model = DataUseAgreement
-    fields = [  'duaid',
-                'title',
-                'description',
-                'publisher',
-                'contact',
-                'pi',
-                'users',
-                'separate_attestation',
-                'scope',
-                'date_signed',
-                'start_date',
-                'end_date',
-                'destruction_required',
-                'mixing_allowed',
-                'storage_requirements',
-                'access_conditions',
-                'datasets',
-                'access_requirements',
-    ]
-    template_name = "datacatalog/basic_form.html"
+    form_class = DUAForm
+    template_name = "datacatalog/basic_crispy_form.html"
     # default success_url should be to the object page defined in model.
     
     def form_valid(self, form):
@@ -461,27 +443,8 @@ class DataProviderUpdateView(PermissionRequiredMixin, UpdateView):
   
 class DataUseAgreementUpdateView(PermissionRequiredMixin, UpdateView):
     model = DataUseAgreement
-    template_name = "datacatalog/basic_form.html"
-    fields = [  'duaid',
-                'title',
-                'description',
-                'publisher',
-                'contact',
-                'pi',
-                'users',
-                'separate_attestation',
-                'scope',
-                'date_signed',
-                'start_date',
-                'end_date',
-                'destruction_required',
-                'mixing_allowed',
-                'storage_requirements',
-                'access_conditions',
-                'datasets',
-                'access_requirements',
-                'reuse_scope',
-    ]
+    form_class = DUAForm
+    template_name = "datacatalog/basic_crispy_form.html"
     permission_required = 'datacatalog.change_datauseagreement'
     
 class KeywordUpdateView(PermissionRequiredMixin, UpdateView):
@@ -516,10 +479,15 @@ class FullSearch(LoginRequiredMixin, generic.TemplateView):
         qs_kw = qs_kw.filter( Q(keyword__icontains=st) |
                               Q(definition__icontains=st)  
         )
+        qs_df = DataField.objects.all()
+        qs_df = qs_df.filter( Q(name__icontains=st) |
+                              Q(description__icontains=st)
+        )
         context = { "search_str" : st,
                     "qs_ds": qs_ds,
                     "qs_dua": qs_dua,
                     "qs_kw": qs_kw,
+                    "qs_df": qs_df,
         }
         return render(request, self.template_name, context)
         
