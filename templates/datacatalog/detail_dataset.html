@@ -56,12 +56,15 @@
         <td>{{ dataset.ds_id }}</td>
     </tr>
     {% endif %}
-    {% if dataset.expert %}
     <tr>
-        <td>Dataset local expert</td>
-        <td>{{ dataset.expert }}</td>
+        <td>Local contact</td>
+        <td>{% if dataset.expert %}
+                {{ dataset.expert }}
+            {% else %}
+                None provided
+            {% endif %}
+        </td>
     </tr>
-    {% endif %}
     <tr>
         <td>Record Period Start</td>
         <td>{{ dataset.period_start }}</td>
@@ -76,15 +79,7 @@
         <td><a href="{{ dataset.landing_url }}">{{ dataset.landing_url }}</a></td>
     </tr>
     {% endif %}
-    <tr>
-        <td>Local contact</td>
-        <td>{% if dataset.expert %}
-                {{ dataset.expert }}
-            {% else %}
-                None provided
-            {% endif %}
-        </td>
-    </tr>
+    
     
     
     <tr>
