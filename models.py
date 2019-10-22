@@ -359,6 +359,33 @@ class Dataset(models.Model):
 
     def get_absolute_url(self):
         return reverse('datacatalog:dataset-view', kwargs={'pk': self.pk})
+
+class GovernanceType(models.Model):
+    """
+    The GovernanceType model stores and defines all the specific types of governance
+    document that can be attributed to a dataset. This allows distinguishing between
+    different governance documents that relate to a single dataset or project. For 
+    example, Institutional Review Board approval, data publisher DUA, or Data Core
+    User Agreement documentation. 
+    """
+    # date the record was created
+    record_creation = models.DateField(auto_now_add=True)
+    
+    # date the record was most recently modified
+    record_update = models.DateField(auto_now=True)
+    
+    # the user who was signed in at time of record modification
+    record_author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    # name of governance type (eg. "DUA", "WCM IRB", etc)
+    name = models.CharField(max_length=128, unique=True)
+    
+    # brief description of type
+    description = models.TextField(null=True, blank=True)
+
+def project_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/prj<id>/<filename>
+    return '{0}/{1}/{2}'.format(instance.pi, instance.governance_type.name, filename)
         
 class DataUseAgreement(models.Model):
     """
@@ -383,6 +410,13 @@ class DataUseAgreement(models.Model):
     
     # brief description of DUA
     description = models.TextField(null=True, blank=True)
+    
+    # governance type
+    governance_type = models.ForeignKey(GovernanceType, 
+                                        null=True, 
+                                        blank=True,
+                                        on_delete=models.PROTECT, 
+                                        )
 
     # dataset publisher
     publisher = models.ForeignKey(DataProvider, on_delete=models.CASCADE)
@@ -428,6 +462,20 @@ class DataUseAgreement(models.Model):
     # end date of DUA
     end_date = models.DateField(null=True)
     
+    # specify a document that supersedes this DUA instance
+    defers_to_doc = models.ForeignKey('self', 
+                                        on_delete=models.PROTECT, 
+                                        null=True, 
+                                        blank=True,
+                                        related_name='overrules')
+    
+    # specify a document that is superseded by this DUA instance 
+    supersedes_doc = models.ForeignKey('self', 
+                                        on_delete=models.PROTECT, 
+                                        null=True, 
+                                        blank=True,
+                                        related_name='superseded_by')
+        
     # data destruction required at end?
     destruction_required = models.BooleanField(null=True)
     
@@ -452,11 +500,21 @@ class DataUseAgreement(models.Model):
                                             blank=True,
                                             on_delete=models.CASCADE)    
 
+    # FileField stores a document for viewing (currently only by privileged users)
+    documentation = models.FileField(
+                            upload_to=project_directory_path, 
+                            null=True,
+                            blank=True,
+    )
+
     # this is set to true after being checked by the Data Catalog curation team
     curated = models.BooleanField(null=True, blank=True)
     
     # this is set to true after when ready to be displayed on the website
     published = models.BooleanField(null=True, blank=True)
+    
+    # this is set to true if metadata is only to be visible to privileged users
+    privileged = models.BooleanField(null=True, blank=True)
     
     def __str__(self):
         return "{}: {}".format(self.duaid, self.title)
