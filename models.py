@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 
 from django.urls import reverse
@@ -521,3 +523,34 @@ class DataUseAgreement(models.Model):
 
     def get_absolute_url(self):
         return reverse('datacatalog:dua-view', kwargs={'pk': self.pk})
+
+    def allowed_user_string(self):
+        return  ", ".join([u.cwid for u in self.users.all()])
+
+    def attention_required(self):
+        """
+        This function returns a bootstrap flag to indicate how close to the expiry date
+        the DUA is.
+        """
+        td = self.end_date - datetime.date.today() 
+        
+        if td.days >  90:
+            status = "safe"
+        
+        # if doc defers to another doc, then we need not pay attention to this one:
+        elif self.defers_to_doc:
+            status = "safe"
+        elif len(DataUseAgreement.objects.filter(supersedes_doc=self)) > 0:
+            status = "safe"
+        
+        # if not deferring, and not exempt:
+        elif td.days <= 0:
+            status = "danger"
+        elif td.days <= 10:
+            status = "warning"
+        elif td.days <= 90:
+            status = "primary"
+        else:
+            status = "danger"
+        return status
+    
