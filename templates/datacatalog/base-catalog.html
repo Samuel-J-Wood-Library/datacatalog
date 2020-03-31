@@ -16,9 +16,130 @@
     color: #ffffff;
     background-color: #E87722;
 }
+
+body { padding-top: 55px; }
 </style>
 
+<nav class="navbar navbar-expand-md navbar-custom fixed-top">
+    <a class="navbar-brand" href="/">{{ APPTITLE }}</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" 
+            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+            aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        {% if user.is_authenticated %}
+        <ul class="navbar-nav mr-auto">
+            
+            {# ## ### CATALOG HOME PAGE ### ## #}
+            <li class="nav-item active">
+              <a class="nav-link btn-outline-light"
+                 href="{% url 'datacatalog:index' %}">Data Catalog (Beta)</a>
+            </li>
+            
+            {# ## ### DROPDOWN ITEM INDEX PAGE LINKS ### ## #}
+            <li class="nav-item dropdown">
+                <a  class="nav-link dropdown-toggle btn-outline-dark" 
+                    href="#" id="DCDropdown" 
+                    role="button" data-toggle="dropdown" 
+                    aria-haspopup="true" aria-expanded="false">
+                    View Details
+                </a>
+            <div class="dropdown-menu" aria-labelledby="DCDropdown">
+                <a class="dropdown-item" href="{% url 'datacatalog:datasets' %}">
+                    Datasets</a>
+                {% if request.user|has_group:"dua_viewing_privileges" %}
+                <a class="dropdown-item" href="{% url 'datacatalog:duas' %}">
+                    DUAs</a>
+                {% endif %}
+                <a class="dropdown-item" href="{% url 'datacatalog:access' %}">
+                    Access guides</a>
+                <a class="dropdown-item" href="{% url 'datacatalog:providers' %}">
+                    Providers</a>
+                <a class="dropdown-item" href="{% url 'datacatalog:keywords' %}">
+                    Keywords</a>
+            </div>        
+            </li>
+        </ul>
+        
+        <ul class="navbar-nav mp-auto">    
+            {# ## ### PROJECT TITLE ### ## #}
+            <li>
+              <a class="nav-link mx-auto" href="#" style="fontweight:bold;color:white">
+                {% block pagetitle %}{% endblock %}</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">    
+            {# ## ### USER ADMIN OPTIONS ### ## #}
+            <li class="nav-item dropdown ml-auto">
+                <a  class="nav-link dropdown-toggle btn-outline-dark" 
+                    href="#" id="AdminDropdown" 
+                    role="button" data-toggle="dropdown" 
+                    aria-haspopup="true" aria-expanded="false">
+                    {{ user.get_username }} <b class="caret"></b>
+                </a>
+            <div class="dropdown-menu" aria-labelledby="AdminDropdown">
+              <a class="dropdown-item" href="{% url 'admin:index' %}" target="_blank">
+                Admin</a>
+              <a class="dropdown-item" href="{% url 'frontpage' %}">
+                Data Core Frontpage</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="/logout/">Logout </a>
+            </div>        
+            </li>
+            
+            {# ## ### USER ACTIONS ### ## #}
+            <li class="nav-item dropdown">
+                <a  class="nav-link dropdown-toggle btn-outline-dark" 
+                    href="#" id="ActionsDropdown" 
+                    role="button" data-toggle="dropdown" 
+                    aria-haspopup="true" aria-expanded="false">
+                    Submit New: <b class="caret"></b>
+                </a>
+            <div class="dropdown-menu" aria-labelledby="ActionsDropdown">
+                <a class="dropdown-item" href="{% url 'datacatalog:datafield-add' %}">
+                    data field description</a>
+                <a class="dropdown-item" href="{% url 'datacatalog:dataset-add' %}">
+                    dataset</a>
+                <a class="dropdown-item" href="{% url 'datacatalog:dua-add' %}">
+                    DUA</a>
+                <a class="dropdown-item" href="{% url 'datacatalog:provider-add' %}">
+                    provider</a>
+                <a class="dropdown-item" href="{% url 'datacatalog:keyword-add' %}">
+                    keyword</a>
+                <a class="dropdown-item" href="{% url 'datacatalog:access-add' %}">
+                    access guide</a>
 
+            </div>        
+            </li>
+          
+            {# ## ### SEARCH BAR ### ## #}
+            <form class="form-inline my-2 my-lg-0" 
+                action="{% url 'datacatalog:full-search' %}" 
+                method="post">{% csrf_token %}
+              
+              <div class="input-group">
+              <input class="form-control" type="search" 
+                placeholder="Search catalog" aria-label="Search"
+                name="srch_term" id="srch_term">
+              
+                <button class="btn btn-default" type="submit">
+                    Submit <i class="glyphicon glyphicon-search">
+                    </i></button>
+              </div>
+            </form>            
+        
+        </ul> 
+        {% else %}
+            <li><a style="color:white;" 
+               href="/accounts/login/">Login</a></li>
+        {% endif %}  
+    </div>
+</nav>
+
+
+{% comment %}
         <div class="navbar navbar-custom navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
@@ -161,4 +282,5 @@
                 </div>
             </div>
         </div>
+{% endcomment %}
 {% endblock %}

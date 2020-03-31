@@ -213,6 +213,10 @@ class DataAccess(models.Model):
     # field to designate whether data should be published
     published = models.BooleanField(null=True, blank=True)
 
+    # specify the users who have access. If none specified, then all users have
+    # access to view
+    restricted = models.ManyToManyField(Person, related_name='restricted_access',)
+    
     def __str__(self):
         return "{}".format(self.name)
             
@@ -356,6 +360,10 @@ class Dataset(models.Model):
     # field to designate whether data should be published
     published = models.BooleanField(null=True, blank=True)
 
+    # specify the users who have access. If none specified, then all users have
+    # access to view
+    restricted = models.ManyToManyField(Person, related_name='restricted_dataset',)
+    
     def __str__(self):
         return "{}".format(self.title)
 
@@ -517,6 +525,10 @@ class DataUseAgreement(models.Model):
     
     # this is set to true if metadata is only to be visible to privileged users
     privileged = models.BooleanField(null=True, blank=True)
+    
+    # specify the users who have access. If none specified, then all users have
+    # access to view
+    restricted = models.ManyToManyField(Person, related_name='restricted_dua')
     
     def __str__(self):
         return "{}: {}".format(self.duaid, self.title)
