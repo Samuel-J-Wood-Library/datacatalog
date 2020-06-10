@@ -499,7 +499,7 @@ class DataUseAgreement(models.Model):
     access_conditions = models.TextField(null=True, blank=True)
     
     # datasets included in governance terms
-    datasets = models.ManyToManyField(Dataset,)
+    datasets = models.ManyToManyField(Dataset, blank=True)
 
     # description of types of experiments allowed under reuse terms
     reuse_scope = models.TextField(null=True, blank=True)
