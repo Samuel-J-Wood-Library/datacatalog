@@ -59,14 +59,14 @@
 
 </table>
 
-<div class="container col-xl-12">
+<div class="container col-12">
 {% if datauseagreement.reuse_scope %}
-    <div class="container col-md-6">
-     <div class="panel panel-warning">
-      <div class="panel-heading">
+    <div class="container col-6">
+     <div class="card card-warning">
+      <div class="card-header">
         <h4>Data Reuse Scope</h4>
       </div>
-      <div class="panel-body">
+      <div class="card-body">
 
             <p> {{ datauseagreement.reuse_scope|linebreaks }}</p>
        
@@ -75,12 +75,12 @@
     </div>
 {% endif %}
 {% if datauseagreement.storage_requirements %}
-    <div class="container col-md-6">
-     <div class="panel panel-warning">
-      <div class="panel-heading">
+    <div class="container col-6">
+     <div class="card card-warning">
+      <div class="card-header">
         <h4>Data Storage Requirements</h4>
       </div>
-      <div class="panel-body">
+      <div class="card-body">
 
             <p> {{ datauseagreement.storage_requirements|linebreaks }}</p>
        
@@ -89,12 +89,12 @@
     </div>
 {% endif %}
 {% if datauseagreement.access_conditions %}
-    <div class="container col-md-6">
-     <div class="panel panel-warning">
-      <div class="panel-heading">
+    <div class="container col-6">
+     <div class="card card-warning">
+      <div class="card-header">
         <h4>Data Access Conditions</h4>
       </div>
-      <div class="panel-body">
+      <div class="card-body">
 
             <p> {{ datauseagreement.access_conditions|linebreaks }}</p>
        

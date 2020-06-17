@@ -32,13 +32,13 @@
 
 {% for dataset in dataset_list %}
     <div class="container">
-     <div class="panel panel-info">
-      <div class="panel-heading">
+     <div class="card">
+      <div class="card-header">
         <a href="{% url 'datacatalog:dataset-view' dataset.pk %}">
             <h4>{{ dataset.title }}</h4>
         </a>
       </div>
-      <div class="panel-body">
+      <div class="card-body">
       
                   
             {% if dataset.publisher %}

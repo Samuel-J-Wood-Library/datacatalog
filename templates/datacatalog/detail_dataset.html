@@ -105,15 +105,15 @@
 
 </br>
 
-<div class="container col-xl-12">
+<div class="container col-12">
 {% for dua in published_duas %}
     {% if dua.reuse_scope %}
-        <div class="container col-md-6">
-         <div class="panel panel-primary">
-          <div class="panel-heading">
+        <div class="container col-6">
+         <div class="card card-primary">
+          <div class="card-header">
             <h4>Data Reuse Scope: {{ dua.duaid }}</h4>
           </div>
-          <div class="panel-body">
+          <div class="card-body">
 
                 <p> {{ dua.reuse_scope|linebreaks }}</p>
        
@@ -124,12 +124,12 @@
 {% endfor %}
 {% for dua in published_duas %}
     {% if dua.storage_requirements %}
-        <div class="container col-md-6">
-         <div class="panel panel-warning">
-          <div class="panel-heading">
+        <div class="container col-6">
+         <div class="card card-warning">
+          <div class="card-header">
             <h4>Data Storage Requirements: {{ dua.duaid }}</h4>
           </div>
-          <div class="panel-body">
+          <div class="card-body">
 
                 <p> {{ dua.storage_requirements|linebreaks }}</p>
        
@@ -140,12 +140,12 @@
 {% endfor %}
 {% for dua in published_duas %}
     {% if dua.access_conditions %}
-        <div class="container col-md-6">
-         <div class="panel panel-danger">
-          <div class="panel-heading">
+        <div class="container col-6">
+         <div class="card card-danger">
+          <div class="card-header">
             <h4>Data Access Conditions: {{ dua.duaid }}</h4>
           </div>
-          <div class="panel-body">
+          <div class="card-body">
 
                 <p> {{ dua.access_conditions|linebreaks }}</p>
        

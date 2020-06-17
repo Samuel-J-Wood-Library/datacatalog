@@ -12,7 +12,7 @@ from .models import Dataset, MediaSubType, DataField, DataUseAgreement
 
 div_datafields = Div(
                     Div('data_fields',
-                        css_class='col-xs-10'
+                        css_class='col-10'
                     ),
                     HTML("""
                             <a  href="{% url 'datacatalog:datafield-add' %}"
@@ -26,31 +26,31 @@ div_datafields = Div(
 )
 div_name = Div(
                 Div('ds_id',
-                    css_class='col-xs-3',
+                    css_class='col-3',
                 ),
                 Div('title',
-                    css_class='col-xs-9',
+                    css_class='col-9',
                 ),
                 css_class="row"
 )
 div_dates = Div(
                     Div('period_start',
-                        css_class='col-xs-4',
+                        css_class='col-4',
                     ),
                     Div('period_end',
-                        css_class='col-xs-4',
+                        css_class='col-4',
                     ),
                     Div('publication_date',
-                        css_class='col-xs-4',
+                        css_class='col-4',
                     ),
                     css_class="row"
 )
 div_access = Div(
                     Div('publisher',
-                        css_class='col-xs-6',
+                        css_class='col-6',
                     ),
                     Div('access_requirements',
-                        css_class='col-xs-6',
+                        css_class='col-6',
                     ),
                     css_class="row"
 )
@@ -132,50 +132,50 @@ class DatasetForm(forms.ModelForm):
 
 div_duaname = Div(
                 Div('duaid',
-                    css_class='col-xs-3',
+                    css_class='col-3',
                 ),
                 Div('title',
-                    css_class='col-xs-9',
+                    css_class='col-9',
                 ),
                 css_class="row"
 )
 div_provider_details = Div(
                             Div('publisher',
-                                css_class='col-xs-8',
+                                css_class='col-8',
                             ),
                             Div('contact',
-                                css_class='col-xs-4',
+                                css_class='col-4',
                             ),
                             css_class="row"
 )
 div_dua_dates =  Div(
                     Div('date_signed',
-                        css_class='col-xs-4',
+                        css_class='col-4',
                     ),
                     Div('start_date',
-                        css_class='col-xs-4',
+                        css_class='col-4',
                     ),
                     Div('end_date',
-                        css_class='col-xs-4',
+                        css_class='col-4',
                     ),
                     css_class="row"
 )
 
 div_attestation =  Div(
                         Div('separate_attestation',
-                            css_class='col-xs-6',
+                            css_class='col-6',
                         ),
                         Div('scope',
-                            css_class='col-xs-6',
+                            css_class='col-6',
                         ),
                         css_class="row"
 )
 div_handling = Div(
                         Div('destruction_required',
-                            css_class='col-xs-6',
+                            css_class='col-6',
                         ),
                         Div('mixing_allowed',
-                            css_class='col-xs-6',
+                            css_class='col-6',
                         ),
                         css_class="row"
 )

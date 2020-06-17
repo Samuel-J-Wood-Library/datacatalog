@@ -16,7 +16,7 @@
     {% include "datacatalog/table_datasets.html" %}
 {% endwith %}
 {% else %}
-<h2>No results found among datasets</h2>
+<h4>No results found among datasets</h4>
 {% endif %}
 
 {% if qs_df|length > 0 %}
@@ -25,7 +25,7 @@
     {% include "datacatalog/table_datafield.html" %}
 {% endwith %}
 {% else %}
-<h2>No results found among data fields</h2>
+<h4>No results found among data fields</h4>
 {% endif %}
 
 {% if request.user|has_group:"dua_viewing_privileges" %}
@@ -35,7 +35,7 @@
     {% include "datacatalog/table_duas.html" %}
 {% endwith %}
 {% else %}
-<h2>No results found among DUAs</h2>
+<h4>No results found among DUAs</h4>
 {% endif %}
 {% endif %}
 
@@ -45,7 +45,7 @@
     {% include "datacatalog/table_keywords.html" %}
 {% endwith %}
 {% else %}
-<h2>No results found among Keywords</h2>
+<h4>No results found among Keywords</h4>
 {% endif %}
 
 
