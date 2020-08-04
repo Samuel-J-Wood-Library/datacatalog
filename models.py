@@ -110,6 +110,60 @@ class DataField(models.Model):
 
     def get_absolute_url(self):
         return reverse('datacatalog:datafield-view', kwargs={'pk': self.pk})
+
+class ConfidentialityImpact(models.Model):
+    """
+    A number of different standards define a confidentiality impact level, which can 
+    mutually apply to any given dataset. This model will capture the standards and their 
+    levels and definitions, allowing users to apply whatever relevant classification to 
+    the dataset as needed.
+    """
+    # date the record was created
+    record_creation = models.DateField(auto_now_add=True)
+    
+    # date the record was most recently modified
+    record_update = models.DateField(auto_now=True)
+    
+    # the user who was signed in at time of record modification
+    record_author = models.ForeignKey(User, on_delete=models.PROTECT)
+
+    # the confidentiality impact level
+    impact_level = models.CharField(   "Impact Level", 
+                                        max_length=32, 
+                                        unique=False, 
+                                        null=False, 
+                                        blank=False,
+                                        help_text="Level as defined by the standard",
+    )   
+    
+    # for ranking the different scales, we include a separate rank field.
+    # 1 is the highest risk level
+    impact_rank = models.IntegerField(  unique=False, 
+                                        null=False, 
+                                        blank=False,
+                                        help_text="Rank of impact: 1 is highest risk",
+    )
+    
+    # standard
+    standard = models.CharField("Impact Level", 
+                                max_length=32, 
+                                unique=False, 
+                                null=False, 
+                                blank=False,
+                                help_text="Standard defining the impact level",
+    )   
+    
+    # definition
+    definition = models.TextField(null=False, blank=False,)
+    
+    # url link to the relevant documentation 
+    link = models.URLField(max_length=200,)
+
+    def __str__(self):
+        return "{}: {}".format(self.standard, self.level)
+
+    def get_absolute_url(self):
+        return reverse('datacatalog:cil-view', kwargs={'pk': self.pk})
     
 class DataProvider(models.Model):
     """
@@ -319,6 +373,38 @@ class Dataset(models.Model):
     keywords = models.ManyToManyField(  Keyword, 
                                         blank=True,
                                         help_text="Add keywords related to data set",
+    )
+    
+    # confidentiality impact level
+    cil = models.ManyToManyField(   ConfidentialityImpact,
+                                    blank=True,
+                                    help_text="Select an impact level based on "
+    )
+    
+    # indicate scale of the dataset based on the number of records
+    UNITS = 'UN'
+    TENS = 'TE'
+    HUNDREDS = 'HU'
+    THOUSANDS = 'TH'
+    TENTHOUSANDS = 'TT'
+    HUNDREDTHOUSANDS = 'HT' 
+    MILLIONS = 'MI'
+    SCALE_CHOICES = (
+            (UNITS, "< 10"),
+            (TENS, "10s"),
+            (HUNDREDS, "100s"),
+            (THOUSANDS, "1,000s"),
+            (TENTHOUSANDS, "10,000s"),
+            (HUNDREDTHOUSANDS, "100,000s"),
+            (MILLIONS, "1,000,000s"),
+    )
+
+    record_scale = models.CharField(
+                        max_length=2,
+                        choices = SCALE_CHOICES,
+                        blank=True,
+                        null=True,
+                        help_text="indicate the scale, based on the number of records"
     )
     
     # URL of landing page to access data

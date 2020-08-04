@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import Dataset, DataUseAgreement, DataAccess, DataProvider, Keyword
-from .models import MediaSubType, DataField
+from .models import MediaSubType, DataField, ConfidentialityImpact
 
 # customize the look of the admin site:
 admin.site.site_header = 'Data Catalog Management Page'
@@ -104,3 +104,15 @@ class DataFieldAdmin(admin.ModelAdmin):
                     "scope",
     )
     search_fields = ('name', 'description',)
+    
+@admin.register(ConfidentialityImpact)
+class ConfidentialityImpactAdmin(admin.ModelAdmin):
+    list_display = ("standard",
+                    "impact_level",
+                    "impact_rank",
+                    "definition",
+                    "link",
+    )
+    list_filter = ('standard',)
+    search_fields = ("standard", "definition")
+    
