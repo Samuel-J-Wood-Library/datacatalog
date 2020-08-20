@@ -11,7 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.urls import reverse_lazy, reverse
 
 from .models import Dataset, DataUseAgreement, DataAccess, Keyword, DataProvider
-from .models import MediaSubType, DataField
+from .models import MediaSubType, DataField, ConfidentialityImpact
 
 from .forms import DatasetForm, DUAForm
 
@@ -88,7 +88,19 @@ class MediaSubTypeAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetV
                             Q(name__icontains=self.q) |
                             Q(template__istartswith=self.q)
             ) 
-        return qs        
+        return qs    
+
+class CILAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = ConfidentialityImpact.objects.all()
+
+        if self.q:
+            qs =  qs.filter(
+                            Q(impact_level__icontains=self.q) |
+                            Q(standard__icontains=self.q) |
+                            Q(definition_level__icontains=self.q)
+            ) 
+        return qs       
 
 ###################
 ### Index views ###

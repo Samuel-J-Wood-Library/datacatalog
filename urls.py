@@ -43,6 +43,10 @@ urlpatterns = [
         views.MediaSubTypeAutocomplete.as_view(),
         name='autocomplete-mediatype',
         ),
+    path('autocomplete-cil', 
+        views.CILAutocomplete.as_view(),
+        name='autocomplete-cil',
+        ),
 
     # detail views
     path('datasets/<int:pk>', views.DatasetDetailView.as_view(), name='dataset-view'),

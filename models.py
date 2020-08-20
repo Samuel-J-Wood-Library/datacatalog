@@ -8,6 +8,17 @@ from django.contrib.auth.models import User
 
 from persons.models import Person, Department, Organization, Role 
 
+def dictionary_directory_path(instance, filename):
+    """
+    This function specifies the filepath to save uploaded files to.
+    """
+    # file will be uploaded to MEDIA_ROOT/dataset<id>/<filename>
+    return '{0}/{1}'.format(instance.ds_id, filename)
+
+def project_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/pi<id>/gov_type/<filename>
+    return '{0}/{1}/{2}'.format(instance.pi, instance.governance_type.name, filename)
+ 
 class Keyword(models.Model):
     """
     A collection of keywords or tags for mapping to other models (primarily Dataset)
@@ -145,7 +156,7 @@ class ConfidentialityImpact(models.Model):
     )
     
     # standard
-    standard = models.CharField("Impact Level", 
+    standard = models.CharField("Standard", 
                                 max_length=32, 
                                 unique=False, 
                                 null=False, 
@@ -160,7 +171,7 @@ class ConfidentialityImpact(models.Model):
     link = models.URLField(max_length=200,)
 
     def __str__(self):
-        return "{}: {}".format(self.standard, self.level)
+        return "{}: {}".format(self.standard, self.impact_level)
 
     def get_absolute_url(self):
         return reverse('datacatalog:cil-view', kwargs={'pk': self.pk})
@@ -326,9 +337,20 @@ class Dataset(models.Model):
     )
     
     # a field to explicitly capture the fields present in a data model (if applicable)
+    ## Deprecated: to be replaced by the Data Dictionary fileField, 
+    ## which will subsequently be set to parse the dictionary to metadata.
     data_fields = models.ManyToManyField(DataField, 
                                          blank=True,
                                          help_text="List of all fields present in any schema",
+    )
+    
+    # data dictionary (to have specified format for parsing to metadata, but otherwise
+    # will allow upload of any file as a record.)
+    data_dictionary = models.FileField(
+                            upload_to=dictionary_directory_path, 
+                            null=True,
+                            blank=True,
+                            help_text="CSV or TSV file of each data field and its description.",
     )
     
     # beginning of temporal coverage (time of earliest data record)
@@ -378,8 +400,11 @@ class Dataset(models.Model):
     # confidentiality impact level
     cil = models.ManyToManyField(   ConfidentialityImpact,
                                     blank=True,
-                                    help_text="Select an impact level based on "
+                                    help_text="Select an impact level based on data risk",
     )
+    
+    # field to indicate the size of the dataset in terms of number of records
+    num_records = models.IntegerField("Number of records", blank=True, null=True)
     
     # indicate scale of the dataset based on the number of records
     UNITS = 'UN'
@@ -478,11 +503,7 @@ class GovernanceType(models.Model):
     
     # brief description of type
     description = models.TextField(null=True, blank=True)
-
-def project_directory_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/prj<id>/<filename>
-    return '{0}/{1}/{2}'.format(instance.pi, instance.governance_type.name, filename)
-        
+       
 class DataUseAgreement(models.Model):
     """
     The Datauseagreement model defines all the governance attributes of a single DUA 

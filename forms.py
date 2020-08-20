@@ -55,6 +55,18 @@ div_access = Div(
                     css_class="row"
 )
 
+def layout_two_equal(field1, field2):
+    form = Div(
+                Div(field1,
+                    css_class='col-6',
+                ),
+                Div(field2,
+                    css_class='col-6',
+                ),
+                css_class="row"
+            )    
+    return form
+    
 class DatasetForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DatasetForm, self).__init__(*args, **kwargs)
@@ -66,13 +78,14 @@ class DatasetForm(forms.ModelForm):
                     Fieldset('<div class="alert alert-info">Dataset Detail Form</div>',
                             div_name,
                             'description',
-                            div_datafields,
+                            'data_dictionary',
                             'keywords',
                             style="font-weight: bold;",
                     ),
                     Fieldset('<div class="alert alert-info">Data Details</div>',
                             'data_source',
                             'media_subtype',
+                            layout_two_equal('cil', 'num_records'),
                             div_dates,
                             style="font-weight: bold;",
                     ),
@@ -93,7 +106,10 @@ class DatasetForm(forms.ModelForm):
         fields = [  'ds_id',
                     'title',
                     'description',
+                    'data_dictionary',
                     'media_subtype',
+                    'cil', 
+                    'num_records',
                     'data_fields',
                     'publication_date', 
                     'period_start', 
@@ -127,7 +143,10 @@ class DatasetForm(forms.ModelForm):
                                         ),  
                     'media_subtype' : autocomplete.ModelSelect2Multiple(
                                         url='datacatalog:autocomplete-mediatype'
-                                        ),                                      
+                                        ),  
+                    'cil', :  autocomplete.ModelSelect2(
+                                        url='datacatalog:autocomplete-cil'
+                                        ),                            
                     }
 
 div_duaname = Div(
