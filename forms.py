@@ -144,7 +144,7 @@ class DatasetForm(forms.ModelForm):
                     'media_subtype' : autocomplete.ModelSelect2Multiple(
                                         url='datacatalog:autocomplete-mediatype'
                                         ),  
-                    'cil', :  autocomplete.ModelSelect2(
+                    'cil' :  autocomplete.ModelSelect2(
                                         url='datacatalog:autocomplete-cil'
                                         ),                            
                     }
