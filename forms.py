@@ -71,6 +71,7 @@ class DatasetForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DatasetForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.fields['cil'].label = "Cofidentiality Impact Level"
         self.helper.form_id = 'datasetForm'
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('submit', 'Submit'))
@@ -80,24 +81,24 @@ class DatasetForm(forms.ModelForm):
                             'description',
                             'data_dictionary',
                             'keywords',
-                            style="font-weight: bold;",
+                            style="font-weight: normal;",
                     ),
                     Fieldset('<div class="alert alert-info">Data Details</div>',
                             'data_source',
                             'media_subtype',
                             layout_two_equal('cil', 'num_records'),
                             div_dates,
-                            style="font-weight: bold;",
+                            style="font-weight: normal;",
                     ),
                     Fieldset('<div class="alert alert-info">Access Details</div>',
                             'landing_url',
                             div_access,
                             'expert',
-                            style="font-weight: bold;"
+                            style="font-weight: normal;"
                     ), 
                     Fieldset('<div class="alert alert-info">Comments</div>',
                             'comments',
-                            style="font-weight: bold;"
+                            style="font-weight: normal;"
                     ),        
         )
     
@@ -144,7 +145,7 @@ class DatasetForm(forms.ModelForm):
                     'media_subtype' : autocomplete.ModelSelect2Multiple(
                                         url='datacatalog:autocomplete-mediatype'
                                         ),  
-                    'cil' :  autocomplete.ModelSelect2(
+                    'cil' :  autocomplete.ModelSelect2Multiple(
                                         url='datacatalog:autocomplete-cil'
                                         ),                            
                     }

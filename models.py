@@ -13,7 +13,7 @@ def dictionary_directory_path(instance, filename):
     This function specifies the filepath to save uploaded files to.
     """
     # file will be uploaded to MEDIA_ROOT/dataset<id>/<filename>
-    return '{0}/{1}'.format(instance.ds_id, filename)
+    return 'dset{0}/{1}'.format(instance.pk, filename)
 
 def project_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/pi<id>/gov_type/<filename>
