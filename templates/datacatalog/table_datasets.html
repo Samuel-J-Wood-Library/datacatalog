@@ -17,9 +17,8 @@
     <td> {{ ds.period_start }} - {{ ds.period_end }}</td>
     <td> {% for kw in ds.keywords.all %}
             <span class="badge progress-bar-info">
-            <a  href="{% url 'datacatalog:keyword-view' kw.pk %}"
-                style="color:white;">
-                {{ kw.keyword }}
+            <a  href="{% url 'datacatalog:keyword-view' kw.pk %}">
+                <span class="badge badge-info">{{ kw.keyword }}</span>
             </a></span>{% endfor %}</td>
     </tr>
 {% endif %}

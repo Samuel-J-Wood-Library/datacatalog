@@ -50,6 +50,7 @@ urlpatterns = [
 
     # detail views
     path('datasets/<int:pk>', views.DatasetDetailView.as_view(), name='dataset-view'),
+    path('ddictionary/<int:pk>', views.file_view, name='ddict-file'),
     path('access/<int:pk>', views.DataAccessDetailView.as_view(), name='access-view'),
     path('providers/<int:pk>', views.DataProviderDetailView.as_view(),
          name='provider-view'

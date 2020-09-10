@@ -42,19 +42,17 @@
       
                   
             {% if dataset.publisher %}
-            <h4>
+            <h5>
                 Data Provider: 
                 <a href="{% url 'datacatalog:provider-view' dataset.publisher.pk %}">
                     {{ dataset.publisher }}
                 </a>
-            </h4>
+            </h5>
             {% endif %}
 
-            <h4>description</h4>
             <p> {{ dataset.description|linebreaks }}</p>
 
-
-            <table class="table table-striped table-hover">
+            <table class="table table-striped table-hover table-sm">
                 <tr>
                     <td>Record Period Start</td>
                     <td>{{ dataset.period_start }}</td>
@@ -67,8 +65,8 @@
                     <td>Keywords</td>
                     <td>{% for kw in dataset.keywords.all %}
                             <a href="{% url 'datacatalog:keyword-view' kw.pk %}">
-                                {{ kw.keyword }}
-                            </a></br>
+                                <span class="badge badge-info">{{ kw.keyword }}</span>
+                            </a>
                         {% endfor %}
                     </td>
                 </tr>

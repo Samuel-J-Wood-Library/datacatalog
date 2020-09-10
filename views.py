@@ -1,3 +1,6 @@
+import csv
+import os
+
 from dal import autocomplete
 
 from django.shortcuts import render
@@ -7,6 +10,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormVi
 from django.db.models import Q
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.decorators import login_required
 
 from django.urls import reverse_lazy, reverse
 
@@ -113,8 +117,10 @@ class IndexView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'dataset_list'
 
     def get_queryset(self):
-        ds = Dataset.objects.filter(published=True)
-        # ds.sort()
+        ds = Dataset.objects.filter(published=True
+                                    ).order_by('-record_creation'
+                                    )[:5]
+        
         return ds
         
     def get_context_data(self, **kwargs):
@@ -318,6 +324,57 @@ class DataFieldDetailView(LoginRequiredMixin, generic.DetailView):
         context.update({'containing_datasets'    : containing_datasets,  
         })
         return context
+
+def get_file_response(dd_file, content_type):
+    try:
+        with open(str(dd_file), 'rb') as fh:
+            response = HttpResponse(fh.read(),
+                                    content_type="application/vnd.ms-word"
+                                    )
+            response['Content-Disposition'] = 'inline; filename={}'.format(
+                                                        os.path.basename( str(dd_file))
+                                                                            )  
+            return response
+    
+    except FileNotFoundError:
+        raise Http404()
+        
+@login_required()
+def file_view(request, pk):
+    dataset = Dataset.objects.get(pk=pk)
+    # check to see if file is associated:
+    try:
+        dd_file = dataset.data_dictionary.file
+        dd_name = dataset.data_dictionary.name
+    except (FileNotFoundError, ValueError) as e:
+        raise Http404()
+    
+    dd_filename, dd_extension = os.path.splitext(dd_file)
+        
+    if dd_extension == "pdf":
+        try:
+            return FileResponse(dd_file, content_type='application/pdf')
+        except FileNotFoundError:
+            raise Http404()
+    elif dd_extension == "csv":
+        try:
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+
+            writer = csv.writer(response)
+            with open(str(dd_file), 'rb') as fh:
+                for line in fh:
+                    writer.writerow(line.split(','))
+            return response
+        except (FileNotFoundError, ValueError) as e:
+            raise Http404()
+            
+    elif dd_extension == "docx":
+        get_file_response(dd_file, content_type="application/vnd.ms-word")
+    elif dd_extension == "xlsx":
+        get_file_response(dd_file, content_type="application/vnd.ms-excel")
+    else:
+        raise Http404()
 
 ####################
 ### Create views ###
