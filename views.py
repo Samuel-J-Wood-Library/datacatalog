@@ -118,7 +118,7 @@ class IndexView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         ds = Dataset.objects.filter(published=True
-                                    ).order_by('-record_creation'
+                                    ).order_by('-record_update'
                                     )[:5]
         
         return ds
