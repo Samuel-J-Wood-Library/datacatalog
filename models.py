@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 
 from persons.models import Person, Department, Organization, Role 
 
+
 def dictionary_directory_path(instance, filename):
     """
     This function specifies the filepath to save uploaded files to.
@@ -15,10 +16,12 @@ def dictionary_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/dataset<id>/<filename>
     return 'dset{0}/{1}'.format(instance.pk, filename)
 
+
 def project_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/pi<id>/gov_type/<filename>
     return '{0}/{1}/{2}'.format(instance.pi, instance.governance_type.name, filename)
  
+
 class Keyword(models.Model):
     """
     A collection of keywords or tags for mapping to other models (primarily Dataset)
@@ -50,13 +53,14 @@ class Keyword(models.Model):
     def get_absolute_url(self):
         return reverse('datacatalog:keyword-view', kwargs={'pk': self.pk})
 
+
 class MediaSubType(models.Model):
     """
     This model holds values from www.iana.org media types (formally MIME types).
     """
     # description of the subtype
     name = models.CharField(max_length=256, 
-                                unique=True,
+                            unique=True,
     )
     
     # template indicates the type/subtype id
@@ -295,7 +299,10 @@ class Dataset(models.Model):
     accurately described using the fields of this model. Ie, if a collection requires
     two or more entries for a specific field to describe the collection, then the 
     collection should be subsetted and each subset defined with its own model instance. 
-    
+
+    Related subsets can be linked together with a master dataset record, and the linked_data
+    field.
+
     While there is no minimum criteria for a dataset, it is recommended that each dataset
     be defined as the largest collection possible that can be defined within a single 
     instance.
@@ -471,10 +478,32 @@ class Dataset(models.Model):
     # field to designate whether data should be published
     published = models.BooleanField(null=True, blank=True)
 
+    # flag as publicly visible.
+    public = models.BooleanField(null=True, blank=True)
+
     # specify the users who have access. If none specified, then all users have
     # access to view
-    restricted = models.ManyToManyField(Person, related_name='restricted_dataset',)
-    
+    restricted = models.ManyToManyField(Person, related_name='restricted_dataset', blank=True)
+
+    # provide a direct link between related datasets, allowing for smart subsetting of projects or data models
+    linked_data = models.ManyToManyField("self")
+
+    def viewing_is_permitted(self, request):
+        """
+        checks viewing permission of instance against restricted field, and the logged in user via requests
+        and returns True if the model instance is viewable by the user.
+        """
+        if self.public:
+            return True
+        elif len(self.restricted) == 0:
+            return True
+
+        user = getattr(request, 'user', None)
+        if self.restricted.filter(id=user.id).exists():
+            return True
+        else:
+            return False
+
     def __str__(self):
         return "{}".format(self.title)
 
@@ -571,13 +600,13 @@ class DataUseAgreement(models.Model):
     )
     
     # date DUA signed
-    date_signed = models.DateField(null=True)
+    date_signed = models.DateField(null=True, blank=True)
     
     # start date of DUA
-    start_date = models.DateField(null=True)
+    start_date = models.DateField(null=True, blank=True)
     
     # end date of DUA
-    end_date = models.DateField(null=True)
+    end_date = models.DateField(null=True, blank=True)
     
     # specify a document that supersedes this DUA instance
     defers_to_doc = models.ForeignKey('self', 
