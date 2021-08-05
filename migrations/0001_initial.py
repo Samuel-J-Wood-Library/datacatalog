@@ -10,7 +10,6 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('dc_management', '0052_auto_20190118_1639'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -73,12 +72,12 @@ class Migration(migrations.Migration):
                 ('storage_requirements', models.TextField(blank=True, null=True)),
                 ('access_conditions', models.TextField(blank=True, null=True)),
                 ('access_requirements', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='datacatalog.DataAccess')),
-                ('contact', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='contact_person', to='dc_management.Person')),
+                ('contact', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='contact_person', to='persons.Person')),
                 ('datasets', models.ManyToManyField(to='datacatalog.Dataset')),
-                ('pi', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='pi_person', to='dc_management.Person')),
+                ('pi', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='pi_person', to='persons.Person')),
                 ('publisher', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='datacatalog.DataProvider')),
                 ('record_author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('users', models.ManyToManyField(null=True, to='dc_management.Person')),
+                ('users', models.ManyToManyField(null=True, to='persons.Person')),
             ],
         ),
         migrations.CreateModel(

@@ -7,7 +7,6 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dc_management', '0056_auto_20190618_1308'),
         ('datacatalog', '0006_auto_20190206_0942'),
     ]
 
@@ -15,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='dataset',
             name='expert',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='dc_management.Person'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='persons.Person'),
         ),
         migrations.AddField(
             model_name='dataset',

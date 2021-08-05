@@ -18,6 +18,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='datauseagreement',
             name='users',
-            field=models.ManyToManyField(to='dc_management.Person'),
+            field=models.ManyToManyField(to='persons.Person'),
         ),
     ]
