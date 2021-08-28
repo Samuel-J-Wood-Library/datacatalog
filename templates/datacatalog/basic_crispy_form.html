@@ -6,11 +6,12 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-        
+
 {{ form.media }}
 
 <form action="" method="post">
 	{% csrf_token %}
+
     {% crispy form %}
     {% comment %}
     {{ form|crispy }}
