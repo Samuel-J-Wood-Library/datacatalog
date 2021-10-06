@@ -85,7 +85,7 @@ body { padding-top: 55px; }
               <a class="dropdown-item" href="{% url 'frontpage' %}">
                 Data Core Frontpage</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="/logout/">Logout </a>
+              <a class="dropdown-item" href="/logout">Logout </a>
             </div>        
             </li>
             
@@ -133,7 +133,7 @@ body { padding-top: 55px; }
         </ul> 
         {% else %}
             <li><a style="color:white;" 
-               href="/accounts/login/">Login</a></li>
+               href="/accounts/login">Login</a></li>
         {% endif %}  
     </div>
 </nav>
@@ -233,7 +233,7 @@ body { padding-top: 55px; }
                                     <li><a href="{% url 'admin:index' %}" 
                                            target="_blank">Admin</a>
                                     </li>
-                                    <li><a href="/logout/">Logout </a></li>
+                                    <li><a href="/logout">Logout </a></li>
                                     <li><a href="{% url 'frontpage' %}">
                                         Data Catalog Frontpage</a></li>
                               </ul>
@@ -275,7 +275,7 @@ body { padding-top: 55px; }
                             
                        
                         {% else %}
-                            <li><a href="/login/">Login</a></li>
+                            <li><a href="/login">Login</a></li>
                             
                         {% endif %}
                     </ul> 
