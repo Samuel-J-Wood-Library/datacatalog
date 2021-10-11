@@ -266,7 +266,7 @@ class DataAccessDetailView(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         da_obj = self.object
         published_data = Dataset.objects.filter(published=True, 
-                                                access_requirements=da_obj.pk
+                                                access_requirements__pk=da_obj.pk
         )
         context = super(DataAccessDetailView, self).get_context_data(**kwargs)
         context.update({'published_data'    : published_data,  
