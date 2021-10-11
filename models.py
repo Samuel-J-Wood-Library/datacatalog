@@ -450,11 +450,7 @@ class Dataset(models.Model):
     comments = models.TextField(null=True, blank=True)
         
     # pointer to the generic instructions required for accessing this data
-    access_requirements = models.ForeignKey(DataAccess, 
-                                            null=True, 
-                                            blank=True,
-                                            on_delete=models.PROTECT,
-                                            )    
+    access_requirements = models.ManyToManyField(DataAccess, blank=True,)
 
     # local contact person who is an expert on this dataset
     expert = models.ForeignKey(Person,
@@ -641,10 +637,7 @@ class DataUseAgreement(models.Model):
     reuse_scope = models.TextField(null=True, blank=True)
     
     # pointer to the generic instructions required for accessing this data
-    access_requirements = models.ForeignKey(DataAccess, 
-                                            null=True, 
-                                            blank=True,
-                                            on_delete=models.CASCADE)    
+    access_requirements = models.ManyToManyField(DataAccess, blank=True,)
 
     # FileField stores a document for viewing (currently only by privileged users)
     documentation = models.FileField(
@@ -661,7 +654,10 @@ class DataUseAgreement(models.Model):
     
     # this is set to true if metadata is only to be visible to privileged users
     privileged = models.BooleanField(null=True, blank=True)
-    
+
+    # flag as publicly visible.
+    public = models.BooleanField(null=True, blank=True)
+
     # specify the users who have access. If none specified, then all users have
     # access to view
     restricted = models.ManyToManyField(Person, related_name='restricted_dua')
@@ -701,4 +697,19 @@ class DataUseAgreement(models.Model):
         else:
             status = "danger"
         return status
-    
+
+    def viewing_is_permitted(self, request):
+        """
+        checks viewing permission of instance against restricted field, and the logged in user via requests
+        and returns True if the model instance is viewable by the user.
+        """
+        if self.public:
+            return True
+        elif len(self.restricted) == 0:
+            return True
+
+        user = getattr(request, 'user', None)
+        if self.restricted.filter(id=user.id).exists():
+            return True
+        else:
+            return False
