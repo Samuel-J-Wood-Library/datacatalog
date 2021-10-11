@@ -237,60 +237,29 @@ class DataProvider(models.Model):
     def get_absolute_url(self):
         return reverse('datacatalog:provider-view', kwargs={'pk': self.pk})
 
-class DataAccess(models.Model):
+class StorageType(models.Model):
     """
-    This class defines the processes and information required in order to gain access 
-    to a dataset. These instructions are generic, in as much as they define how anyone
-    may gain access, and are not intended to only specify for a particular user/project. 
+    This class defines the basic storage types and locations in which a set of digital
+    objects might be found. This will allow the catalog to display the detailed location
+    information for each type in a meaningful way, and ensure objects are only described
+    from a single storage source. Creation of new storage types is not intended for end
+    users, but only for administrators.
     """
     # date the record was created
     record_creation = models.DateField(auto_now_add=True)
-    
+
     # date the record was most recently modified
     record_update = models.DateField(auto_now=True)
-    
+
     # the user who was signed in at time of record modification
     record_author = models.ForeignKey(User, on_delete=models.CASCADE)
- 
-    # general name for identification of access models
+
+    # general name for identification of storage type
     name = models.CharField(max_length=128)
-        
-    # is a DUA agreement required?
-    dua_required = models.BooleanField(null=True, blank=True)
-    
-    # is a description of the project required?
-    prj_desc_required = models.BooleanField(null=True, blank=True)
-    
-    # is a description of the storage and handling required?
-    sys_desc_required = models.BooleanField(null=True, blank=True)
-    
-    # will other WCM people or departments be required in order to gain access?
-    help_required = models.BooleanField(null=True, blank=True)
-    
-    # Charge for access (in US dollars, approximate, 0 for no cost)
-    access_cost = models.IntegerField(null=True, blank=True)
 
-    # publicly available
-    public = models.BooleanField(null=True, blank=True)
-    
-    # typical time period from request to access of data
-    time_required = models.DurationField(null=True, blank=True)
+    # instructions for sysadmin archiving of files within the storage type
+    archive_instructions = models.TextField(blank=True)
 
-    # this is set to true after being checked by the Data Catalog curation team
-    curated = models.BooleanField(null=True, blank=True)
-
-    # field to designate whether data should be published
-    published = models.BooleanField(null=True, blank=True)
-
-    # specify the users who have access. If none specified, then all users have
-    # access to view
-    restricted = models.ManyToManyField(Person, related_name='restricted_access',)
-    
-    def __str__(self):
-        return "{}".format(self.name)
-            
-    def get_absolute_url(self):
-        return reverse('datacatalog:access-view', kwargs={'pk': self.pk})
     
 class Dataset(models.Model):
     """
@@ -450,7 +419,7 @@ class Dataset(models.Model):
     comments = models.TextField(null=True, blank=True)
         
     # pointer to the generic instructions required for accessing this data
-    access_requirements = models.ManyToManyField(DataAccess, blank=True,)
+    # access_requirements = models.ManyToManyField(DataAccess, blank=True,)
 
     # local contact person who is an expert on this dataset
     expert = models.ForeignKey(Person,
@@ -505,6 +474,105 @@ class Dataset(models.Model):
 
     def get_absolute_url(self):
         return reverse('datacatalog:dataset-view', kwargs={'pk': self.pk})
+
+
+class DataAccess(models.Model):
+    """
+    This class defines the processes and information required in order to gain access
+    to a dataset. These instructions are generic, in as much as they define how anyone
+    may gain access, and are not intended to only specify for a particular user/project.
+    These instructions are specific, in as much as they pertain to a particular set of
+    digital objects associated with a described dataset.
+    """
+    # date the record was created
+    record_creation = models.DateField(auto_now_add=True)
+
+    # date the record was most recently modified
+    record_update = models.DateField(auto_now=True)
+
+    # the user who was signed in at time of record modification
+    record_author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    # general name for identification of access object
+    name = models.CharField(max_length=128, blank=True, null=True)
+
+    # the storage type classification for the digital objects
+    storage_type = models.ForeignKey(StorageType, blank=True, null=True, on_delete=models.PROTECT)
+
+    # unique identifier of digital objects collection (eg LabArchives notebook ID)
+    unique_id = models.CharField(max_length=256, blank=True, null=True)
+
+    # shareable link that gives access to the digital objects/collection
+    shareable_link = models.URLField(blank=True, null=True, max_length=1024)
+
+    # description of digital object locations - as filepaths
+    filepaths = models.TextField(blank=True, null=True)
+
+    # points to the dataset object that describes this set of data files
+    metadata = models.ForeignKey(Dataset, blank=True, on_delete=models.PROTECT)
+
+    # is a DUA agreement required?
+    dua_required = models.BooleanField(null=True, blank=True)
+
+    # is a description of the project required?
+    prj_desc_required = models.BooleanField(null=True, blank=True)
+
+    # is a description of the storage and handling required?
+    sys_desc_required = models.BooleanField(null=True, blank=True)
+
+    # will other WCM people or departments be required in order to gain access?
+    help_required = models.BooleanField(null=True, blank=True)
+
+    # Charge for access (in US dollars, approximate, 0 for no cost)
+    access_cost = models.IntegerField(null=True, blank=True)
+
+    # whether the digital objects are publicly available
+    public_data = models.BooleanField(null=True, blank=True, default=False)
+
+    # email for others to request access to the digital objects
+    steward_email = models.EmailField(null=True, blank=True, )
+
+    # details for gaining access to the dataset
+    access_instructions = models.TextField(blank=True, null=True,
+                                           help_text="Any additional instructions for accessing the data")
+
+    # whether this record is to be publicly available
+    public = models.BooleanField(null=True, blank=True, default=False)
+
+    # typical time period from request to access of data
+    time_required = models.DurationField(null=True, blank=True)
+
+    # this is set to true after being checked by the Data Catalog curation team
+    curated = models.BooleanField(null=True, blank=True, default=False)
+
+    # field to designate whether data should be published
+    published = models.BooleanField(null=True, blank=True, default=True)
+
+    # specify the users who have access. If none specified, then all users have
+    # access to view
+    restricted = models.ManyToManyField(Person, related_name='restricted_access', )
+
+    def __str__(self):
+        return "{}".format(self.name)
+
+    def get_absolute_url(self):
+        return reverse('datacatalog:access-view', kwargs={'pk': self.pk})
+
+    def viewing_is_permitted(self, request):
+        """
+        checks viewing permission of instance against restricted field, and the logged in user via requests
+        and returns True if the model instance is viewable by the user.
+        """
+        if self.public:
+            return True
+        elif len(self.restricted) == 0:
+            return True
+
+        user = getattr(request, 'user', None)
+        if self.restricted.filter(id=user.id).exists():
+            return True
+        else:
+            return False
 
 class GovernanceType(models.Model):
     """
@@ -637,7 +705,7 @@ class DataUseAgreement(models.Model):
     reuse_scope = models.TextField(null=True, blank=True)
     
     # pointer to the generic instructions required for accessing this data
-    access_requirements = models.ManyToManyField(DataAccess, blank=True,)
+    # access_requirements = models.ManyToManyField(DataAccess, blank=True,)
 
     # FileField stores a document for viewing (currently only by privileged users)
     documentation = models.FileField(

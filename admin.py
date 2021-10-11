@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import Dataset, DataUseAgreement, DataAccess, DataProvider, Keyword
-from .models import MediaSubType, DataField, ConfidentialityImpact
+from .models import MediaSubType, DataField, ConfidentialityImpact, StorageType
 
 # customize the look of the admin site:
 admin.site.site_header = 'Data Catalog Management Page'
@@ -64,7 +64,12 @@ class DataAccessAdmin(admin.ModelAdmin):
     list_filter = ('curated', 'published',)
     search_fields = ('name',)
     actions = [make_published, make_unpublished, make_curated]
-    
+
+@admin.register(StorageType)
+class StorageTypeAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    search_fields = ('name',)
+
 @admin.register(DataProvider)
 class DataProviderAdmin(admin.ModelAdmin):
     list_display = ("name", 

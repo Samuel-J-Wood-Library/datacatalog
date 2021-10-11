@@ -92,7 +92,7 @@ class DatasetForm(forms.ModelForm):
                     ),
                     Fieldset('<div class="alert alert-info">Access Details</div>',
                             'landing_url',
-                            div_access,
+                            'publisher',
                             'expert',
                             style="font-weight: normal;"
                     ), 
@@ -120,7 +120,6 @@ class DatasetForm(forms.ModelForm):
                     'keywords',
                     'landing_url', 
                     'comments', 
-                    'access_requirements',
                     'expert',
                 ]
 
@@ -135,10 +134,7 @@ class DatasetForm(forms.ModelForm):
                                         ),
                     'keywords' : autocomplete.ModelSelect2Multiple(
                                         url='datacatalog:autocomplete-keyword'
-                                        ),  
-                    'access_requirements' : autocomplete.ModelSelect2(
-                                        url='datacatalog:autocomplete-access'
-                                        ),   
+                                        ),
                     'data_fields' : autocomplete.ModelSelect2Multiple(
                                         url='datacatalog:autocomplete-datafield'
                                         ),  
@@ -226,7 +222,6 @@ class DUAForm(forms.ModelForm):
                     ),
                     Fieldset('<div class="alert alert-info">Data handling conditions</div>',
                             div_handling,
-                            'access_requirements',
                             'storage_requirements',
                             'access_conditions', 
                             'reuse_scope',                           
@@ -253,7 +248,6 @@ class DUAForm(forms.ModelForm):
                     'storage_requirements',
                     'access_conditions',
                     'datasets',
-                    'access_requirements',
                     'reuse_scope',
                 ]
 
@@ -271,10 +265,7 @@ class DUAForm(forms.ModelForm):
                                         ),  
                     'pi' : autocomplete.ModelSelect2(
                                         url='persons:autocomplete-person'
-                                        ),               
-                    'access_requirements' : autocomplete.ModelSelect2(
-                                        url='datacatalog:autocomplete-access'
-                                        ),   
+                                        ),
                     'datasets' : autocomplete.ModelSelect2Multiple(
                                         url='datacatalog:autocomplete-dataset'
                                         ),                                      
