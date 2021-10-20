@@ -1,0 +1,69 @@
+{% extends 'datacatalog/base-catalog.html' %}
+
+{# Load the tag library #}
+{% load bootstrap4 %}
+{% load project_tags %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+{% block content %}
+
+<style>
+/* styling of the tabs*/
+#exTab1 .tab-content {
+  color : black;
+  padding : 5px 15px;
+}
+
+#exTab1 .nav-tabs > li > a {
+  border-radius: 4px 4px 0 0;
+}
+</style>
+
+{### Project Header ###}
+
+<h1>
+    {{ project.name }}
+    {% if request.user|has_group:"datacatalog_editor" or request.user == project.pi or request.user == project.admin %}
+    <span style="float:right">
+        <a type="button"
+           class="btn btn-primary"
+           href="{% url 'datacatalog:project-update' project.pk %}">
+           Update project details
+        </a>
+    </span>
+    {% endif %}
+</h1>
+{% if project.pi %}
+<p>PI: {{ project.pi }}</p>
+{% endif %}
+
+
+{% if project.description %}
+    <p><small class="text-muted">Project description:</small>
+    {{ project.description|linebreaks }}
+    </p>
+{% endif %}
+
+{### Tiles of all datasets and storage items  ###}
+
+{% for dset in project.metadata.all %}
+<div class="card" style="width: 18rem;">
+  <div class="card-header">
+    {{ dset.title }}
+  </div>
+  <ul class="list-group list-group-flush">
+    {% for daccess in dset.get_metadata_set.all %}
+    <li class="list-group-item">{{ daccess.storage_type.name }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endfor %}
+
+{% endblock %}
+

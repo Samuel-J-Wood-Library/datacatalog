@@ -49,6 +49,7 @@ urlpatterns = [
         ),
 
     # detail views
+    path('project/<int:pk>', views.ProjectDetailView.as_view(), name='project-view'),
     path('datasets/<int:pk>', views.DatasetDetailView.as_view(), name='dataset-view'),
     path('ddictionary/<int:pk>', views.file_view, name='ddict-file'),
     path('access/<int:pk>', views.DataAccessDetailView.as_view(), name='access-view'),
@@ -61,8 +62,9 @@ urlpatterns = [
             views.DataFieldDetailView.as_view(), 
             name='datafield-view'
     ),
+    path('retention/<int:pk>', views.RetentionDetailView.as_view(), name='retention-view'),
 
-    # create views
+                  # create views
     path('datasets/add', views.DatasetCreateView.as_view(), name='dataset-add'),
     path('access/add', views.DataAccessCreateView.as_view(), name='access-add'),
     path('providers/add', views.DataProviderCreateView.as_view(),name='provider-add'),
@@ -71,6 +73,9 @@ urlpatterns = [
     path('datafield/add', views.DataFieldCreateView.as_view(), name='datafield-add'),
     
     # update views
+    path('project/update/<int:pk>', views.ProjectUpdateView.as_view(),
+       name='project-update'
+       ),
     path('datasets/update/<int:pk>', views.DatasetUpdateView.as_view(),
          name='dataset-update'
     ),

@@ -5,10 +5,7 @@ from crispy_forms.layout import Submit, Layout, Div, Fieldset, HTML
 
 from django import forms
 
-from django.utils.translation import gettext_lazy as _
-
-from persons.models import Person
-from .models import Dataset, MediaSubType, DataField, DataUseAgreement
+from .models import Dataset, DataAccess, Project, DataUseAgreement
 
 div_datafields = Div(
                     Div('data_fields',
@@ -145,6 +142,109 @@ class DatasetForm(forms.ModelForm):
                                         url='datacatalog:autocomplete-cil'
                                         ),                            
                     }
+
+div_choose_add_dset = Div(
+                            Div('metadata',
+                                css_class='col-10'
+                            ),
+                            HTML("""
+                                    <a  href="{% url 'datacatalog:dataset-add' %}"
+                                        target="_blank" 
+                                        type="button" 
+                                        class="btn btn-success">
+                                            Create new dataset record
+                                    </a>
+                                """
+                            ),
+                            css_class="row",
+)
+
+class DataAccessForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(DataAccessForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.fields['name'].label = "Short Description"
+        self.fields['steward_email'].label = "Contact email"
+        self.fields['metadata'].label = "Data Catalog record of dataset"
+        self.fields['public'].label = "Add public link for data sharing to catalog:"
+        self.helper.form_id = 'dataaccessForm'
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submit', 'Submit'))
+        self.helper.layout = Layout(
+            Fieldset('<div class="alert alert-info">Create New Record for Data Access</div>',
+                     'name',
+                     'storage_type',
+                     layout_two_equal('unique_id', 'shareable_link'),
+                     'filepaths',
+                     style="font-weight: normal;",
+                     ),
+            Fieldset('<div class="alert alert-info">Discover and Access</div>',
+                     div_choose_add_dset,
+                     'steward_email',
+                     'access_instructions',
+                     'public',
+                     style="font-weight: normal;",
+                     ),
+        )
+
+    class Meta:
+        model = DataAccess
+        fields = ['name',
+                  'storage_type',
+                  'unique_id',
+                  'shareable_link',
+                  'filepaths',
+                  'metadata',
+                  'steward_email',
+                  'access_instructions',
+                  'public',
+                  ]
+
+        widgets = {'metadata': autocomplete.ModelSelect2(
+            url='datacatalog:autocomplete-dataset'
+        ),
+        }
+
+class ProjectForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ProjectForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'projectForm'
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submit', 'Submit'))
+        self.helper.layout = Layout(
+            Fieldset('<div class="alert alert-info">Create New Project</div>',
+                     'name',
+                     'description',
+                     style="font-weight: normal;",
+                     ),
+            Fieldset('<div class="alert alert-info">Project Details</div>',
+                     layout_two_equal('pi', 'admin'),
+                     layout_two_equal('sponsor', 'funding_id'),
+                     'completion',
+                     style="font-weight: normal;",
+                     ),
+        )
+
+    class Meta:
+        model = Project
+        fields = ['name',
+                  'description',
+                  'pi',
+                  'admin',
+                  'sponsor',
+                  'funding_id',
+                  'completion',
+                  ]
+
+        widgets = {'pi': autocomplete.ModelSelect2(
+            url='datacatalog:autocomplete-person'
+        ),
+            'admin': autocomplete.ModelSelect2(
+                url='datacatalog:autocomplete-person'
+            ),
+        }
+
 
 div_duaname = Div(
                 Div('duaid',

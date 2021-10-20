@@ -15,9 +15,10 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy, reverse
 
 from .models import Dataset, DataUseAgreement, DataAccess, Keyword, DataProvider
-from .models import MediaSubType, DataField, ConfidentialityImpact
+from .models import MediaSubType, DataField, ConfidentialityImpact, Project
+from .models import RetentionRequest
 
-from .forms import DatasetForm, DUAForm
+from .forms import DatasetForm, DUAForm, ProjectForm, DataAccessForm
 
 ####################################
 ######  AUTOCOMPLETE  VIEWS   ######
@@ -245,6 +246,17 @@ class IndexDataProviderView(LoginRequiredMixin, generic.ListView):
 ### Detail views ###
 ####################
 
+class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Dataset
+    template_name = 'datacatalog/detail_project.html'
+
+    def get_context_data(self, **kwargs):
+
+        context = super(ProjectDetailView, self).get_context_data(**kwargs)
+        context.update({'blankdata': None,
+                        })
+        return context
+
 class DatasetDetailView(LoginRequiredMixin, generic.DetailView):
     model = Dataset
     template_name = 'datacatalog/detail_dataset.html'
@@ -323,6 +335,21 @@ class DataFieldDetailView(LoginRequiredMixin, generic.DetailView):
         })
         return context
 
+class RetentionDetailView(LoginRequiredMixin, generic.DetailView):
+    model = RetentionRequest
+    template_name = 'datacatalog/detail_retention.html'
+
+    def get_context_data(self, **kwargs):
+        firstrecord = self.object.to_archive.first()
+        retentionpi = firstrecord.pi
+        retentionadmin = firstrecord.admin
+
+        context = super(RetentionDetailView, self).get_context_data(**kwargs)
+        context.update({'retentionpi': retentionpi,
+                        'retentionadmin': retentionadmin,
+                        })
+        return context
+
 def get_file_response(dd_file, content_type):
     try:
         with open(str(dd_file), 'rb') as fh:
@@ -377,6 +404,21 @@ def file_view(request, pk):
 ####################
 ### Create views ###
 ####################
+
+class ProjectCreateView(LoginRequiredMixin, CreateView):
+    model = Dataset
+    form_class = DatasetForm
+    template_name = "datacatalog/basic_crispy_form.html"
+
+    # default success_url should be to the object page defined in model.
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        # update who last edited record
+        self.object.record_author = self.request.user
+
+        self.object.save()
+        return super(ProjectCreateView, self).form_valid(form)
 
 class DatasetCreateView(LoginRequiredMixin, CreateView):
     model = Dataset
@@ -475,6 +517,12 @@ class DataFieldCreateView(LoginRequiredMixin, CreateView):
 ####################
 ### Update views ###
 ####################
+
+class ProjectUpdateView(PermissionRequiredMixin, UpdateView):
+    model = Project
+    form_class = ProjectForm
+    template_name = "datacatalog/basic_crispy_form.html"
+    permission_required = 'datacatalog.change_project'
 
 class DatasetUpdateView(PermissionRequiredMixin, UpdateView):
     model = Dataset

@@ -1,0 +1,74 @@
+{% extends 'datacatalog/base-catalog.html' %}
+
+{# Load the tag library #}
+{% load bootstrap4 %}
+{% load project_tags %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+{% block content %}
+
+<style>
+/* styling of the tabs*/
+#exTab1 .tab-content {
+  color : black;
+  padding : 5px 15px;
+}
+
+#exTab1 .nav-tabs > li > a {
+  border-radius: 4px 4px 0 0;
+}
+</style>
+
+{### Project Header ###}
+
+<h1>
+    {{ retentionrequest.name }}
+    {% if request.user|has_group:"datacatalog_editor" or request.user == retentionpi or request.user == retentionadmin %}
+    <span style="float:right">
+        <a type="button"
+           class="btn btn-primary"
+           href="{% url 'datacatalog:retention-update' retentionrequest.pk %}">
+           Update project details
+        </a>
+    </span>
+    {% endif %}
+</h1>
+<h3>Milestone: {{ retentionrequest.get_milestone_display }}</h3>
+
+<table>
+    <tr><td>PI</td><td>{{ retentionpi }}</td></tr>
+    <tr><td>Admin</td><td>{{ retentionadmin }}</td></tr>
+    <tr><td>Request created</td><td>{{ retentionrequest.record_creation }}</td></tr>
+    <tr><td>Request creator</td><td>{{ retentionrequest.record_author }}</td></tr>
+    <tr><td>Last update</td><td>{{ retentionrequest.record_update }}</td></tr>
+    <tr><td>Comments</td><td>{{ retentionrequest.comments }}</td></tr>
+</table>
+
+{### Tiles of all storage items  ###}
+
+{% for da in retentionrequest.to_archive.all %}
+
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">{{ da.name }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{ da.storage_type.name }}</h6>
+        <p class="card-text">{{ da.filepaths|linebreaks }}</p>
+        <a href="{% url 'datacatalog:dataset-view' da.metadata.pk %}" class="card-link">View metadata</a>
+        <a href="{{ da.shareable_link }}" class="card-link">Go to data</a>
+      </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">{{ da.unique_id }}</li>
+          <li class="list-group-item">{{ da.steward_email }}</li>
+        </ul>
+    </div>
+
+{% endfor %}
+
+{% endblock %}
+

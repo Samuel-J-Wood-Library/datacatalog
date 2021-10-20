@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import Dataset, DataUseAgreement, DataAccess, DataProvider, Keyword
 from .models import MediaSubType, DataField, ConfidentialityImpact, StorageType
+from .models import Project, StorageType, RetentionRequest
 
 # customize the look of the admin site:
 admin.site.site_header = 'Data Catalog Management Page'
@@ -56,14 +57,33 @@ class DataUseAgreementAdmin(admin.ModelAdmin):
 @admin.register(DataAccess)
 class DataAccessAdmin(admin.ModelAdmin):
     list_display = ("name", 
-                    "dua_required",
-                    "prj_desc_required",
+                    "storage_type",
+                    "unique_id",
+                    "shareable_link",
                     "curated",
                     "published",
     )
-    list_filter = ('curated', 'published',)
-    search_fields = ('name',)
+    list_filter = ('curated', 'published','storage_type')
+    search_fields = ('name','unique_id', 'shareable_link')
     actions = [make_published, make_unpublished, make_curated]
+
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ("name",
+                    "pi",
+                    "admin",
+                    "sponsor",
+    )
+    search_fields = ('name','pi','sponsor',)
+
+@admin.register(RetentionRequest)
+class RetentionRequestAdmin(admin.ModelAdmin):
+    list_display = ("name",
+                    "record_creation",
+                    "milestone",
+    )
+    list_filter = ('record_creation',)
+    search_fields = ('name',)
 
 @admin.register(StorageType)
 class StorageTypeAdmin(admin.ModelAdmin):
