@@ -260,7 +260,9 @@ class StorageType(models.Model):
     # instructions for sysadmin archiving of files within the storage type
     archive_instructions = models.TextField(blank=True)
 
-    
+    def __str__(self):
+        return "{}".format(self.name)
+
 class Dataset(models.Model):
     """
     Each instance of Dataset defines a single collection of data. The minimum unit of a
@@ -574,6 +576,57 @@ class DataAccess(models.Model):
         else:
             return False
 
+    def is_retained(self):
+        if self.retention_requests.count() > 0:
+            return True
+        else:
+            return False
+
+
+class Project(models.Model):
+    """
+    The Project model allows aggregation of multiple datasets together under a common
+    goal, providing common attributes related to the datasets' management, including
+    PI, funding, and expected project completion.
+    """
+    # date the record was created
+    record_creation = models.DateField(auto_now_add=True)
+
+    # date the record was most recently modified
+    record_update = models.DateField(auto_now=True)
+
+    # the user who was signed in at time of record modification
+    record_author = models.ForeignKey(User, on_delete=models.PROTECT, related_name='record_author')
+
+    # name of project
+    name = models.CharField(max_length=128, unique=True)
+
+    # brief description of project
+    description = models.TextField(null=True, blank=True)
+
+    # principle investigator
+    pi = models.ForeignKey(Person, on_delete=models.PROTECT, related_name='pi_project_person')
+
+    # project administrator
+    admin = models.ForeignKey(Person, on_delete=models.PROTECT, related_name='admin_person')
+
+    # project sponsor
+    sponsor = models.CharField(max_length=128, null=True, blank=True)
+
+    # sponsored project identifier
+    funding_id = models.CharField(max_length=64, null=True, blank=True)
+
+    # expected date of project completion
+    completion = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return "{}".format(self.name)
+
+    def get_absolute_url(self):
+        return reverse('datacatalog:project-view', kwargs={'pk': self.pk})
+
+
+
 class GovernanceType(models.Model):
     """
     The GovernanceType model stores and defines all the specific types of governance
@@ -596,6 +649,9 @@ class GovernanceType(models.Model):
     
     # brief description of type
     description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return "{}".format(self.name)
        
 class DataUseAgreement(models.Model):
     """
@@ -781,3 +837,56 @@ class DataUseAgreement(models.Model):
             return True
         else:
             return False
+
+
+class RetentionRequest(models.Model):
+    """
+    The Datauseagreement model defines all the governance attributes of a single DUA
+    entered into by a specific set of users and a single data provider.
+    The DUA will relate to a specific dataset as defined by a Dataset model instance.
+    """
+    # date the record was created
+    record_creation = models.DateField(auto_now_add=True)
+
+    # date the record was most recently modified
+    record_update = models.DateField(auto_now=True)
+
+    # the user who was signed in at time of record modification
+    record_author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    # short description of the request
+    name = models.CharField("Short description", max_length=256,)
+
+    # Milestone that defines the reason for data retention
+    PUBLICATION = 'PU'
+    COMPLETION = 'CO'
+    TRANSFER = 'TR'
+    PRIVATE = 'PR'
+    OTHER = 'OT'
+    MILESTONE_CHOICES = (
+        (PUBLICATION, "Publication"),
+        (COMPLETION, "Project/Grant completion"),
+        (TRANSFER, "Leaving Weill Cornell Medicine"),
+        (PRIVATE, "Private backup"),
+        (OTHER, "Other"),
+    )
+    milestone = models.CharField(
+        max_length=2,
+        choices=MILESTONE_CHOICES,
+        default=COMPLETION,
+    )
+
+    # digital objects for archiving
+    to_archive = models.ManyToManyField(DataAccess, related_name='retention_requests')
+
+    # for additional information necessary for archiving
+    comments = models.TextField(null=True, blank=True)
+
+    # ITS ticket ID
+    ticket = models.CharField(max_length=32,)
+
+    def __str__(self):
+        return "{}: {}".format(self.record_creation, self.name)
+
+    def get_absolute_url(self):
+        return reverse('datacatalog:retention-view', kwargs={'pk': self.pk})
