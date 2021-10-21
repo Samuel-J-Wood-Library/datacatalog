@@ -3,24 +3,28 @@
 <thead class="thead-default">
     <tr>
         <th>Name</th>
-        <th>Public dataset?</th>
-        <th>DUA required?</th>
-        <th>Project description required? </th>
-        <th>System description required?</th>
-        <th>Security assistance required?</th>
-        <th>Access cost</th>
+        <th>Project</th>
+        <th>PI</th>
+        <th>Retention requested?</th>
+        <th>Data retained?</th>
+        <th>Last updated</th>
+        <th>Shareable link</th>
     </tr>
 </thead>
 
 {% for ac in access_list %}
     <tr>
     <td><a href="{% url 'datacatalog:access-view' ac.pk %}">{{ ac.name }}</a></td>
-    <td>{{ ac.public }}</td>
-    <td>{{ ac.dua_required }}</td>
-    <td>{{ ac.prj_desc_required }}</td>
-    <td>{{ ac.sys_desc_required }}</td>
-    <td>{{ ac.help_required }}</td>
-    <td>{{ ac.access_cost }}</td>
+    <td>{{ ac.project }}</td>
+    <td>{{ ac.project.pi }}</td>
+    <td>{{ ac.retention_requested }}</td>
+    <td>{{ ac.data_retained }}</td>
+    <td>{{ ac.record_update }}</td>
+    {% if ac.shareable_link %}
+        <td><a href="{{ ac.shareable_link }}" >LINK</a></td>
+    {% else %}
+        <td>-</td>
+    {% endif %}
     </tr>
 {% endfor %}
 </table>
