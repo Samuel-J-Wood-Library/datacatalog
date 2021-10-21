@@ -554,10 +554,10 @@ class DataAccess(models.Model):
     filepaths = models.TextField(blank=True, null=True)
 
     # points to the dataset object that describes this set of data files
-    metadata = models.ForeignKey(Dataset, blank=True, on_delete=models.PROTECT)
+    metadata = models.ForeignKey(Dataset, blank=True, null=True, on_delete=models.PROTECT)
 
     # project that the data are associated with
-    project = models.ForeignKey(Project, blank=True, on_delete=models.PROTECT)
+    project = models.ForeignKey(Project, blank=True, null=True, on_delete=models.PROTECT)
 
     # is a DUA agreement required?
     dua_required = models.BooleanField(null=True, blank=True)
@@ -589,6 +589,12 @@ class DataAccess(models.Model):
 
     # typical time period from request to access of data
     time_required = models.DurationField(null=True, blank=True)
+
+    # mark whether a request for archiving has been made
+    retention_requested = models.BooleanField(null=True, blank=True)
+
+    # mark whether the data have been archived
+    data_retained = models.BooleanField(null=True, blank=True)
 
     # this is set to true after being checked by the Data Catalog curation team
     curated = models.BooleanField(null=True, blank=True, default=False)
