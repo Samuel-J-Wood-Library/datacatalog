@@ -47,6 +47,8 @@ body { padding-top: 55px; }
                     View Details
                 </a>
             <div class="dropdown-menu" aria-labelledby="DCDropdown">
+                <a class="dropdown-item" href="{% url 'datacatalog:projects-byuser' %}">
+                    MY PROJECTS</a>
                 <a class="dropdown-item" href="{% url 'datacatalog:datasets' %}">
                     Datasets</a>
                 {% if request.user|has_group:"dua_viewing_privileges" %}
@@ -98,6 +100,8 @@ body { padding-top: 55px; }
                     Submit New: <b class="caret"></b>
                 </a>
             <div class="dropdown-menu" aria-labelledby="ActionsDropdown">
+                <a class="dropdown-item text-danger" href="{% url 'datacatalog:retention-add' %}">
+                    Request data retention</a>
                 <a class="dropdown-item" href="{% url 'datacatalog:project-add' %}">
                     project</a>
                 <a class="dropdown-item" href="{% url 'datacatalog:access-add' %}">

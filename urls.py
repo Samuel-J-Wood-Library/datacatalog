@@ -8,6 +8,7 @@ app_name = 'datacatalog'
 urlpatterns = [ 
     # index showing top items and search bar:
     path('', views.IndexView.as_view(), name='index'),
+    path('project', views.IndexProjectByUserView.as_view(), name='projects-byuser'),
     path('datasets', views.IndexDatasetView.as_view(), name='datasets'),
     path('duas', views.IndexDUAView.as_view(), name='duas'),
     path('access', views.IndexDataAccessView.as_view(), name='access'),
@@ -80,7 +81,8 @@ urlpatterns = [
     path('duas/add', views.DataUseAgreementCreateView.as_view(), name='dua-add'),
     path('keywords/add', views.KeywordCreateView.as_view(), name='keyword-add'),
     path('datafield/add', views.DataFieldCreateView.as_view(), name='datafield-add'),
-    
+    path('retention/add', views.RetentionRequestCreateView.as_view(), name='retention-add'),
+
     # update views
     path('project/update/<int:pk>', views.ProjectUpdateView.as_view(),
        name='project-update'

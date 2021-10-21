@@ -1,8 +1,12 @@
-<div class="card border-warning shadow" >
-   <div class="card-header bg-warning"><h5>{{ da.name }}</h5></div>
+<div class="card {% if da.data_retained %}border-danger{% else %}border-warning{% endif %} shadow" >
+   <div class="card-header bg-warning">
+       <h5>{{ da.name }}
+           {% if da.data_retained %}
+             <span class="badge badge-danger">ARCHIVED</span></h5></div>
+           {% endif %}
     <div class="card-body">
     <h6 class="card-subtitle mb-2 text-muted">{{ da.storage_type.name }}</h6>
-    <a class="btn btn-sm btn-primary"
+    <a class="btn btn-sm btn-info"
        href="{% url 'datacatalog:access-view' da.pk %}" class="card-link">View record</a>
     <a class="btn btn-sm btn-info"
        href="{{ da.shareable_link }}" class="card-link">Go to data</a>

@@ -1,0 +1,70 @@
+{% extends 'datacatalog/base-catalog.html' %}
+
+{# Load the tag library #}
+{% load bootstrap4 %}
+{% load project_tags %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+{% block content %}
+
+<style>
+/* styling of the tabs*/
+#exTab1 .tab-content {
+  color : black;
+  padding : 5px 15px;
+}
+
+#exTab1 .nav-tabs > li > a {
+  border-radius: 4px 4px 0 0;
+}
+</style>
+
+
+
+<h1>
+    {{ project_list|length  }} project{{ project_list|length|pluralize:",s" }} for {{ request.user.first_name }} {{ request.user.last_name }}
+</h1>
+<h2>
+        <a type="button"
+           class="btn btn-success"
+           href="{% url 'datacatalog:project-add' %}">Create new project</a>
+        <a type="button"
+           class="btn btn-success"
+           href="{% url 'datacatalog:access-add' %}">Create new data access record</a>
+        <a type="button"
+           class="btn btn-danger"
+           href="{% url 'datacatalog:retention-add' %}">Request data retention</a>
+</h2>
+
+<div class="container">
+  <div class="card-columns">
+
+    {% for project in project_list %}
+    {### CARD FOR PROJECT DETAILS ###}
+    <div class="card border-dark my-2 shadow">
+        <div class="card-header">
+            <h5 class="mb-2 text-muted">
+                <a href="{% url 'datacatalog:project-view' project.pk %}">{{ project.name }}</a>
+            </h5>
+        </div>
+        <div class="card-body">
+
+
+            <p> {{ project.description|linebreaks }}</p>
+        </div> {# card body #}
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><em>Dataset locations:</em></li>
+          {% for da in project.dataaccess_set.all %}
+            <li class="list-group-item"><a href="{% url 'datacatalog:access-view' da.pk %}">{{ da.storage_type.name }}</a></li>
+          {% endfor %}
+
+        </ul>
+    </div> {# card #}
+    {% endfor %}
+
+  </div> {# column div #}
+</div> {# container div #}
+
+{% endblock %}

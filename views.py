@@ -226,7 +226,31 @@ class IndexKeywordView(LoginRequiredMixin, generic.ListView):
                         'empty_list'    : [],  
         })
         return context
-        
+
+
+class IndexProjectByUserView(PermissionRequiredMixin, generic.ListView):
+    login_url = '/login/'
+
+    template_name = 'datacatalog/index_projects.html'
+    context_object_name = 'project_list'
+    permission_required = 'datacatalog.view_dataaccess'
+
+    def get_queryset(self):
+        user = self.request.user
+        myprojects = Project.objects.filter(
+            Q(record_author=user) |
+            Q(pi__cwid=user.username) |
+            Q(admin__cwid=user.username)
+        ).distinct()
+        return myprojects.order_by('record_creation',)
+
+    def get_context_data(self, **kwargs):
+        context = super(IndexProjectByUserView, self).get_context_data(**kwargs)
+        context.update({
+            'empty_list': [],
+        })
+        return context
+
 class IndexDataAccessView(PermissionRequiredMixin, generic.ListView):
     login_url='/login/'
     
@@ -551,6 +575,8 @@ class RetentionRequestCreateView(LoginRequiredMixin, CreateView):
         self.object.record_author = self.request.user
         self.object.save()
         return super(RetentionRequestCreateView, self).form_valid(form)
+
+
 
 ####################
 ### Update views ###
