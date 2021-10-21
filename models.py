@@ -894,6 +894,9 @@ class RetentionRequest(models.Model):
     # ITS ticket ID
     ticket = models.CharField(max_length=32,)
 
+    # set record to locked to prevent users from altering after data retention has occurred
+    locked = models.BooleanField(null=True, blank=True)
+
     def __str__(self):
         return "{}: {}".format(self.record_creation, self.name)
 
