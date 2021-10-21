@@ -18,7 +18,7 @@ from .models import Dataset, DataUseAgreement, DataAccess, Keyword, DataProvider
 from .models import MediaSubType, DataField, ConfidentialityImpact, Project
 from .models import RetentionRequest
 
-from .forms import DatasetForm, DUAForm, ProjectForm, DataAccessForm
+from .forms import DatasetForm, DUAForm, ProjectForm, DataAccessForm, RetentionRequestForm
 
 ####################################
 ######  AUTOCOMPLETE  VIEWS   ######
@@ -49,6 +49,38 @@ class AccessAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
 
         if self.q:
             qs =  qs.filter(name__icontains=self.q)
+        return qs
+
+
+class ProjectByUserAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
+    """
+    This autocomplete only offers Projects for which the selector is the record creator,
+    the project pi, or the project admin.
+    """
+    def get_queryset(self):
+        user = self.request.user
+        qs = Project.objects.filter(
+                            Q(record_author=user) |
+                            Q(pi__cwid=user.username) |
+                            Q(admin__cwid=user.username)
+        )
+
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+        return qs
+
+class AccessByProjectAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        project = self.forwarded.get('project', None)
+        qs = DataAccess.objects.filter(project=project)
+
+        if self.q:
+            qs =  qs.filter(
+                Q(name__icontains=self.q) |
+                Q(shareable_link__icontains=self.q) |
+                Q(unique_id__icontains=self.q) |
+                Q(filepaths__icontains=self.q)
+            )
         return qs
 
 class DUAAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
@@ -195,11 +227,12 @@ class IndexKeywordView(LoginRequiredMixin, generic.ListView):
         })
         return context
         
-class IndexDataAccessView(LoginRequiredMixin, generic.ListView):
+class IndexDataAccessView(PermissionRequiredMixin, generic.ListView):
     login_url='/login/'
     
     template_name = 'datacatalog/index_dataaccess.html'
     context_object_name = 'access_list'
+    permission_required = 'datacatalog.view_dataaccess'
 
     def get_queryset(self):
         ins = DataAccess.objects.filter(published=True)
@@ -247,13 +280,14 @@ class IndexDataProviderView(LoginRequiredMixin, generic.ListView):
 ####################
 
 class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
-    model = Dataset
+    model = Project
     template_name = 'datacatalog/detail_project.html'
 
     def get_context_data(self, **kwargs):
+        metadata = Dataset.objects.filter(dataaccess__project=self.object).distinct()
 
         context = super(ProjectDetailView, self).get_context_data(**kwargs)
-        context.update({'blankdata': None,
+        context.update({'dataset_list': metadata,
                         })
         return context
 
@@ -278,6 +312,7 @@ class DataAccessDetailView(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         da_obj = self.object
         published_data = da_obj.metadata
+
         context = super(DataAccessDetailView, self).get_context_data(**kwargs)
         context.update({'published_data'    : published_data,  
         })
@@ -406,11 +441,9 @@ def file_view(request, pk):
 ####################
 
 class ProjectCreateView(LoginRequiredMixin, CreateView):
-    model = Dataset
-    form_class = DatasetForm
+    model = Project
+    form_class = ProjectForm
     template_name = "datacatalog/basic_crispy_form.html"
-
-    # default success_url should be to the object page defined in model.
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -456,17 +489,8 @@ class DataProviderCreateView(PermissionRequiredMixin, CreateView):
 
 class DataAccessCreateView(LoginRequiredMixin, CreateView):
     model = DataAccess
-    fields = [  'name',
-                'dua_required',
-                'prj_desc_required',
-                'sys_desc_required',
-                'help_required',
-                'access_cost',
-                'public',
-                'time_required',
-    ]
-    template_name = "datacatalog/basic_form.html"
-    # default success_url should be to the object page defined in model.
+    form_class = DataAccessForm
+    template_name = "datacatalog/basic_crispy_form.html"
     
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -513,16 +537,29 @@ class DataFieldCreateView(LoginRequiredMixin, CreateView):
         self.object.record_author = self.request.user
         self.object.save()
         return super(DataFieldCreateView, self).form_valid(form)
-        
+
+class RetentionRequestCreateView(LoginRequiredMixin, CreateView):
+    model = RetentionRequest
+    form_class = RetentionRequestForm
+    template_name = "datacatalog/basic_crispy_form.html"
+
+    # default success_url should be to the object page defined in model.
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        # update who last edited record
+        self.object.record_author = self.request.user
+        self.object.save()
+        return super(RetentionRequestCreateView, self).form_valid(form)
+
 ####################
 ### Update views ###
 ####################
 
-class ProjectUpdateView(PermissionRequiredMixin, UpdateView):
+class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     model = Project
     form_class = ProjectForm
     template_name = "datacatalog/basic_crispy_form.html"
-    permission_required = 'datacatalog.change_project'
 
 class DatasetUpdateView(PermissionRequiredMixin, UpdateView):
     model = Dataset
@@ -530,19 +567,11 @@ class DatasetUpdateView(PermissionRequiredMixin, UpdateView):
     template_name = "datacatalog/basic_crispy_form.html"
     permission_required = 'datacatalog.change_dataset'
 
-class DataAccessUpdateView(PermissionRequiredMixin, UpdateView):
+class DataAccessUpdateView(LoginRequiredMixin, UpdateView):
     model = DataAccess
-    template_name = "datacatalog/basic_form.html"
-    fields = [  'name',
-                'dua_required',
-                'prj_desc_required',
-                'sys_desc_required',
-                'help_required',
-                'access_cost',
-                'public',
-                'time_required',
-    ]
-    permission_required = 'datacatalog.change_dataaccess'
+    form_class = DataAccessForm
+    template_name = "datacatalog/basic_crispy_form.html"
+
 
 class DataProviderUpdateView(PermissionRequiredMixin, UpdateView):
     model = DataProvider

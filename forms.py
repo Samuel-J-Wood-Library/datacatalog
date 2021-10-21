@@ -5,7 +5,7 @@ from crispy_forms.layout import Submit, Layout, Div, Fieldset, HTML
 
 from django import forms
 
-from .models import Dataset, DataAccess, Project, DataUseAgreement
+from .models import Dataset, DataAccess, Project, DataUseAgreement, RetentionRequest
 
 div_datafields = Div(
                     Div('data_fields',
@@ -173,6 +173,7 @@ class DataAccessForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset('<div class="alert alert-info">Create New Record for Data Access</div>',
                      'name',
+                     'project',
                      'storage_type',
                      layout_two_equal('unique_id', 'shareable_link'),
                      'filepaths',
@@ -195,14 +196,18 @@ class DataAccessForm(forms.ModelForm):
                   'shareable_link',
                   'filepaths',
                   'metadata',
+                  'project',
                   'steward_email',
                   'access_instructions',
                   'public',
                   ]
 
         widgets = {'metadata': autocomplete.ModelSelect2(
-            url='datacatalog:autocomplete-dataset'
-        ),
+                                url='datacatalog:autocomplete-dataset'
+                                ),
+                   'project': autocomplete.ModelSelect2(
+                                url='datacatalog:autocomplete-project-byuser'
+                                ),
         }
 
 class ProjectForm(forms.ModelForm):
@@ -238,10 +243,10 @@ class ProjectForm(forms.ModelForm):
                   ]
 
         widgets = {'pi': autocomplete.ModelSelect2(
-            url='datacatalog:autocomplete-person'
+            url='persons:autocomplete-person'
         ),
             'admin': autocomplete.ModelSelect2(
-                url='datacatalog:autocomplete-person'
+                url='persons:autocomplete-person'
             ),
         }
 
@@ -370,3 +375,37 @@ class DUAForm(forms.ModelForm):
                                         url='datacatalog:autocomplete-dataset'
                                         ),                                      
                     }
+
+class RetentionRequestForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(RetentionRequestForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'retentionRequestForm'
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submit', 'Submit'))
+        self.helper.layout = Layout(
+            Fieldset('<div class="alert alert-info">Request for Data Retention</div>',
+                     'name',
+                     'project',
+                     'milestone',
+                     'to_archive',
+                     'comments',
+                     style="font-weight: normal;",
+                     ),
+        )
+
+    class Meta:
+        model = RetentionRequest
+        fields = ['name',
+                  'project',
+                  'milestone',
+                  'to_archive',
+                  'comments',
+                  ]
+
+        widgets = {
+            'to_archive': autocomplete.ModelSelect2Multiple(
+                    url='datacatalog:autocomplete-access-byproject',
+                    forward=['project',],
+            ),
+        }

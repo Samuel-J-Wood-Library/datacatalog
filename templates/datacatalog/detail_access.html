@@ -24,12 +24,81 @@
 
 
 <h1>
-    {{ dataaccess.name }} 
-<small class="text-muted">${{ dataaccess.access_cost }}</small>
+    {{ dataaccess.name }}
 </h1>
+<h2>
+    {% if request.user|has_group:"datacatalog_editor" or request.user == dataaccess.record_author %}
+        <a type="button"
+           class="btn btn-primary"
+           href="{% url 'datacatalog:access-update' dataaccess.pk %}">Update access details</a>
+    {% endif %}
+</h2>
+
+    <div class="container">
+ <div class="row">
+  <div class="col-sm">
+
+    {### CARD FOR LOCATION OF DATASET ###}
+    <div class="card border-dark my-2 shadow">
+    <div class="card-body">
+        <h5> <span class="mb-2 text-muted">Location: </span>{{ dataaccess.storage_type.name }}</h5>
+        <h6>Unique ID: {{ dataaccess.unique_id }}</h6>
+        {% if dataaccess.shareable_link %}
+            <a href="{{ dataaccess.shareable_link }}" class="btn btn-info">Go to data</a>
+        {% endif %}
+        <p> {{ dataaccess.filepaths|linebreaks }}</p>
+    </div> {# card body #}
+    </div> {# card #}
+
+    {### CARD FOR PROJECT DETAILS ###}
+    <div class="card border-dark my-2 shadow">
+    <div class="card-body">
+        {% if dataaccess.project.pk %}
+        <h5 class="mb-2 text-muted">Project:
+            <a href="{% url 'datacatalog:project-view' dataaccess.project.pk %}">{{ dataaccess.project.name }}</a>
+        </h5>
+        {% else %}
+            <h5 class="mb-2 text-muted">This record is not linked to a project!</h5>
+            {% if request.user|has_group:"datacatalog_editor" or request.user == dataaccess.record_author %}
+                 <a type="button"
+                    class="btn btn-primary"
+                    href="{% url 'datacatalog:access-update' dataaccess.pk %}">Update access details</a>
+            {% endif %}
+        {% endif %}
+        <p> {{ dataaccess.project.description|linebreaks }}</p>
+    </div> {# card body #}
+    </div> {# card #}
+
+  </div> {# column div #}
+
+ {### METADATA SUMMARY OF LINKED DATASET INFO ###}
+ {% if dataaccess.metadata %}
+  <div class="col-sm">
+    <h4>Metadata for {{ dataaccess.metadata.title }}</h4>
+    <a class="btn btn-primary" href="{% url 'datacatalog:dataset-view' dataaccess.metadata.pk %}">View full record</a>
+    </br></br>
+    {% with dataaccess.metadata as dataset %}
+      {% include 'datacatalog/table_metadata.html' %}
+    {% endwith %}
 
 
-<table class="table table-striped table-hover">
+  {% else %}
+     <ul style="list-style-type:none">
+         <il><h4>No metadata provided for this record.</h4></il>
+         <li>
+             <a class="btn btn-success"
+               href="{% url 'datacatalog:dataset-add' %}">Create metadata record</a>
+         </li>
+     </ul>
+  {% endif %}
+ </div> {# end column #}
+ </div>  {# end row #}
+</div>   {# end details container #}
+
+    {% comment %}
+    {### This section can be added once function of fields is determined and added to update form ###}
+    <h3>Governance information</h3>
+<table class="table table-striped table-hover table-sm">
     <tr>
         <td>DUA required?</td>
         <td>{{ dataaccess.dua_required }}</td>
@@ -55,22 +124,23 @@
         <td>{{ dataaccess.time_required }}</td>
     </tr>
 
+
 </table>
-    
+    {% endcomment %}
   
-{% if request.user|has_group:"datacatalog_editor" %}
-<a type="button" class="btn btn-primary" href="{% url 'datacatalog:access-update' dataaccess.pk %}">Update access details</a>
-{% endif %}
+
 
 </br></br>
 
-{% if request.user|has_group:"dua_viewing_privileges" %}
-<h2>DUAs with this data access</h2>
+<div class="container">
+    {% if request.user|has_group:"dua_viewing_privileges" %}
+    <h3>Data Use Agreements</h3>
 
-    {% with dataaccess.datauseagreement_set.all as dua_list %}
-        {% include 'datacatalog/table_duas.html' %}
-    {% endwith %}
-{% endif %}
+        {% with dataaccess.datauseagreement_set.all as dua_list %}
+            {% include 'datacatalog/table_duas.html' %}
+        {% endwith %}
+    {% endif %}
+</div>
 
 {% endblock %}
 

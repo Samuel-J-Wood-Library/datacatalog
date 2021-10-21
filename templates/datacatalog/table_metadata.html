@@ -1,0 +1,123 @@
+<table class="table table-striped table-hover table-sm">
+
+    {% if dataset.ds_id %}
+    <tr>
+        <td>Dataset ID</td>
+        <td>{{ dataset.ds_id }}</td>
+    </tr>
+    {% endif %}
+
+
+    <tr>
+        <td>Local contact</td>
+        <td>{% if dataset.expert %}
+                {{ dataset.expert }}
+            {% else %}
+                None provided
+            {% endif %}
+        </td>
+    </tr>
+
+    <tr>
+        <td>Record Period Start</td>
+        <td>{{ dataset.period_start }}</td>
+    </tr>
+    <tr>
+        <td>Record Period End</td>
+        <td>{{ dataset.period_end }}</td>
+    </tr>
+    <tr>
+        <td>Publication Date</td>
+        <td>{{ dataset.publication_date }}</td>
+    </tr>
+
+    {% if dataset.num_records %}
+    <tr>
+        <td>Number of Records</td>
+        <td>{{ dataset.num_records }}</td>
+    </tr>
+    {% endif %}
+
+    {% if dataset.cil %}
+    <tr>
+        <td>Confidentiality Impact Level</td>
+        <td>
+            {% for l in dataset.cil.all %}
+                <span
+                    {% if l.impact_rank == 1 %}
+                    class="badge badge-danger"
+                    {% elif l.impact_rank == 2 %}
+                    class="badge badge-warning"
+                    {% elif l.impact_rank == 3 %}
+                    <span class="badge badge-success"
+                    {% elif l.impact_rank == 4 %}
+                    class="badge badge-secondary"
+                    {% endif %}
+
+                    data-toggle="tooltip"
+                    data-placement="left"
+                    title="{{ l.definition }}">{{ l }}</span>
+
+            {% endfor %}
+        </td>
+    </tr>
+    {% endif %}
+
+
+    {% if dataset.data_source %}
+    <tr>
+        <td>Data Creators</td>
+        <td>{{ dataset.data_source }}</td>
+    </tr>
+    {% endif %}
+
+    {% if dataset.data_dictionary %}
+    <tr>
+        <td>Data dictionary</td>
+        <td>
+            <a  type="button"
+                class="btn btn-info"
+                href="{% url 'datacatalog:ddict-file' dataset.data_dictionary %}"
+                target="_blank">
+                {{ dataset.data_dictionary.name }}
+            </a>
+        </td>
+    </tr>
+    {% endif %}
+
+
+    {% if dataset.media_subtype %}
+    <tr>
+        <td>Media Types</td>
+        <td>
+            {% for mst in dataset.media_subtype.all %}
+                <span class="badge badge-secondary">{{ mst }}</span>
+            {% endfor %}
+        </td>
+    </tr>
+    {% endif %}
+
+
+    {% if dataset.landing_url %}
+    <tr>
+        <td>Landing URL</td>
+        <td><a href="{{ dataset.landing_url }}">{{ dataset.landing_url }}</a></td>
+    </tr>
+    {% endif %}
+    <tr>
+        <td>Keywords</td>
+        <td>{% for kw in dataset.keywords.all %}
+                <span class="badge progress-bar-info">
+                <a  href="{% url 'datacatalog:keyword-view' kw.pk %}"
+                    class="badge badge-secondary"
+                    data-toggle="tooltip"
+                    data-placement="left"
+                    title="{{ kw.definition }}"
+
+                    >{{ kw.keyword }}
+                </a></span>
+            {% endfor %}
+        </td>
+    </tr>
+
+</table>

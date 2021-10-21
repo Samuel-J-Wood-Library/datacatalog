@@ -27,43 +27,54 @@
 
 {### Project Header ###}
 
-<h1>
-    {{ project.name }}
-    {% if request.user|has_group:"datacatalog_editor" or request.user == project.pi or request.user == project.admin %}
-    <span style="float:right">
-        <a type="button"
-           class="btn btn-primary"
-           href="{% url 'datacatalog:project-update' project.pk %}">
-           Update project details
-        </a>
-    </span>
+<div class="card border-primary" style="width: 100%;">
+    <div class="card-header">
+     <h1>
+        {{ project.name }}
+
+        {% if request.user|has_group:"datacatalog_editor" or request.user.username == project.pi.cwid or request.user.username == project.admin.cwid %}
+        <span style="float:right">
+            <a type="button"
+               class="btn btn-primary"
+               href="{% url 'datacatalog:project-update' project.pk %}">
+               Update project details
+            </a>
+        </span>
+        {% endif %}
+     </h1>
+    </div>
+<ul style="list-style-type:none">
+    {% if project.pi %}
+        <li>PI: {{ project.pi }}</li>
     {% endif %}
-</h1>
-{% if project.pi %}
-<p>PI: {{ project.pi }}</p>
-{% endif %}
+    {% if project.admin %}
+        <li>Administrator: {{ project.admin }}</li>
+    {% endif %}
+</ul>
 
 
 {% if project.description %}
-    <p><small class="text-muted">Project description:</small>
-    {{ project.description|linebreaks }}
-    </p>
+
+      <div class="card-body">
+        <h5 class="text-muted">Project description:</h5>
+        <p>{{ project.description|linebreaks }}</p>
+      </div>
+    </div>
 {% endif %}
 
-{### Tiles of all datasets and storage items  ###}
+<p></p>
 
-{% for dset in project.metadata.all %}
-<div class="card" style="width: 18rem;">
-  <div class="card-header">
-    {{ dset.title }}
-  </div>
-  <ul class="list-group list-group-flush">
-    {% for daccess in dset.get_metadata_set.all %}
-    <li class="list-group-item">{{ daccess.storage_type.name }}</li>
-    {% endfor %}
-  </ul>
-</div>
+{### Tiles of all datasets and storage items  ###}
+<div class="card-columns">
+{% for da in project.dataaccess_set.all %}
+    {% include "datacatalog/card_dataaccess.html" %}
 {% endfor %}
+</div>
+
+    <p></p>
+    <h4>Dataset descriptions</h4>
+{% include "datacatalog/table_datasets.html" %}
+
 
 {% endblock %}
 

@@ -23,10 +23,18 @@ urlpatterns = [
         views.PublisherAutocomplete.as_view(), 
         name='autocomplete-publisher',
         ),
+    path('autocomplete-project-byuser',
+         views.ProjectByUserAutocomplete.as_view(),
+         name='autocomplete-project-byuser',
+        ),
     path('autocomplete-access', 
         views.AccessAutocomplete.as_view(),
         name='autocomplete-access',
         ),
+    path('autocomplete-access-byproject',
+         views.AccessByProjectAutocomplete.as_view(),
+         name='autocomplete-access-byproject',
+    ),
     path('autocomplete-dua', 
         views.DUAAutocomplete.as_view(),
         name='autocomplete-dua',
@@ -64,7 +72,8 @@ urlpatterns = [
     ),
     path('retention/<int:pk>', views.RetentionDetailView.as_view(), name='retention-view'),
 
-                  # create views
+    # create views
+    path('project/add', views.ProjectCreateView.as_view(), name='project-add'),
     path('datasets/add', views.DatasetCreateView.as_view(), name='dataset-add'),
     path('access/add', views.DataAccessCreateView.as_view(), name='access-add'),
     path('providers/add', views.DataProviderCreateView.as_view(),name='provider-add'),
