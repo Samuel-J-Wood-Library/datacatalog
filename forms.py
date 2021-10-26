@@ -404,6 +404,9 @@ class RetentionRequestForm(forms.ModelForm):
                   ]
 
         widgets = {
+            'project':autocomplete.ModelSelect2(
+                    url='datacatalog:autocomplete-project-byuser'
+            ),
             'to_archive': autocomplete.ModelSelect2Multiple(
                     url='datacatalog:autocomplete-access-byproject',
                     forward=['project',],
