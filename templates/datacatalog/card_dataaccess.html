@@ -2,16 +2,18 @@
    <div class="card-header bg-warning">
        <h5>{{ da.name }}
            {% if da.data_retained %}
-             <span class="badge badge-danger">ARCHIVED</span></h5></div>
+             <span class="badge badge-danger">ARCHIVED</span>
            {% endif %}
+       </h5>
+   </div>
     <div class="card-body">
-    <h6 class="card-subtitle mb-2 text-muted">{{ da.storage_type.name }}</h6>
-    <a class="btn btn-sm btn-info"
-       href="{% url 'datacatalog:access-view' da.pk %}" class="card-link">View record</a>
-    <a class="btn btn-sm btn-info"
-       href="{{ da.shareable_link }}" class="card-link">Go to data</a>
-    <p class="card-text">{{ da.filepaths|linebreaks }}</p>
-  </div>
+        <h6 class="card-subtitle mb-2 text-muted">{{ da.storage_type.name }}</h6>
+        <a class="btn btn-sm btn-info"
+           href="{% url 'datacatalog:access-view' da.pk %}" class="card-link">View record</a>
+        <a class="btn btn-sm btn-info"
+           href="{{ da.shareable_link }}" class="card-link">Go to data</a>
+        <p class="card-text">{{ da.filepaths|linebreaks }}</p>
+    </div>
     <ul class="list-group list-group-flush">
       <li class="list-group-item"></li>
       <li class="list-group-item">ID: {{ da.unique_id }}</li>

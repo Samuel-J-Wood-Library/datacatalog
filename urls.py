@@ -102,6 +102,9 @@ urlpatterns = [
     path('keywords/update/<int:pk>', views.KeywordUpdateView.as_view(), 
          name='keyword-update'
     ),
+    path('retention/update/<int:pk>', views.RetentionUpdateView.as_view(),
+         name='retention-update'
+    ),
    
     # search view:
     path('search/all', views.FullSearch.as_view(), name="full-search"),

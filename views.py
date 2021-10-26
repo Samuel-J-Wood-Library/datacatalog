@@ -245,9 +245,18 @@ class IndexProjectByUserView(PermissionRequiredMixin, generic.ListView):
         return myprojects.order_by('record_creation',)
 
     def get_context_data(self, **kwargs):
+        user = self.request.user
+
+        retention_requests = RetentionRequest.objects.filter(
+            Q(project__record_author=user) |
+            Q(project__pi__cwid=user.username) |
+            Q(project__admin__cwid=user.username) |
+            Q(record_author=user)
+        ).distinct()
+
         context = super(IndexProjectByUserView, self).get_context_data(**kwargs)
         context.update({
-            'empty_list': [],
+            'retention_requests': retention_requests,
         })
         return context
 
@@ -400,8 +409,8 @@ class RetentionDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         firstrecord = self.object.to_archive.first()
-        retentionpi = firstrecord.pi
-        retentionadmin = firstrecord.admin
+        retentionpi = firstrecord.project.pi
+        retentionadmin = firstrecord.project.admin
 
         context = super(RetentionDetailView, self).get_context_data(**kwargs)
         context.update({'retentionpi': retentionpi,
@@ -622,8 +631,12 @@ class KeywordUpdateView(PermissionRequiredMixin, UpdateView):
     template_name = "datacatalog/basic_form.html"
     fields = ['keyword', 'definition', ]               
     permission_required = 'datacatalog.change_keyword'
- 
- 
+
+class RetentionUpdateView(LoginRequiredMixin, UpdateView):
+    model = RetentionRequest
+    form_class = RetentionRequestForm
+    template_name = "datacatalog/basic_crispy_form.html"
+
 ##############################
 ######  SEARCH  VIEWS   ######
 ##############################

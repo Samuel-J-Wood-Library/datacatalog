@@ -39,6 +39,11 @@
                href="{% url 'datacatalog:project-update' project.pk %}">
                Update project details
             </a>
+            <a type="button"
+               class="btn btn-warning"
+               href="{% url 'datacatalog:access-add' %}">
+               Create data access record
+            </a>
         </span>
         {% endif %}
      </h1>
@@ -70,9 +75,15 @@
     {% include "datacatalog/card_dataaccess.html" %}
 {% endfor %}
 </div>
-
     <p></p>
-    <h4>Dataset descriptions</h4>
+    <p></p>
+    <h4>Dataset retention requests</h4>
+    {% with project.retentionrequest_set.all as retention_requests %}
+        {% include 'datacatalog/table_retention_requests.html' %}
+    {% endwith %}
+    <p></p>
+    <p></p>
+    <h4>Dataset catalog entries</h4>
 {% include "datacatalog/table_datasets.html" %}
 
 

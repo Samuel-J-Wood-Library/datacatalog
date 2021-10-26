@@ -1,0 +1,23 @@
+<table class="table table-striped table-hover table-sm" id="RetentionRequestsTable">
+<thead class="thead-default">
+    <tr>
+        <th>Name</th>
+        <th>Milestone</th>
+        <th>Number of items</th>
+        <th>Requested by </th>
+        <th>Request updated</th>
+        <th>Request locked</th>
+    </tr>
+</thead>
+
+{% for rr in retention_requests %}
+    <tr>
+    <td><a href="{% url 'datacatalog:retention-view' rr.pk %}">{{ rr.name }}</a></td>
+    <td>{{ rr.get_milestone_display }}</td>
+    <td> {{ rr.to_archive.count }}</td>
+    <td>{{ rr.record_author }}</td>
+    <td>{{ rr.record_update }}</td>
+        <td>{% if rr.locked %}<span class="badge badge-danger">{{ rr.locked }}</span>{% else %}unlocked{% endif %}</td>
+    </tr>
+{% endfor %}
+</table>
