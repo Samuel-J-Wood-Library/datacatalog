@@ -22,6 +22,13 @@ def make_curated(modeladmin, request, queryset):
     queryset.update(curated=True)
 make_curated.short_description = "Mark selected items as curated"
 
+def make_retained(modeladmin, request, queryset):
+    queryset.update(data_retained=True)
+make_retained.short_description = "Mark selected items as archived"
+
+def make_locked(modeladmin, request, queryset):
+    queryset.update(locked=True)
+make_locked.short_description = "Mark selected items as locked"
 
 # customize the individual model views:
 @admin.register(Dataset)
@@ -58,14 +65,14 @@ class DataUseAgreementAdmin(admin.ModelAdmin):
 class DataAccessAdmin(admin.ModelAdmin):
     list_display = ("name", 
                     "storage_type",
-                    "unique_id",
-                    "shareable_link",
+                    "is_requested",
+                    "data_retained",
                     "curated",
                     "published",
     )
-    list_filter = ('curated', 'published','storage_type')
+    list_filter = ('curated', 'published','storage_type', 'data_retained')
     search_fields = ('name','unique_id', 'shareable_link')
-    actions = [make_published, make_unpublished, make_curated]
+    actions = [make_published, make_unpublished, make_curated, make_retained]
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
@@ -81,9 +88,11 @@ class RetentionRequestAdmin(admin.ModelAdmin):
     list_display = ("name",
                     "record_creation",
                     "milestone",
+                    "locked",
     )
     list_filter = ('record_creation',)
     search_fields = ('name',)
+    actions = [make_locked,]
 
 @admin.register(StorageType)
 class StorageTypeAdmin(admin.ModelAdmin):
