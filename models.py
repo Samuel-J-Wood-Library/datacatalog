@@ -628,11 +628,12 @@ class DataAccess(models.Model):
         else:
             return False
 
-    def is_retained(self):
+    def is_requested(self):
         if self.retention_requests.count() > 0:
             return True
         else:
             return False
+
 class GovernanceType(models.Model):
     """
     The GovernanceType model stores and defines all the specific types of governance
