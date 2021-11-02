@@ -28,11 +28,11 @@
 </h1>
 <h2>
         <a type="button"
-           class="btn btn-success"
+           class="btn btn-primary"
            href="{% url 'datacatalog:project-add' %}">Create new project</a>
         <a type="button"
-           class="btn btn-success"
-           href="{% url 'datacatalog:access-add' %}">Create new data access record</a>
+           class="btn btn-primary"
+           href="{% url 'datacatalog:access-add' %}">Add new data location</a>
         <a type="button"
            class="btn btn-danger"
            href="{% url 'datacatalog:retention-add' %}">Request data retention</a>
@@ -59,7 +59,10 @@
           {% for da in project.dataaccess_set.all %}
             <li class="list-group-item"><a href="{% url 'datacatalog:access-view' da.pk %}">{{ da.storage_type.name }}</a></li>
           {% endfor %}
-
+            <li class="list-group-item">
+                <a  type="button"
+                    class="btn btn-primary"
+                    href="{% url 'datacatalog:access-add' %}">Add new data location</a></li>
         </ul>
     </div> {# card #}
     {% endfor %}

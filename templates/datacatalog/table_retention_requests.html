@@ -6,7 +6,7 @@
         <th>Number of items</th>
         <th>Requested by </th>
         <th>Request updated</th>
-        <th>Request locked</th>
+        <th>Status</th>
     </tr>
 </thead>
 
@@ -17,7 +17,11 @@
     <td> {{ rr.to_archive.count }}</td>
     <td>{{ rr.record_author }}</td>
     <td>{{ rr.record_update }}</td>
-        <td>{% if rr.locked %}<span class="badge badge-danger">{{ rr.locked }}</span>{% else %}unlocked{% endif %}</td>
+        <td>{% if rr.locked %}
+                <span class="badge badge-success">Processed</span>
+            {% else %}
+                <span class="badge badge-warning">Pending</span>
+        {% endif %}</td>
     </tr>
 {% endfor %}
 </table>

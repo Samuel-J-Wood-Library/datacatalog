@@ -21,10 +21,9 @@
 <a type="button" class="btn btn-primary" href="{% url 'datacatalog:providers' %}">View {{ pub_count }} data providers</a>
 
 {% if request.user|has_group:"dua_viewing_privileges" %}
-<a type="button" class="btn btn-primary" href="{% url 'datacatalog:duas' %}">View {{ dua_count }} data use agreements</a>
+  <a type="button" class="btn btn-primary" href="{% url 'datacatalog:duas' %}">View {{ dua_count }} data use agreements</a>
+  <a type="button" class="btn btn-primary" href="{% url 'datacatalog:access' %}">View {{ access_count }} data locations</a>
 {% endif %}
-
-<a type="button" class="btn btn-primary" href="{% url 'datacatalog:access' %}">View {{ access_count }} data access requirements</a>
 
 <a type="button" class="btn btn-primary" href="{% url 'datacatalog:keywords' %}">View {{kw_count }} keywords</a>
 </br>
