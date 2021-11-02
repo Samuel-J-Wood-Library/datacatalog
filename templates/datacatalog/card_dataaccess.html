@@ -10,8 +10,12 @@
         <h6 class="card-subtitle mb-2 text-muted">{{ da.storage_type.name }}</h6>
         <a class="btn btn-sm btn-info"
            href="{% url 'datacatalog:access-view' da.pk %}" class="card-link">View record</a>
-        <a class="btn btn-sm btn-info"
-           href="{{ da.shareable_link }}" class="card-link">Go to data</a>
+        {% if da.shareable_link %}
+            <a class="btn btn-sm btn-info"
+               href="{{ da.shareable_link }}"
+               target="_blank"
+               class="card-link">Go to data</a>
+        {%  endif %}
         <p class="card-text">{{ da.filepaths|linebreaks }}</p>
     </div>
     <ul class="list-group list-group-flush">
