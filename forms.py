@@ -63,7 +63,10 @@ def layout_two_equal(field1, field2):
                 css_class="row"
             )    
     return form
-    
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
 class DatasetForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DatasetForm, self).__init__(*args, **kwargs)
@@ -387,7 +390,7 @@ class RetentionRequestForm(forms.ModelForm):
             Fieldset('<div class="alert alert-info">Request for Data Retention</div>',
                      'name',
                      'project',
-                     'milestone',
+                     layout_two_equal('milestone', 'milestone_date'),
                      'to_archive',
                      'comments',
                      style="font-weight: normal;",
@@ -399,6 +402,7 @@ class RetentionRequestForm(forms.ModelForm):
         fields = ['name',
                   'project',
                   'milestone',
+                  'milestone_date',
                   'to_archive',
                   'comments',
                   ]
@@ -411,4 +415,5 @@ class RetentionRequestForm(forms.ModelForm):
                     url='datacatalog:autocomplete-access-byproject',
                     forward=['project',],
             ),
+            'milestone_date': DateInput(),
         }

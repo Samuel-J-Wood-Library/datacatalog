@@ -408,13 +408,20 @@ class RetentionDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = 'datacatalog/detail_retention.html'
 
     def get_context_data(self, **kwargs):
-        firstrecord = self.object.to_archive.first()
-        retentionpi = firstrecord.project.pi
-        retentionadmin = firstrecord.project.admin
-
+        if self.object.viewing_is_permitted:
+            firstrecord = self.object.to_archive.first()
+            retentionpi = firstrecord.project.pi
+            retentionadmin = firstrecord.project.admin
+            retentionobject = self.object
+            accessdenied = False
+        else:
+            retentionobject = None
+            accessdenied = True
         context = super(RetentionDetailView, self).get_context_data(**kwargs)
-        context.update({'retentionpi': retentionpi,
+        context.update({'retentionrequest': retentionobject,
+                        'retentionpi': retentionpi,
                         'retentionadmin': retentionadmin,
+                        'accessdenied': accessdenied,
                         })
         return context
 

@@ -26,6 +26,11 @@
 </style>
 
 {### Project Header ###}
+{% if accessdenied %}
+    <h1>You do not have permission to view this request. If you require access, please contact
+        <a href="emailto:dcore-ticket@med.cornell.edu"
+           target="_blank">dcore-ticket@med.cornell.edu</a> </h1>
+{% endif %}
 
 <h1>
     Retention Request: {{ retentionrequest.name }}
@@ -43,7 +48,10 @@
         <span class="badge badge-danger">Request is now locked</span>
     {% endif %}
 </h1>
-<h3>Milestone: {{ retentionrequest.get_milestone_display }}</h3>
+
+<h3>Milestone: {{ retentionrequest.get_milestone_display }}
+                {% if retentionrequest.milestone_date %}({{ retentionrequest.milestone_date }}){% endif %}
+</h3>
 
 <table class="table table-striped table-hover table-sm">
     <tr><td>Project</td>
@@ -59,12 +67,11 @@
 </table>
 
 {### Tiles of all storage items  ###}
-
-{% for da in retentionrequest.to_archive.all %}
-
-    {% include "datacatalog/card_dataaccess.html" %}
-
-{% endfor %}
+<div class="card-columns">
+    {% for da in retentionrequest.to_archive.all %}
+        {% include "datacatalog/card_dataaccess.html" %}
+    {% endfor %}
+</div>
 
 {% endblock %}
 
