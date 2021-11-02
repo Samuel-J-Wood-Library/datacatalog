@@ -50,12 +50,12 @@ body { padding-top: 55px; }
                 <a class="dropdown-item" href="{% url 'datacatalog:projects-byuser' %}">
                     MY PROJECTS</a>
                 <a class="dropdown-item" href="{% url 'datacatalog:datasets' %}">
-                    Datasets</a>
+                    Dataset catalog</a>
                 {% if request.user|has_group:"dua_viewing_privileges" %}
                 <a class="dropdown-item" href="{% url 'datacatalog:duas' %}">
                     DUAs</a>
                 <a class="dropdown-item" href="{% url 'datacatalog:access' %}">
-                    Data access objects</a>
+                    Data access</a>
                 {% endif %}
                 <a class="dropdown-item" href="{% url 'datacatalog:providers' %}">
                     Providers</a>
