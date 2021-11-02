@@ -886,6 +886,9 @@ class RetentionRequest(models.Model):
         default=COMPLETION,
     )
 
+    # date in which the milestone itself is completed
+    milestone_date = models.DateField(null=True, blank=True, )
+
     # digital objects for archiving
     to_archive = models.ManyToManyField(DataAccess, related_name='retention_requests')
 
@@ -896,10 +899,25 @@ class RetentionRequest(models.Model):
     ticket = models.CharField(max_length=32,)
 
     # set record to locked to prevent users from altering after data retention has occurred
-    locked = models.BooleanField(null=True, blank=True)
+    locked = models.BooleanField(null=True, blank=True, default=False)
+
+    # set to True once the researcher has validated the retention contents
+    verified = models.BooleanField(null=True, blank=True, default=False)
 
     def __str__(self):
         return "{}: {}".format(self.record_creation, self.name)
 
     def get_absolute_url(self):
         return reverse('datacatalog:retention-view', kwargs={'pk': self.pk})
+
+    def viewing_is_permitted(self, request):
+        """
+        checks viewing permission of instance against restricted fields, and the logged in user via requests
+        and returns True if the model instance is viewable by the user.
+        """
+
+        user = getattr(request, 'user', None)
+        if user.has_perm('datacatalog.view_retentionrequest') or self.project.pi.cwid == user.username or self.project.admin.cwid == user.username:
+            return True
+        else:
+            return False
