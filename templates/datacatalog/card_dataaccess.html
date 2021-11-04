@@ -7,7 +7,9 @@
        </h5>
    </div>
     <div class="card-body">
-        <h6 class="card-subtitle mb-2 text-muted">{{ da.storage_type.name }}</h6>
+        <h6 class="card-subtitle mb-2 text-muted">{{ da.storage_type.name }}
+            <span class="badge badge-secondary" style="float:right">DA{{ da.pk }}</span>
+        </h6>
         <a class="btn btn-sm btn-info"
            href="{% url 'datacatalog:access-view' da.pk %}" class="card-link">View record</a>
         {% if da.shareable_link %}
@@ -20,7 +22,9 @@
     </div>
     <ul class="list-group list-group-flush">
       <li class="list-group-item"></li>
-      <li class="list-group-item">ID: {{ da.unique_id }}</li>
+      {% if da.unique_id %}
+        <li class="list-group-item">ID: {{ da.unique_id }}</li>
+      {% endif %}
       <li class="list-group-item">Steward: <a href="mailto:{{ da.steward_email }}">{{ da.steward_email }}</a></li>
     </ul>
 </div>

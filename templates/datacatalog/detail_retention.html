@@ -64,7 +64,9 @@
         </td></tr>
     <tr><td>PI</td><td>{{ retentionpi }}</td></tr>
     <tr><td>Admin</td><td>{{ retentionadmin }}</td></tr>
-    <tr><td>Retention requested by</td><td>{{ retentionrequest.record_author }}</td></tr>
+    <tr><td>Retention requested by</td><td>{{ retentionrequest.record_author.first_name }}
+                                            {{ retentionrequest.record_author.last_name }}
+                                            ({{ retentionrequest.record_author.username }})</td></tr>
     <tr><td>Request created</td><td>{{ retentionrequest.record_creation }}</td></tr>
     <tr><td>Last update</td><td>{{ retentionrequest.record_update }}</td></tr>
     {% if retentionrequest.ticket %}
