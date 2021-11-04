@@ -1,4 +1,5 @@
 import datetime
+from datetime import date
 
 from django.db import models
 
@@ -887,7 +888,10 @@ class RetentionRequest(models.Model):
     )
 
     # date in which the milestone itself is completed
-    milestone_date = models.DateField(null=True, blank=True, )
+    milestone_date = models.DateField(default=date.today)
+
+    # unambiguous pointer to milestone record
+    milestone_pointer = models.CharField(max_length=64, default="Enter reference here")
 
     # digital objects for archiving
     to_archive = models.ManyToManyField(DataAccess, related_name='retention_requests')

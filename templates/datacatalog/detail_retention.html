@@ -49,9 +49,13 @@
     {% endif %}
 </h1>
 
-<h3>Milestone: {{ retentionrequest.get_milestone_display }}
-                {% if retentionrequest.milestone_date %}({{ retentionrequest.milestone_date }}){% endif %}
-</h3>
+    <h3>Milestone: {{ retentionrequest.get_milestone_display }}
+        <span class="badge badge-secondary" style="float:right">RR{{ retentionrequest.pk }}</span>
+    </h3>
+    <h3><small class="text-muted">
+                {{ retentionrequest.milestone_pointer }} ({{ retentionrequest.milestone_date }})
+        </small>
+    </h3>
 
 <table class="table table-striped table-hover table-sm">
     <tr><td>Project</td>
@@ -63,6 +67,9 @@
     <tr><td>Retention requested by</td><td>{{ retentionrequest.record_author }}</td></tr>
     <tr><td>Request created</td><td>{{ retentionrequest.record_creation }}</td></tr>
     <tr><td>Last update</td><td>{{ retentionrequest.record_update }}</td></tr>
+    {% if retentionrequest.ticket %}
+        <tr><td>ServiceNow Ticket</td><td>{{ retentionrequest.ticket }}</td></tr>
+    {% endif %}
     <tr><td>Comments</td><td>{{ retentionrequest.comments }}</td></tr>
 </table>
 

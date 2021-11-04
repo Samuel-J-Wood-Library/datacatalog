@@ -143,7 +143,10 @@ class DatasetForm(forms.ModelForm):
                                         ),  
                     'cil' :  autocomplete.ModelSelect2Multiple(
                                         url='datacatalog:autocomplete-cil'
-                                        ),                            
+                                        ),
+                    'publication_date': DateInput(),
+                    'period_end': DateInput(),
+                    'period_start': DateInput(),
                     }
 
 div_choose_add_dset = Div(
@@ -216,6 +219,7 @@ class DataAccessForm(forms.ModelForm):
 class ProjectForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProjectForm, self).__init__(*args, **kwargs)
+        self.fields['funding_id'].label = "WRG ID"
         self.helper = FormHelper()
         self.helper.form_id = 'projectForm'
         self.helper.form_method = 'post'
@@ -228,7 +232,7 @@ class ProjectForm(forms.ModelForm):
                      ),
             Fieldset('<div class="alert alert-info">Project Details</div>',
                      layout_two_equal('pi', 'admin'),
-                     layout_two_equal('sponsor', 'funding_id'),
+                     'funding_id',
                      'completion',
                      style="font-weight: normal;",
                      ),
@@ -240,7 +244,6 @@ class ProjectForm(forms.ModelForm):
                   'description',
                   'pi',
                   'admin',
-                  'sponsor',
                   'funding_id',
                   'completion',
                   ]
@@ -251,6 +254,7 @@ class ProjectForm(forms.ModelForm):
             'admin': autocomplete.ModelSelect2(
                 url='persons:autocomplete-person'
             ),
+            'completion': DateInput(),
         }
 
 
@@ -376,7 +380,10 @@ class DUAForm(forms.ModelForm):
                                         ),
                     'datasets' : autocomplete.ModelSelect2Multiple(
                                         url='datacatalog:autocomplete-dataset'
-                                        ),                                      
+                                        ),
+                    'start_date' :  DateInput(),
+                    'end_date': DateInput(),
+                    'date_signed': DateInput(),
                     }
 
 class RetentionRequestForm(forms.ModelForm):
@@ -389,8 +396,8 @@ class RetentionRequestForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset('<div class="alert alert-info">Request for Data Retention</div>',
                      'name',
-                     'project',
-                     layout_two_equal('milestone', 'milestone_date'),
+                     layout_two_equal('project','milestone'),
+                     layout_two_equal('milestone_pointer', 'milestone_date'),
                      'to_archive',
                      'comments',
                      style="font-weight: normal;",
@@ -403,6 +410,7 @@ class RetentionRequestForm(forms.ModelForm):
                   'project',
                   'milestone',
                   'milestone_date',
+                  'milestone_pointer',
                   'to_archive',
                   'comments',
                   ]
