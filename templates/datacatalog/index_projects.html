@@ -27,13 +27,13 @@
     {{ project_list|length  }} project{{ project_list|length|pluralize:",s" }} for {{ request.user.first_name }} {{ request.user.last_name }}
 </h1>
 <h2>
-        <a type="button"
+        <a 
            class="btn btn-primary"
            href="{% url 'datacatalog:project-add' %}">Create new project</a>
-        <a type="button"
+        <a 
            class="btn btn-primary"
            href="{% url 'datacatalog:access-add' %}">Add new data location</a>
-        <a type="button"
+        <a 
            class="btn btn-danger"
            href="{% url 'datacatalog:retention-add' %}">Request data retention</a>
 </h2>
@@ -60,7 +60,7 @@
             <li class="list-group-item"><a href="{% url 'datacatalog:access-view' da.pk %}">{{ da.storage_type.name }}</a></li>
           {% endfor %}
             <li class="list-group-item">
-                <a  type="button"
+                <a  
                     class="btn btn-primary"
                     href="{% url 'datacatalog:access-add' %}">Add new data location</a></li>
         </ul>

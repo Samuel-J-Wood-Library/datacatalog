@@ -34,7 +34,7 @@
 
 
 {% if request.user|has_group:"datacatalog_editor" %}
-<a type="button" class="btn btn-primary" href="{% url 'datacatalog:keyword-update' keyword.pk %}">Update keyword</a>
+<a  class="btn btn-primary" href="{% url 'datacatalog:keyword-update' keyword.pk %}">Update keyword</a>
 {% endif %}
 
 </br></br>

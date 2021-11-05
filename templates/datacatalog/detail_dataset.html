@@ -31,7 +31,7 @@
     {{ dataset.title }} 
     {% if request.user|has_group:"datacatalog_editor" %}
     <span style="float:right">
-        <a type="button" 
+        <a  
            class="btn btn-primary" 
            href="{% url 'datacatalog:dataset-update' dataset.pk %}">
            Update dataset details
@@ -149,7 +149,7 @@
         <tr>
             <td>Data dictionary</td>
             <td>
-                <a  type="button" 
+                <a   
                     class="btn btn-info" 
                     href="{% url 'datacatalog:ddict-file' dataset.data_dictionary %}"  
                     target="_blank">

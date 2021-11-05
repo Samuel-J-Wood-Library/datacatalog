@@ -28,7 +28,7 @@
 </h1>
 <h2>
     {% if request.user|has_group:"datacatalog_editor" or request.user == dataaccess.record_author %}
-        <a type="button"
+        <a 
            class="btn btn-primary"
            href="{% url 'datacatalog:access-update' dataaccess.pk %}">Update access details</a>
     {% endif %}
@@ -60,7 +60,7 @@
         {% else %}
             <h5 class="mb-2 text-muted">This record is not linked to a project!</h5>
             {% if request.user|has_group:"datacatalog_editor" or request.user == dataaccess.record_author %}
-                 <a type="button"
+                 <a 
                     class="btn btn-primary"
                     href="{% url 'datacatalog:access-update' dataaccess.pk %}">Update access details</a>
             {% endif %}

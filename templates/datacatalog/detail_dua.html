@@ -107,7 +107,7 @@
 </br>
 
 {% if request.user|has_group:"datacatalog_editor" %}
-<a type="button" class="btn btn-primary" href="{% url 'datacatalog:dua-update' datauseagreement.pk %}">Update DUA details</a>
+<a  class="btn btn-primary" href="{% url 'datacatalog:dua-update' datauseagreement.pk %}">Update DUA details</a>
 {% endif %}
 
 </br></br>

@@ -37,7 +37,7 @@
     {% if retentionrequest.locked is not True %}
         {% if request.user|has_group:"datacatalog_editor" or request.user.username == retentionpi.cwid or request.user.username == retentionadmin.cwid or request.user == retentionrequest.record_author %}
         <span style="float:right">
-            <a type="button"
+            <a 
                class="btn btn-primary"
                href="{% url 'datacatalog:retention-update' retentionrequest.pk %}">
                Update project details

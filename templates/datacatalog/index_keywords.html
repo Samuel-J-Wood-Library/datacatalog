@@ -11,7 +11,7 @@ All {{ keyword_list|length }} Keywords:
 
 
 {% if request.user|has_group:"datacatalog_editor" %}
-<a type="button" class="btn btn-primary" href="{% url 'datacatalog:keyword-add' %}">Add new keyword</a>
+<a  class="btn btn-primary" href="{% url 'datacatalog:keyword-add' %}">Add new keyword</a>
 {% endif %}
 
 {% endblock content %}

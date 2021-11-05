@@ -7,6 +7,6 @@ All {{ dataset_list|length }} Datasets:
 
 {% include 'datacatalog/table_datasets.html' %}
 
-<a type="button" class="btn btn-primary" href="{% url 'datacatalog:dataset-add' %}">Add new dataset</a>
+<a  class="btn btn-primary" href="{% url 'datacatalog:dataset-add' %}">Add new dataset</a>
 
 {% endblock content %}
