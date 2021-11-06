@@ -1,9 +1,12 @@
 import csv
 import os
+from datetime import date
 
 from dal import autocomplete
+from django.contrib import messages
+from django.http import HttpResponseRedirect, FileResponse, Http404, HttpResponse
 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
@@ -19,6 +22,8 @@ from .models import MediaSubType, DataField, ConfidentialityImpact, Project
 from .models import RetentionRequest
 
 from .forms import DatasetForm, DUAForm, ProjectForm, DataAccessForm, RetentionRequestForm
+from .forms import RetentionWorkflowExistingProjectForm, RetentionWorkflowNewProjectForm
+from .forms import RetentionWorkflowDataForm, RetentionWorkflowNewDataForm, RetentionWorkflowSummaryForm
 
 ####################################
 ######  AUTOCOMPLETE  VIEWS   ######
@@ -409,14 +414,16 @@ class RetentionDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         if self.object.viewing_is_permitted:
-            firstrecord = self.object.to_archive.first()
-            retentionpi = firstrecord.project.pi
-            retentionadmin = firstrecord.project.admin
+            retentionpi = self.object.project.pi
+            retentionadmin = self.object.project.admin
             retentionobject = self.object
             accessdenied = False
         else:
             retentionobject = None
             accessdenied = True
+            retentionpi = None
+            retentionadmin = None
+
         context = super(RetentionDetailView, self).get_context_data(**kwargs)
         context.update({'retentionrequest': retentionobject,
                         'retentionpi': retentionpi,
@@ -497,8 +504,7 @@ class DatasetCreateView(LoginRequiredMixin, CreateView):
     model = Dataset
     form_class = DatasetForm
     template_name = "datacatalog/basic_crispy_form.html"
-    # default success_url should be to the object page defined in model.
-    
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
         # update who last edited record
@@ -518,8 +524,7 @@ class DataProviderCreateView(PermissionRequiredMixin, CreateView):
     ]
     template_name = "datacatalog/basic_form.html"
     permission_required = 'datacatalog.add_dataprovider'
-    # default success_url should be to the object page defined in model.
-    
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
         # update who last edited record
@@ -543,8 +548,7 @@ class DataUseAgreementCreateView(LoginRequiredMixin, CreateView):
     model = DataUseAgreement
     form_class = DUAForm
     template_name = "datacatalog/basic_crispy_form.html"
-    # default success_url should be to the object page defined in model.
-    
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
         # update who last edited record
@@ -556,8 +560,7 @@ class KeywordCreateView(LoginRequiredMixin, CreateView):
     model = Keyword
     fields = ['keyword', 'definition', ]
     template_name = "datacatalog/basic_form.html"
-    # default success_url should be to the object page defined in model.
-    
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
         # update who last edited record
@@ -569,8 +572,7 @@ class DataFieldCreateView(LoginRequiredMixin, CreateView):
     model = DataField
     fields = ['name', 'description','scope' ]
     template_name = "datacatalog/basic_form.html"
-    # default success_url should be to the object page defined in model.
-    
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
         # update who last edited record
@@ -582,8 +584,6 @@ class RetentionRequestCreateView(LoginRequiredMixin, CreateView):
     model = RetentionRequest
     form_class = RetentionRequestForm
     template_name = "datacatalog/basic_crispy_form.html"
-
-    # default success_url should be to the object page defined in model.
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -643,6 +643,164 @@ class RetentionUpdateView(LoginRequiredMixin, UpdateView):
     model = RetentionRequest
     form_class = RetentionRequestForm
     template_name = "datacatalog/basic_crispy_form.html"
+
+###############################
+### RetentionWorkflow views ###
+###############################
+
+class RetentionWorkflowProjectView(generic.TemplateView):
+    template_name = 'datacatalog/workflow_project.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(RetentionWorkflowProjectView, self).get_context_data(**kwargs)
+        context.update({
+            'form_existing': RetentionWorkflowExistingProjectForm(),
+            'form_new': RetentionWorkflowNewProjectForm(),
+        })
+        return context
+
+    def post(self, request, *args, **kwargs):
+
+        def validate_new_retention_request(retention_request):
+            if retention_request.is_bound and retention_request.is_valid():
+                retention_request.record_author = request.user
+                retention_request.name = f"retention for project {retention_request.project} {date.today()}"
+                retention_request.save()
+                messages.add_message(request, messages.SUCCESS,
+                                     f"{retention_request.pk} {retention_request.name} {retention_request.project} saved")
+            else:
+                messages.error(request, retention_request.errors)
+
+        # if the submit existing project button is pressed
+        # create new retention request
+        if 'submitexisting' in request.POST:
+            retention_request_form = RetentionWorkflowExistingProjectForm(data=request.POST)
+            if retention_request_form.is_bound and retention_request_form.is_valid():
+                retention_request=retention_request_form.save(commit=False)
+                retention_request.record_author = request.user
+                retention_request.name = f"retention for project {retention_request.project} {date.today()}"
+                project_pk = retention_request.project.pk
+                retention_request.save()
+                messages.add_message(request, messages.SUCCESS,
+                                     f"{retention_request.name}  created.")
+            else:
+                messages.error(request, retention_request_form.errors)
+
+        # if the submit new project button is pressed
+        # create new project instance, then
+        # create new retention request instance and append new project to it.
+        elif 'submitnew' in request.POST:
+            new_project_form = RetentionWorkflowNewProjectForm(data=request.POST)
+            if new_project_form.is_bound and new_project_form.is_valid():
+                new_project = new_project_form.save(commit=False)
+                new_project.record_author = request.user
+                new_project.save()
+                project_pk = new_project.pk
+                messages.add_message(request, messages.SUCCESS,
+                                     f"Project {new_project.pk} {new_project.name} created.")
+
+                # create new data retention request, and connect to new project.
+                retention_request_form = RetentionWorkflowExistingProjectForm()
+                if retention_request_form.is_bound and retention_request_form.is_valid():
+                    retention_request = retention_request_form.save(commit=False)
+                    retention_request.project = new_project
+                    retention_request.record_author = request.user
+                    retention_name = f"retention for project {project_pk} {date.today()}"
+                    retention_request.name = retention_name
+                    retention_request.save()
+
+                    project_pk = retention_request.project.pk
+                    messages.add_message(request, messages.SUCCESS,
+                                         f"{retention_request.name}  created for project {retention_request.project}.")
+                else:
+                    messages.error(request, retention_request_form.errors)
+            else:
+                messages.error(request, new_project_form.errors)
+
+        return HttpResponseRedirect(reverse('datacatalog:wizard-data', kwargs={'pk': project_pk}))
+
+class RetentionWorkflowDataView(generic.TemplateView):
+    template_name = 'datacatalog/workflow_data.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(RetentionWorkflowDataView, self).get_context_data(**kwargs)
+        retention_request = get_object_or_404(RetentionRequest, pk=self.kwargs['pk'])
+
+        context.update({
+            'retention_request': retention_request,
+            'form_existing': RetentionWorkflowDataForm(instance=retention_request),
+            'form_new': RetentionWorkflowNewDataForm(),
+        })
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        # retrieve the primary key from url
+        rr_pk = self.kwargs['pk']
+
+        # retrieve the RetentionRequest model instance based on pk
+        retention_request = get_object_or_404(RetentionRequest, pk=rr_pk)
+        project = retention_request.project
+
+
+        # if the add existing data locations button is pressed
+        # update existing retention request, and
+        # continue to summary page.
+        if 'submitexisting' in request.POST:
+            # create a PersonForm based on person and form data
+            rr_form = RetentionWorkflowDataForm(instance=retention_request, data=request.POST)
+            if rr_form.is_bound and rr_form.is_valid():
+                retention_request = rr_form.save()
+                messages.add_message(request, messages.SUCCESS,
+                                     f"Data locations added to {retention_request.name}.")
+            else:
+                messages.error(request, rr_form.errors)
+
+            # move to update summary
+            return HttpResponseRedirect(reverse('datacatalog:wizard-milestone', kwargs={'pk': rr_pk}))
+
+        # if the submit new project button is pressed
+        # create new data access instance, then
+        # add to existing retention request instance and return to same page.
+        elif 'submitnew' in request.POST:
+            new_da_form = RetentionWorkflowNewDataForm(data=request.POST)
+            if new_da_form.is_bound and new_da_form.is_valid():
+                new_da = new_da_form.save(commit=False)
+                new_da.record_author = request.user
+                new_da.project = project
+                new_da.save()
+                da_pk = new_da.pk
+
+                # update retention request by appending new data access to existing in to_archive
+                retention_request.to_archive.add(new_da)
+
+                # add banner message to highlight to user that data location has been created.
+                messages.add_message(request, messages.SUCCESS,
+                                         f"Data location {new_da.name} appended to request")
+
+                # return to same page to allow additional datasets to be added
+                return HttpResponseRedirect(reverse('datacatalog:wizard-data', kwargs={'pk': rr_pk}))
+
+            else:
+                messages.error(request, new_da_form.errors)
+
+        # this response is only accessed if there is an error in the form
+        return HttpResponseRedirect(reverse('datacatalog:wizard-data', kwargs={'pk': rr_pk}))
+
+class RetentionWorkflowSummaryView(LoginRequiredMixin, UpdateView):
+    model = RetentionRequest
+    form_class = RetentionWorkflowSummaryForm
+    template_name = "datacatalog/workflow_summary.html"
+    initial = { 'milestone':"",
+                'milestone_pointer':"",
+                'milestone_date':"",
+                }
+
+    def form_valid(self, form):
+        instance = form.save()
+        self.success_url = reverse('datacatalog:retention-update', kwargs={'pk': instance.pk})
+        return super(RetentionWorkflowSummaryView, self).form_valid(form)
+
 
 ##############################
 ######  SEARCH  VIEWS   ######

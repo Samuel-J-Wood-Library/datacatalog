@@ -42,15 +42,7 @@ div_dates = Div(
                     ),
                     css_class="row"
 )
-div_access = Div(
-                    Div('publisher',
-                        css_class='col-6',
-                    ),
-                    Div('access_requirements',
-                        css_class='col-6',
-                    ),
-                    css_class="row"
-)
+
 
 def layout_two_equal(field1, field2):
     form = Div(
@@ -62,6 +54,21 @@ def layout_two_equal(field1, field2):
                 ),
                 css_class="row"
             )    
+    return form
+
+def layout_three_equal(field1, field2, field3):
+    form = Div(
+                Div(field1,
+                    css_class='col-44',
+                ),
+                Div(field2,
+                    css_class='col-4',
+                ),
+                Div(field3,
+                css_class='col-4',
+                ),
+                css_class="row"
+            )
     return form
 
 class DateInput(forms.DateInput):
@@ -153,14 +160,15 @@ div_choose_add_dset = Div(
                             Div('metadata',
                                 css_class='col-10'
                             ),
-                            HTML("""
+                            HTML("""<div class="col-2">
                                     <a  href="{% url 'datacatalog:dataset-add' %}"
                                         target="_blank" 
                                         type="button" 
                                         class="btn btn-success">
-                                            Create new dataset record
+                                            Create new entry
                                     </a>
-                                """
+                                    </div>
+                                """,
                             ),
                             css_class="row",
 )
@@ -232,8 +240,7 @@ class ProjectForm(forms.ModelForm):
                      ),
             Fieldset('<div class="alert alert-info">Project Details</div>',
                      layout_two_equal('pi', 'admin'),
-                     'funding_id',
-                     'completion',
+                     layout_two_equal('funding_id', 'completion'),
                      style="font-weight: normal;",
                      ),
         )
@@ -276,37 +283,6 @@ div_provider_details = Div(
                             ),
                             css_class="row"
 )
-div_dua_dates =  Div(
-                    Div('date_signed',
-                        css_class='col-4',
-                    ),
-                    Div('start_date',
-                        css_class='col-4',
-                    ),
-                    Div('end_date',
-                        css_class='col-4',
-                    ),
-                    css_class="row"
-)
-
-div_attestation =  Div(
-                        Div('separate_attestation',
-                            css_class='col-6',
-                        ),
-                        Div('scope',
-                            css_class='col-6',
-                        ),
-                        css_class="row"
-)
-div_handling = Div(
-                        Div('destruction_required',
-                            css_class='col-6',
-                        ),
-                        Div('mixing_allowed',
-                            css_class='col-6',
-                        ),
-                        css_class="row"
-)
 
 class DUAForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -328,12 +304,12 @@ class DUAForm(forms.ModelForm):
                             'datasets',
                             'pi',
                             'users',
-                            div_attestation,
-                            div_dua_dates,
+                            layout_two_equal('separate_attestation', 'scope'),
+                            layout_three_equal('date_signed', 'start_date', 'end_date'),
                             style="font-weight: bold;",
                     ),
                     Fieldset('<div class="alert alert-info">Data handling conditions</div>',
-                            div_handling,
+                            layout_two_equal('destruction_required', 'mixing_allowed'),
                             'storage_requirements',
                             'access_conditions', 
                             'reuse_scope',                           
@@ -392,11 +368,11 @@ class RetentionRequestForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_id = 'retentionRequestForm'
         self.helper.form_method = 'post'
-        self.helper.add_input(Submit('submit', 'Submit'))
+        self.helper.add_input(Submit('submit', 'Submit retention request'))
         self.helper.layout = Layout(
             Fieldset('<div class="alert alert-info">Request for Data Retention</div>',
                      'name',
-                     layout_two_equal('project','milestone'),
+                     layout_two_equal('milestone','project'),
                      layout_two_equal('milestone_pointer', 'milestone_date'),
                      'to_archive',
                      'comments',
@@ -423,5 +399,183 @@ class RetentionRequestForm(forms.ModelForm):
                     url='datacatalog:autocomplete-access-byproject',
                     forward=['project',],
             ),
+            'milestone_date': DateInput(),
+        }
+
+# The following forms work together to create the Data Retention Request Wizard
+class RetentionWorkflowExistingProjectForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(RetentionWorkflowExistingProjectForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'retentionWorkflowExistingProjectForm'
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submitexisting', 'Select and continue'))
+        self.helper.layout = Layout(
+            Fieldset("",
+                     'project',
+                     style="font-weight: normal;",
+                     ),
+        )
+
+    class Meta:
+        model = RetentionRequest
+        fields = [
+                  'project',
+                  ]
+
+        widgets = {
+            'project':autocomplete.ModelSelect2(
+                    url='datacatalog:autocomplete-project-byuser'
+            ),
+        }
+
+class RetentionWorkflowNewProjectForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(RetentionWorkflowNewProjectForm, self).__init__(*args, **kwargs)
+        self.fields['pi'].label = "PI"
+        self.fields['funding_id'].label = "WRG ID"
+        self.helper = FormHelper()
+        self.helper.form_id = 'retentionWorkflowNewProjectForm'
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submitnew', 'Save and continue'))
+        self.helper.layout = Layout(
+            Fieldset("",
+                     'name',
+                     'description',
+                     style="font-weight: normal;",
+                     ),
+            Fieldset('<div class="alert alert-info">Project Details</div>',
+                     'pi',
+                     'admin',
+                     layout_two_equal('funding_id', 'completion'),
+                     style="font-weight: normal;",
+                     ),
+        )
+
+    class Meta:
+        model = Project
+        fields = ['name',
+                  'description',
+                  'pi',
+                  'admin',
+                  'funding_id',
+                  'completion',
+                  ]
+
+        widgets = {'pi': autocomplete.ModelSelect2(
+            url='persons:autocomplete-person'
+        ),
+            'admin': autocomplete.ModelSelect2(
+                url='persons:autocomplete-person'
+            ),
+            'completion': DateInput(),
+        }
+
+class RetentionWorkflowDataForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(RetentionWorkflowDataForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'retentionWorkflowDataForm'
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submitexisting', 'Continue to milestone'))
+        self.helper.layout = Layout(
+            Fieldset("",
+                     'project',
+                     'to_archive',
+                     style="font-weight: normal;",
+                     ),
+        )
+
+    class Meta:
+        model = RetentionRequest
+        fields = [
+                  'project',
+                  'to_archive',
+                  ]
+
+        widgets = {
+            'project':forms.HiddenInput(),
+            'to_archive': autocomplete.ModelSelect2Multiple(
+                    url='datacatalog:autocomplete-access-byproject',
+                    forward=['project',],
+            ),
+        }
+
+class RetentionWorkflowNewDataForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(RetentionWorkflowNewDataForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.fields['name'].label = "Short Description"
+        self.fields['steward_email'].label = "Contact email"
+        self.fields['metadata'].label = "Data Catalog record of dataset"
+        self.fields['public'].label = "Add public link for data sharing to catalog:"
+        self.helper.form_id = 'retentionWorkflowNewDataForm'
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submitnew', 'Add to project'))
+        self.helper.layout = Layout(
+            Fieldset("",
+                     'name',
+                     'storage_type',
+                     'unique_id',
+                     'shareable_link',
+                     'filepaths',
+                     style="font-weight: normal;",
+                     ),
+            Fieldset('<div class="alert alert-info">Discovery and Access</div>',
+                     div_choose_add_dset,
+                     'access_instructions',
+                     'steward_email',
+                     'public',
+                     style="font-weight: normal;",
+                     ),
+        )
+
+    class Meta:
+        model = DataAccess
+        fields = ['name',
+                  'storage_type',
+                  'unique_id',
+                  'shareable_link',
+                  'filepaths',
+                  'metadata',
+                  'steward_email',
+                  'access_instructions',
+                  'public',
+                  ]
+
+        widgets = {'metadata': autocomplete.ModelSelect2(
+                                url='datacatalog:autocomplete-dataset'
+                                ),
+                   'project': autocomplete.ModelSelect2(
+                                url='datacatalog:autocomplete-project-byuser'
+                                ),
+        }
+
+class RetentionWorkflowSummaryForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(RetentionWorkflowSummaryForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'retentionWorkflowSummaryForm'
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submit', 'Continue to review'))
+        self.helper.layout = Layout(
+            Fieldset('',
+                     'milestone',
+                     layout_two_equal('milestone_pointer', 'milestone_date'),
+                     'comments',
+                     style="font-weight: normal;",
+                     ),
+        )
+
+    class Meta:
+        model = RetentionRequest
+        fields = [
+                  'milestone',
+                  'milestone_date',
+                  'milestone_pointer',
+                  'comments',
+                  ]
+
+        widgets = {
             'milestone_date': DateInput(),
         }

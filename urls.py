@@ -105,7 +105,12 @@ urlpatterns = [
     path('retention/update/<int:pk>', views.RetentionUpdateView.as_view(),
          name='retention-update'
     ),
-   
+
+    # data retention workflow views:
+    path('wizard/project', views.RetentionWorkflowProjectView.as_view(), name='wizard-project'),
+    path('wizard/<int:pk>/data', views.RetentionWorkflowDataView.as_view(), name='wizard-data'),
+    path('wizard/<int:pk>/milestone', views.RetentionWorkflowSummaryView.as_view(), name='wizard-milestone'),
+
     # search view:
     path('search/all', views.FullSearch.as_view(), name="full-search"),
     

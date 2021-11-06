@@ -1,0 +1,41 @@
+{% extends 'datacatalog/base-catalog.html' %}
+
+{% load static %}
+{% load bootstrap4 %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        <h2>DATA RETENTION REQUEST WIZARD: Retention Milestones</h2>
+    </div>
+    <div class="card-body">
+
+        <p>
+            Please specify the milestone that has triggered this retention request. The milestone pointer depends on
+            the milestone type:
+        </p>
+        <ul>
+            <li>Project completion: The WRG project ID</li>
+            <li>Publication: The DOI of the published article</li>
+            <li>PI departure: The HR offboarding form ID</li>
+        </ul>
+        <p>The milestone date refers to the expected completion of the milestone, not the desired date of retention.</p>
+
+    </div>
+</div>
+
+    <br/>
+
+{{ form.media }}
+
+<form action="" method="post">
+	{% csrf_token %}
+    {% crispy form %}
+</form>
+
+
+
+{% endblock %}

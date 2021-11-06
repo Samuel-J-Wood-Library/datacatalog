@@ -1,0 +1,61 @@
+{% extends 'datacatalog/base-catalog.html' %}
+
+{% load static %}
+{% load bootstrap4 %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        <h2>DATA RETENTION REQUEST WIZARD: Data Selection</h2>
+    </div>
+    <div class="card-body">
+
+        <p>
+            Please select all the data locations you wish to have retained, which are associated with your
+            project and milestone. Use the form
+            on the right to create new descriptions of data locations, if necessary.
+        </p>
+    </div>
+</div>
+
+    <br/>
+
+<div class="card-deck">
+    <div class="card shadow">
+        <div class="card-header bg-light">
+            <h3>Choose existing data locations:</h3>
+        </div>
+        <div class="card-body">
+
+            {{ form_existing.media }}
+
+            <form action="" method="post">
+                {% csrf_token %}
+                {% crispy form_existing %}
+            </form>
+        </div>
+
+    </div>
+
+    <div class="card shadow">
+        <div class="card-header bg-light">
+            <h3>Create a new data location description:</h3>
+        </div>
+        <div class="card-body">
+
+            {{ form_new.media }}
+
+            <form action="" method="post">
+                {% csrf_token %}
+                {% crispy form_new %}
+            </form>
+        </div>
+    </div>
+</div>
+
+<br/>
+
+{% endblock %}

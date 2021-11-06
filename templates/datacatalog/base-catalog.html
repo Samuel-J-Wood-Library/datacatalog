@@ -82,10 +82,12 @@ body { padding-top: 55px; }
                     {{ user.get_username }} <b class="caret"></b>
                 </a>
             <div class="dropdown-menu" aria-labelledby="AdminDropdown">
+              <a class="dropdown-item text-danger" href="{% url 'datacatalog:projects-byuser' %}">
+                    View my projects</a>
               <a class="dropdown-item" href="{% url 'admin:index' %}" target="_blank">
-                Admin</a>
+                Admin page</a>
               <a class="dropdown-item" href="{% url 'frontpage' %}">
-                Data Core Frontpage</a>
+                Data Core homepage</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="/logout">Logout </a>
             </div>        
@@ -101,19 +103,19 @@ body { padding-top: 55px; }
                 </a>
             <div class="dropdown-menu" aria-labelledby="ActionsDropdown">
                 <a class="dropdown-item text-danger" href="{% url 'datacatalog:retention-add' %}">
-                    Request data retention</a>
+                    Data retention request</a>
                 <a class="dropdown-item" href="{% url 'datacatalog:project-add' %}">
-                    project</a>
+                    Project</a>
                 <a class="dropdown-item" href="{% url 'datacatalog:access-add' %}">
                     data location</a>
                 <a class="dropdown-item" href="{% url 'datacatalog:dataset-add' %}">
-                    dataset metadata</a>
+                    Dataset metadata</a>
                 <a class="dropdown-item" href="{% url 'datacatalog:dua-add' %}">
-                    data use agreement</a>
+                    Data use agreement</a>
                 <a class="dropdown-item" href="{% url 'datacatalog:provider-add' %}">
-                    data provider</a>
+                    Data provider</a>
                 <a class="dropdown-item" href="{% url 'datacatalog:keyword-add' %}">
-                    keyword</a>
+                    Keyword</a>
 
             </div>        
             </li>
@@ -128,7 +130,7 @@ body { padding-top: 55px; }
                 placeholder="Search catalog" aria-label="Search"
                 name="srch_term" id="srch_term">
               
-                <button class="button btn btn-default" type="submit">
+                <button class="button btn btn-secondary" type="submit">
                     Submit <i class="glyphicon glyphicon-search">
                     </i></button>
               </div>

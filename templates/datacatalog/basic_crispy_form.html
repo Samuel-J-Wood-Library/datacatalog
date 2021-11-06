@@ -11,13 +11,8 @@
 
 <form action="" method="post">
 	{% csrf_token %}
-
     {% crispy form %}
-    {% comment %}
-    {{ form|crispy }}
-    {% endcomment %}
 </form>    
     
-
 
 {% endblock %}

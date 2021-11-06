@@ -875,11 +875,10 @@ class RetentionRequest(models.Model):
     PRIVATE = 'PR'
     OTHER = 'OT'
     MILESTONE_CHOICES = (
+        ("", "--- choose one ---"),
         (PUBLICATION, "Publication"),
         (COMPLETION, "Project/Grant completion"),
         (TRANSFER, "Leaving Weill Cornell Medicine"),
-        (PRIVATE, "Private backup"),
-        (OTHER, "Other"),
     )
     milestone = models.CharField(
         max_length=2,
@@ -900,7 +899,7 @@ class RetentionRequest(models.Model):
     comments = models.TextField(null=True, blank=True)
 
     # ITS ticket ID
-    ticket = models.CharField(max_length=32,)
+    ticket = models.CharField(max_length=32, null=True, blank=True)
 
     # set record to locked to prevent users from altering after data retention has occurred
     locked = models.BooleanField(null=True, blank=True, default=False)
