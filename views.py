@@ -679,7 +679,6 @@ class RetentionWorkflowProjectView(generic.TemplateView):
                 retention_request=retention_request_form.save(commit=False)
                 retention_request.record_author = request.user
                 retention_request.name = f"retention for project {retention_request.project} {date.today()}"
-                project_pk = retention_request.project.pk
                 retention_request.save()
                 messages.add_message(request, messages.SUCCESS,
                                      f"{retention_request.name}  created.")
@@ -700,20 +699,16 @@ class RetentionWorkflowProjectView(generic.TemplateView):
                                      f"Project {new_project.pk} {new_project.name} created.")
 
                 # create new data retention request, and connect to new project.
-                retention_request_form = RetentionWorkflowExistingProjectForm()
-                if retention_request_form.is_bound and retention_request_form.is_valid():
-                    retention_request = retention_request_form.save(commit=False)
-                    retention_request.project = new_project
-                    retention_request.record_author = request.user
-                    retention_name = f"retention for project {project_pk} {date.today()}"
-                    retention_request.name = retention_name
-                    retention_request.save()
+                retention_name = f"retention for project {project_pk} {date.today()}"
+                retention_request = RetentionRequest(project=new_project,
+                                                     record_author=request.user,
+                                                     name=retention_name,
+                                                     )
+                retention_request.save()
 
-                    project_pk = retention_request.project.pk
-                    messages.add_message(request, messages.SUCCESS,
-                                         f"{retention_request.name}  created for project {retention_request.project}.")
-                else:
-                    messages.error(request, retention_request_form.errors)
+                messages.add_message(request, messages.SUCCESS,
+                                         f"{retention_request.name} started.")
+
             else:
                 messages.error(request, new_project_form.errors)
 
