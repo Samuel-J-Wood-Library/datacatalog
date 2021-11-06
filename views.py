@@ -717,7 +717,7 @@ class RetentionWorkflowProjectView(generic.TemplateView):
             else:
                 messages.error(request, new_project_form.errors)
 
-        return HttpResponseRedirect(reverse('datacatalog:wizard-data', kwargs={'pk': project_pk}))
+        return HttpResponseRedirect(reverse('datacatalog:wizard-data', kwargs={'pk': retention_request.pk}))
 
 class RetentionWorkflowDataView(generic.TemplateView):
     template_name = 'datacatalog/workflow_data.html'
