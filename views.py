@@ -312,7 +312,43 @@ class IndexDataProviderView(LoginRequiredMixin, generic.ListView):
                         'empty_list'    : [],  
         })
         return context
-        
+
+class IndexRetentionRequestView(PermissionRequiredMixin, generic.ListView):
+    login_url = '/login/'
+
+    template_name = 'datacatalog/index_retentionrequests.html'
+    context_object_name = 'retention_requests'
+    permission_required = 'datacatalog.view_retentionrequest'
+
+    def get_queryset(self):
+        qs = RetentionRequest.objects.order_by('record_update')
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(IndexRetentionRequestView, self).get_context_data(**kwargs)
+        context.update({
+            'empty_list': [],
+        })
+        return context
+
+class IndexActiveRetentionRequestView(PermissionRequiredMixin, generic.ListView):
+    login_url = '/login/'
+
+    template_name = 'datacatalog/index_retentionrequests_active.html'
+    context_object_name = 'retention_requests'
+    permission_required = 'datacatalog.view_retentionrequest'
+
+    def get_queryset(self):
+        qs = RetentionRequest.objects.filter(verified="False").order_by('record_update')
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(IndexActiveRetentionRequestView, self).get_context_data(**kwargs)
+        context.update({
+            'empty_list': [],
+        })
+        return context
+
 ####################
 ### Detail views ###
 ####################
@@ -431,6 +467,43 @@ class RetentionDetailView(LoginRequiredMixin, generic.DetailView):
                         'accessdenied': accessdenied,
                         })
         return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        this is to handle single button actions available on the details page, to update boolean fields in the model.
+        """
+        # if the Lock Request button is pressed
+        # update model locked field to True
+        if 'marklocked' in request.POST:
+            retention_request = get_object_or_404(RetentionRequest, pk=self.kwargs['pk'])
+            retention_request.locked = True
+            retention_request.save()
+
+            messages.add_message(request, messages.SUCCESS,
+                                     f"{retention_request.name} locked.")
+
+        # if the Lock Request button is pressed
+        # update model locked field to True
+        if 'markunlocked' in request.POST:
+            retention_request = get_object_or_404(RetentionRequest, pk=self.kwargs['pk'])
+            retention_request.locked = False
+            retention_request.save()
+
+            messages.add_message(request, messages.SUCCESS,
+                                 f"{retention_request.name} unlocked.")
+
+        # if the Mark as verified button is pressed
+        # update model locked field to True
+        elif 'markverified' in request.POST:
+            retention_request = get_object_or_404(RetentionRequest, pk=self.kwargs['pk'])
+            retention_request.verified = True
+            retention_request.save()
+
+            messages.add_message(request, messages.SUCCESS,
+                                 f"{retention_request.name} verified.")
+
+        # return to detail view
+        return HttpResponseRedirect(reverse('datacatalog:retention-view', kwargs={'pk': self.kwargs['pk']}))
 
 def get_file_response(dd_file, content_type):
     try:

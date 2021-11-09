@@ -56,6 +56,8 @@ body { padding-top: 55px; }
                     DUAs</a>
                 <a class="dropdown-item" href="{% url 'datacatalog:access' %}">
                     Data access</a>
+                <a class="dropdown-item" href="{% url 'datacatalog:retention-active' %}">
+                    Retention requests</a>
                 {% endif %}
                 <a class="dropdown-item" href="{% url 'datacatalog:providers' %}">
                     Providers</a>
@@ -104,6 +106,9 @@ body { padding-top: 55px; }
             <div class="dropdown-menu" aria-labelledby="ActionsDropdown">
                 <a class="dropdown-item text-danger" href="{% url 'datacatalog:retention-add' %}">
                     Data retention request</a>
+                <a class="dropdown-item text-danger"
+                   href="{% url 'datacatalog:wizard-project' %}" >
+                   Data retention wizard</a>
                 <a class="dropdown-item" href="{% url 'datacatalog:project-add' %}">
                     Project</a>
                 <a class="dropdown-item" href="{% url 'datacatalog:access-add' %}">

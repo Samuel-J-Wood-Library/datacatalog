@@ -16,16 +16,57 @@
 }
 </style>
 
-<a  class="btn btn-primary" href="{% url 'datacatalog:datasets' %}">View {{ ds_count }} datasets</a>
+    {# Provide buttons for major actions within the catalog #}
+<div class="card-deck">
+    {% if user.is_authenticated %}
+         {# DATA RETENTION PROJECT VIEW #}
+        <div class="card shadow">
+          <div class="card-body">
+            <h5 class="card-title">Data Retention Dashboard</h5>
+            <p class="card-text">View and update your projects and datasets.</p>
+          </div>
+          <div class="card-footer">
+            <a  class="btn btn-success w-100"
+               href="{% url 'datacatalog:projects-byuser' %}" >
+               VIEW MY PROJECTS</a>
+          </div>
+        </div>
 
-<a  class="btn btn-primary" href="{% url 'datacatalog:providers' %}">View {{ pub_count }} data providers</a>
+         {# NEW DATA RETENTION REQUEST #}
+        <div class="card shadow">
+          <div class="card-body">
+            <h5 class="card-title">Request Data Retention</h5>
+            <p class="card-text">Use our retention request wizard to archive data associated
+                                 with a completed project milestone.</p>
+          </div>
+          <div class="card-footer">
+            <a  class="btn btn-danger w-100"
+               href="{% url 'datacatalog:wizard-project' %}" >
+               NEW RETENTION REQUEST</a>
+          </div>
+        </div>
+
+         {# DATA CATALOG #}
+         <div class="card shadow">
+          <div class="card-body">
+            <h5 class="card-title">View Datasets</h5>
+            <p class="card-text">View details of all {{ ds_count }} publicly listed datasets used for research
+                                at WCM.</p>
+          </div>
+          <div class="card-footer">
+            <a  class="btn btn-primary w-100"
+               href="{% url 'datacatalog:datasets' %}" >
+               DATASETS</a>
+          </div>
+        </div>
+    {% endif %}
+</div>
 
 {% if request.user|has_group:"dua_viewing_privileges" %}
   <a  class="btn btn-primary" href="{% url 'datacatalog:duas' %}">View {{ dua_count }} data use agreements</a>
   <a  class="btn btn-primary" href="{% url 'datacatalog:access' %}">View {{ access_count }} data locations</a>
 {% endif %}
 
-<a  class="btn btn-primary" href="{% url 'datacatalog:keywords' %}">View {{kw_count }} keywords</a>
 </br>
 </br>
 <h3>Recent updates and additions:</h3>

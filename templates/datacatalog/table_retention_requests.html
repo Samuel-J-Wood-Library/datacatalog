@@ -18,10 +18,13 @@
     <td>{{ rr.record_author }}</td>
     <td>{{ rr.record_update }}</td>
         <td>{% if rr.locked %}
-                <span class="badge badge-success">Processed</span>
+                <span class="badge badge-info">Processed</span>
+            {% elif rr.verified %}
+                <span class="badge badge-success">Verified</span>
             {% else %}
                 <span class="badge badge-warning">Pending</span>
-        {% endif %}</td>
+            {% endif %}
+        </td>
     </tr>
 {% endfor %}
 </table>

@@ -14,8 +14,10 @@ urlpatterns = [
     path('access', views.IndexDataAccessView.as_view(), name='access'),
     path('keywords', views.IndexKeywordView.as_view(), name='keywords'),
     path('providers', views.IndexDataProviderView.as_view(), name='providers'),
-    
-    # autocomplete functions:
+    path('retention', views.IndexRetentionRequestView.as_view(), name='retention'),
+    path('retention/active', views.IndexActiveRetentionRequestView.as_view(), name='retention-active'),
+
+                  # autocomplete functions:
     path('autocomplete-dataset', 
         views.DatasetAutocomplete.as_view(), 
         name='autocomplete-dataset',

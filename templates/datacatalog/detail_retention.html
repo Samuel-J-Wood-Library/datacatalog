@@ -32,22 +32,28 @@
            target="_blank">dcore-ticket@med.cornell.edu</a> </h1>
 {% endif %}
 
-<h1>
+<h2>
     Retention Request: {{ retentionrequest.name }}
+</h2>
+<h2>
     {% if retentionrequest.locked is not True %}
         {% if request.user|has_group:"datacatalog_editor" or request.user.username == retentionpi.cwid or request.user.username == retentionadmin.cwid or request.user == retentionrequest.record_author %}
-        <span style="float:right">
+        <span>
             <a 
                class="btn btn-primary"
                href="{% url 'datacatalog:retention-update' retentionrequest.pk %}">
-               Update project details
+               Update retention request details
             </a>
         </span>
         {% endif %}
     {% else %}
         <span class="badge badge-danger">Request is now locked</span>
     {% endif %}
-</h1>
+</h2>
+
+    {% if retentionrequest.verified %}
+        <h2><span class="badge badge-success">Request has been verified</span></h2>
+    {% endif %}
 
     <h3>Milestone: {{ retentionrequest.get_milestone_display }}
         <span class="badge badge-secondary" style="float:right">RR{{ retentionrequest.pk }}</span>
@@ -81,6 +87,31 @@
         {% include "datacatalog/card_dataaccess.html" %}
     {% endfor %}
 </div>
+
+    {% if request.user|has_group:"dua_viewing_privileges" %}
+    <div class="row">
+        <a
+           class="btn btn-primary mr-1"
+           href="{% url 'datacatalog:retention-update' retentionrequest.pk %}">
+           Update retention request details
+        </a>
+
+        <form action="" method="post">
+          {% csrf_token %}
+          <input name="marklocked" type="submit" class="btn btn-info mr-1" value="Lock submission" />
+        </form>
+
+        <form action="" method="post">
+          {% csrf_token %}
+          <input name="markunlocked" type="submit" class="btn btn-warning mr-1" value="Unlock submission" />
+        </form>
+
+        <form action="" method="post">
+          {% csrf_token %}
+          <input name="markverified" type="submit" class="btn btn-success mr-1" value="Mark as verified" />
+        </form>
+    </div>
+    {% endif %}
 
 {% endblock %}
 

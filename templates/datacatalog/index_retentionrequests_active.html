@@ -1,0 +1,13 @@
+{% extends 'datacatalog/base-catalog.html' %}
+
+{% block content %}
+<h1>
+All {{ retention_requests|length }} Active Data Retention Requests:
+</h1>
+<a  class="btn btn-primary" href="{% url 'datacatalog:retention' %}">View all data retention request</a>
+
+{% include 'datacatalog/table_retention_requests.html' %}
+
+<a  class="btn btn-primary" href="{% url 'datacatalog:retention-add' %}">Add new data retention request</a>
+
+{% endblock content %}
