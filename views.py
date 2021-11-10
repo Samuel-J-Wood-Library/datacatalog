@@ -583,6 +583,12 @@ class DatasetCreateView(LoginRequiredMixin, CreateView):
         # update who last edited record
         self.object.record_author = self.request.user
 
+        # publish immediately if user checks the public field
+        if self.object.public == True:
+            self.object.published = True
+        else:
+            self.object.published = False
+
         self.object.save()
         return super(DatasetCreateView, self).form_valid(form)
 
@@ -828,6 +834,7 @@ class RetentionWorkflowDataView(generic.TemplateView):
             return HttpResponseRedirect(reverse('datacatalog:wizard-milestone', kwargs={'pk': rr_pk}))
 
         # if the submit new project button is pressed
+        # save any updates to the existing data form that were made,
         # create new data access instance, then
         # add to existing retention request instance and return to same page.
         elif 'submitnew' in request.POST:

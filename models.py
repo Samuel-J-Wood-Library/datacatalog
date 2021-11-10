@@ -354,7 +354,9 @@ class Dataset(models.Model):
     )
     # dataset publisher 
     # https://schema.org/publisher
-    publisher = models.ForeignKey(  DataProvider, 
+    publisher = models.ForeignKey(  DataProvider,
+                                    blank=True,
+                                    null=True,
                                     on_delete=models.PROTECT,
                                     related_name='dataset_publisher',
                                     help_text="Group responsible for publication of the data set",
@@ -447,7 +449,11 @@ class Dataset(models.Model):
     published = models.BooleanField(null=True, blank=True)
 
     # flag as publicly visible.
-    public = models.BooleanField(null=True, blank=True)
+    public = models.BooleanField(null=True,
+                                 blank=True,
+                                 default=True,
+                                 help_text="Whether to make this record visible in the Data Catalog",
+                                 )
 
     # specify the users who have access. If none specified, then all users have
     # access to view
@@ -505,16 +511,16 @@ class Project(models.Model):
     pi = models.ForeignKey(Person, on_delete=models.PROTECT, related_name='pi_project_person')
 
     # project administrator
-    admin = models.ForeignKey(Person, on_delete=models.PROTECT, related_name='admin_person')
+    admin = models.ForeignKey(Person, on_delete=models.PROTECT, related_name='admin_person', null=True, blank=True,)
 
     # project sponsor
     sponsor = models.CharField(max_length=128, null=True, blank=True)
 
     # sponsored project identifier
-    funding_id = models.CharField(max_length=64, null=True, blank=True)
+    funding_id = models.CharField(max_length=64, null=True, blank=True, help_text="Weill research gateway grant ID",)
 
     # expected date of project completion
-    completion = models.DateField(null=True, blank=True)
+    completion = models.DateField(null=True, blank=True, help_text="Expected end date of project",)
 
     def __str__(self):
         return "{}".format(self.name)
@@ -863,10 +869,18 @@ class RetentionRequest(models.Model):
     record_author = models.ForeignKey(User, on_delete=models.PROTECT)
 
     # short description of the request
-    name = models.CharField("Short description", max_length=256,)
+    name = models.CharField("Short description",
+                            max_length=256,
+                            help_text="A name to help identify this request",
+                            )
 
     # project associated with the milestone
-    project = models.ForeignKey(Project, on_delete=models.PROTECT, null=True, blank=True)
+    project = models.ForeignKey(Project,
+                                on_delete=models.PROTECT,
+                                null=True,
+                                blank=True,
+                                help_text="Select from your available projects",
+                                )
 
     # Milestone that defines the reason for data retention
     PUBLICATION = 'PU'
@@ -887,13 +901,21 @@ class RetentionRequest(models.Model):
     )
 
     # date in which the milestone itself is completed
-    milestone_date = models.DateField(default=date.today)
+    milestone_date = models.DateField(default=date.today,
+                                      help_text="The date this milestone comes into effect",
+                                      )
 
     # unambiguous pointer to milestone record
-    milestone_pointer = models.CharField(max_length=64, default="Enter reference here")
+    milestone_pointer = models.CharField(max_length=64,
+                                         default="Enter reference here",
+                                         help_text="DOI, WRG ID, or HR reference",
+                                         )
 
     # digital objects for archiving
-    to_archive = models.ManyToManyField(DataAccess, related_name='retention_requests')
+    to_archive = models.ManyToManyField(DataAccess,
+                                        related_name='retention_requests',
+                                        help_text="Select all data for retention from the project chosen above",
+                                        )
 
     # for additional information necessary for archiving
     comments = models.TextField(null=True, blank=True)

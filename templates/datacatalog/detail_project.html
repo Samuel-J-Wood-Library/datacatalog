@@ -48,24 +48,27 @@
         {% endif %}
      </h1>
     </div>
-<ul style="list-style-type:none">
-    {% if project.pi %}
-        <li>PI: {{ project.pi }}</li>
+    <ul style="list-style-type:none">
+        {% if project.pi %}
+            <li><span class="text-info">Principal Investigator: </span> {{ project.pi }}</li>
+        {% endif %}
+        {% if project.admin %}
+            <li><span class="text-info">Administrator:</span> {{ project.admin }}</li>
+        {% endif %}
+    </ul>
+
+
+    {% if project.description %}
+          <div class="card-body">
+            <p>{{ project.description|linebreaks }}</p>
+          </div>
     {% endif %}
-    {% if project.admin %}
-        <li>Administrator: {{ project.admin }}</li>
-    {% endif %}
-</ul>
 
-
-{% if project.description %}
-
-      <div class="card-body">
-        <h5 class="text-muted">Project description:</h5>
-        <p>{{ project.description|linebreaks }}</p>
-      </div>
+    <div class="card-footer">
+        Grant ID: {{ project.funding_id }}; Completion: {{ project.completion }}
     </div>
-{% endif %}
+
+</div>
 
 <p></p>
 

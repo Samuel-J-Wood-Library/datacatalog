@@ -79,15 +79,18 @@ class DatasetForm(forms.ModelForm):
         super(DatasetForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.fields['cil'].label = "Cofidentiality Impact Level"
+        self.fields['data_source'].label = "Data Source / Data Creator"
+        self.fields['publisher'].label = "Data Publisher / Data Provider"
         self.helper.form_id = 'datasetForm'
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('submit', 'Submit'))
         self.helper.layout = Layout(
-                    Fieldset('<div class="alert alert-info">Dataset Detail Form</div>',
+                    Fieldset('<div class="alert alert-info">Dataset Detail Form (Data Catalog Entry)</div>',
                             div_name,
                             'description',
                             'data_dictionary',
                             'keywords',
+                            'public',
                             style="font-weight: normal;",
                     ),
                     Fieldset('<div class="alert alert-info">Data Details</div>',
@@ -128,6 +131,7 @@ class DatasetForm(forms.ModelForm):
                     'landing_url', 
                     'comments', 
                     'expert',
+                    'public',
                 ]
 
         widgets =  {'publisher' : autocomplete.ModelSelect2(
@@ -297,7 +301,7 @@ class DUAForm(forms.ModelForm):
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('submit', 'Submit'))
         self.helper.layout = Layout(
-                    Fieldset('<div class="alert alert-info">DUA Form</div>',
+                    Fieldset('<div class="alert alert-info">Data Use Agreement Details</div>',
                             div_duaname,
                             'description',
                             div_provider_details,
