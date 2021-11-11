@@ -32,7 +32,7 @@
      <h1>
         {{ project.name }}
 
-        {% if request.user|has_group:"datacatalog_editor" or request.user.username == project.pi.cwid or request.user.username == project.admin.cwid %}
+        {% if request.user|has_group:"datacatalog_editor" or request.user.username == project.pi.cwid or request.user.username == project.admin.cwid or request.user == retentionrequest.record_author %}
         <span style="float:right">
             <a 
                class="btn btn-primary"
@@ -48,6 +48,7 @@
         {% endif %}
      </h1>
     </div>
+
     <ul style="list-style-type:none">
         {% if project.pi %}
             <li><span class="text-info">Principal Investigator: </span> {{ project.pi }}</li>

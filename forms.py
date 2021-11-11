@@ -369,6 +369,13 @@ class DUAForm(forms.ModelForm):
 class RetentionRequestForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(RetentionRequestForm, self).__init__(*args, **kwargs)
+
+        if self.instance.milestone_pointer == "Enter reference here":
+            print("Statement is TRUE")
+            self.instance.milestone_pointer = ""
+        kwargs['instance'] = self.instance
+        super(RetentionRequestForm, self).__init__(*args, **kwargs)
+
         self.helper = FormHelper()
         self.helper.form_id = 'retentionRequestForm'
         self.helper.form_method = 'post'
@@ -558,6 +565,8 @@ class RetentionWorkflowNewDataForm(forms.ModelForm):
 class RetentionWorkflowSummaryForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(RetentionWorkflowSummaryForm, self).__init__(*args, **kwargs)
+        if self.fields['milestone_pointer'].initial == "Enter reference here":
+            self.fields['milestone_pointer'].initial = ""
         self.helper = FormHelper()
         self.helper.form_id = 'retentionWorkflowSummaryForm'
         self.helper.form_method = 'post'

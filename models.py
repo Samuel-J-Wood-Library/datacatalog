@@ -549,19 +549,40 @@ class DataAccess(models.Model):
     name = models.CharField(max_length=128, blank=True, null=True)
 
     # the storage type classification for the digital objects
-    storage_type = models.ForeignKey(StorageType, blank=True, null=True, on_delete=models.PROTECT)
+    storage_type = models.ForeignKey(StorageType,
+                                     blank=True,
+                                     null=True,
+                                     on_delete=models.PROTECT,
+                                     help_text="Select the system storing the data",
+                                     )
 
     # unique identifier of digital objects collection (eg LabArchives notebook ID)
-    unique_id = models.CharField(max_length=256, blank=True, null=True)
+    unique_id = models.CharField(max_length=256,
+                                 blank=True,
+                                 null=True,
+                                 help_text="system-generated unique identifier",
+                                 )
 
     # shareable link that gives access to the digital objects/collection
-    shareable_link = models.URLField(blank=True, null=True, max_length=1024)
+    shareable_link = models.URLField(blank=True,
+                                     null=True,
+                                     max_length=1024,
+                                     help_text="system-generated shareable URL to the data",
+                                     )
 
     # description of digital object locations - as filepaths
-    filepaths = models.TextField(blank=True, null=True)
+    filepaths = models.TextField(blank=True,
+                                 null=True,
+                                 help_text="describe the paths to all directories and/or files",
+                                 )
 
     # points to the dataset object that describes this set of data files
-    metadata = models.ForeignKey(Dataset, blank=True, null=True, on_delete=models.PROTECT)
+    metadata = models.ForeignKey(Dataset,
+                                 blank=True,
+                                 null=True,
+                                 on_delete=models.PROTECT,
+                                 help_text="link this entry to a Data Catalog record",
+                                 )
 
     # project that the data are associated with
     project = models.ForeignKey(Project, blank=True, null=True, on_delete=models.PROTECT)

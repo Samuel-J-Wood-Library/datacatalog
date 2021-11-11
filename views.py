@@ -608,6 +608,7 @@ class DataProviderCreateView(PermissionRequiredMixin, CreateView):
         self.object = form.save(commit=False)
         # update who last edited record
         self.object.record_author = self.request.user
+        self.object.published = True
         self.object.save()
         return super(DataProviderCreateView, self).form_valid(form)
 
@@ -644,6 +645,7 @@ class KeywordCreateView(LoginRequiredMixin, CreateView):
         self.object = form.save(commit=False)
         # update who last edited record
         self.object.record_author = self.request.user
+        self.object.published = True
         self.object.save()
         return super(KeywordCreateView, self).form_valid(form)
 
