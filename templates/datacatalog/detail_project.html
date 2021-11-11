@@ -81,12 +81,14 @@
 </div>
     <p></p>
     <p></p>
+
     <h4>Dataset retention requests</h4>
     {% with project.retentionrequest_set.all as retention_requests %}
         {% include 'datacatalog/table_retention_requests.html' %}
     {% endwith %}
     <p></p>
     <p></p>
+
     <h4>Dataset catalog entries</h4>
 {% include "datacatalog/table_datasets.html" %}
 

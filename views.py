@@ -233,7 +233,7 @@ class IndexKeywordView(LoginRequiredMixin, generic.ListView):
         return context
 
 
-class IndexProjectByUserView(PermissionRequiredMixin, generic.ListView):
+class IndexProjectByUserView(LoginRequiredMixin, generic.ListView):
     login_url = '/login/'
 
     template_name = 'datacatalog/index_projects.html'
