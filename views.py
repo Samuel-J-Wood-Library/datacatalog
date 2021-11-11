@@ -238,7 +238,6 @@ class IndexProjectByUserView(LoginRequiredMixin, generic.ListView):
 
     template_name = 'datacatalog/index_projects.html'
     context_object_name = 'project_list'
-    permission_required = 'datacatalog.view_dataaccess'
 
     def get_queryset(self):
         user = self.request.user
@@ -501,6 +500,17 @@ class RetentionDetailView(LoginRequiredMixin, generic.DetailView):
 
             messages.add_message(request, messages.SUCCESS,
                                  f"{retention_request.name} verified.")
+
+        # if the Mark as archived button is pressed
+        # update each data access model data_retained field to True
+        elif 'markarchived' in request.POST:
+            retention_request = get_object_or_404(RetentionRequest, pk=self.kwargs['pk'])
+            for da in retention_request.to_archive.all():
+                da.data_retained = True
+                da.save()
+
+            messages.add_message(request, messages.SUCCESS,
+                                 f"{retention_request.to_archive.count()} data locations marked as archived.")
 
         # return to detail view
         return HttpResponseRedirect(reverse('datacatalog:retention-view', kwargs={'pk': self.kwargs['pk']}))

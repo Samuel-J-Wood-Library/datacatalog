@@ -12,7 +12,7 @@
 
 {% for rr in retention_requests %}
     <tr>
-    <td><a href="{% url 'datacatalog:retention-view' rr.pk %}">{{ rr.name }}</a></td>
+    <td><a href="{% url 'datacatalog:retention-view' rr.pk %}">RR{{ rr.pk }}: {{ rr.name }}</a></td>
     <td>{{ rr.get_milestone_display }}</td>
     <td> {{ rr.to_archive.count }}</td>
     <td>{{ rr.record_author }}</td>

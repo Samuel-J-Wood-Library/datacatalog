@@ -88,7 +88,7 @@
     {% endfor %}
 </div>
 
-    {% if request.user|has_group:"dua_viewing_privileges" %}
+    {% if request.user|has_group:"datacatalog_editor" %}
     <div class="row">
         <a
            class="btn btn-primary mr-1"
@@ -108,9 +108,15 @@
 
         <form action="" method="post">
           {% csrf_token %}
+          <input name="markarchived" type="submit" class="btn btn-danger mr-1" value="Mark data as archived" />
+        </form>
+
+        <form action="" method="post">
+          {% csrf_token %}
           <input name="markverified" type="submit" class="btn btn-success mr-1" value="Mark as verified" />
         </form>
     </div>
+        <br/><br/>
     {% endif %}
 
 {% endblock %}
