@@ -22,10 +22,12 @@
 </style>
 
 
-
-<h1>
+ <div class="alert alert-warning" role="alert">
+   <h1>
     {{ dataaccess.name }}
-</h1>
+   </h1>
+ </div>
+
 <h2>
     {% if request.user|has_group:"datacatalog_editor" or request.user == dataaccess.record_author %}
         <a 
@@ -72,17 +74,41 @@
   </div> {# column div #}
 
  {### METADATA SUMMARY OF LINKED DATASET INFO ###}
- {% if dataaccess.metadata %}
+ {% if dataaccess.metadata.count == 1 %}
   <div class="col-sm">
-    <h4>Metadata for {{ dataaccess.metadata.title }}</h4>
-    <a class="btn btn-primary" href="{% url 'datacatalog:dataset-view' dataaccess.metadata.pk %}">View full record</a>
+    <h4>Metadata for {{ dataaccess.metadata.first.title }}</h4>
+    <a class="btn btn-primary" href="{% url 'datacatalog:dataset-view' dataaccess.metadata.first.pk %}">View full record</a>
     </br></br>
-    {% with dataaccess.metadata as dataset %}
+    {% with dataaccess.metadata.first as dataset %}
       {% include 'datacatalog/table_metadata.html' %}
     {% endwith %}
+  </div> {# end column #}
+ </div>  {# end row #}
 
 
-  {% else %}
+ {% elif dataaccess.metadata.count > 1 %}
+  </div> {# end column #}
+ </div>  {# end row #}
+     <br/>
+     <div class="alert alert-warning" role="alert">
+      <h3>Metadata</h3>
+     </div>
+     <div class="row">
+        {% for ma in dataaccess.metadata.all %}
+        <div class="col-sm">
+            <h4>Metadata for {{ ma.title }}</h4>
+            <a class="btn btn-primary" href="{% url 'datacatalog:dataset-view' ma.pk %}">View full record</a>
+            </br></br>
+            {% with ma as dataset %}
+              {% include 'datacatalog/table_metadata.html' %}
+            {% endwith %}
+        </div> {# end column #}
+        {% endfor %}
+     </div>
+
+
+ {% else %}
+   <div>
      <ul style="list-style-type:none">
          <il><h4>No metadata provided for this record.</h4></il>
          <li>
@@ -90,9 +116,11 @@
                href="{% url 'datacatalog:dataset-add' %}">Create metadata record</a>
          </li>
      </ul>
-  {% endif %}
- </div> {# end column #}
+   </div> {# end column #}
  </div>  {# end row #}
+  {% endif %}
+
+
 </div>   {# end details container #}
 
     {% comment %}
@@ -134,11 +162,10 @@
 
 <div class="container">
     {% if request.user|has_group:"dua_viewing_privileges" %}
-    <h3>Data Use Agreements</h3>
-
-        {% with dataaccess.datauseagreement_set.all as dua_list %}
-            {% include 'datacatalog/table_duas.html' %}
-        {% endwith %}
+     <div class="alert alert-warning" role="alert">
+      <h3>Data Use Agreements</h3>
+     </div>
+        {% include 'datacatalog/table_duas.html' %}
     {% endif %}
 </div>
 

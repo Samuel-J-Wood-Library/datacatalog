@@ -220,7 +220,7 @@ class DataAccessForm(forms.ModelForm):
                   'public',
                   ]
 
-        widgets = {'metadata': autocomplete.ModelSelect2(
+        widgets = {'metadata': autocomplete.ModelSelect2Multiple(
                                 url='datacatalog:autocomplete-dataset'
                                 ),
                    'project': autocomplete.ModelSelect2(
@@ -554,7 +554,7 @@ class RetentionWorkflowNewDataForm(forms.ModelForm):
                   'public',
                   ]
 
-        widgets = {'metadata': autocomplete.ModelSelect2(
+        widgets = {'metadata': autocomplete.ModelSelect2Multiple(
                                 url='datacatalog:autocomplete-dataset'
                                 ),
                    'project': autocomplete.ModelSelect2(

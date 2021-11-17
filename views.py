@@ -385,9 +385,11 @@ class DataAccessDetailView(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         da_obj = self.object
         published_data = da_obj.metadata
-
+        dua_list = DataUseAgreement.objects.filter(datasets__in=[ ma.pk for ma in da_obj.metadata.all()]
+                                          ).distinct()
         context = super(DataAccessDetailView, self).get_context_data(**kwargs)
-        context.update({'published_data'    : published_data,  
+        context.update({'published_data' : published_data,
+                        'dua_list':dua_list,
         })
         return context
 

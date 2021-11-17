@@ -577,11 +577,9 @@ class DataAccess(models.Model):
                                  )
 
     # points to the dataset object that describes this set of data files
-    metadata = models.ForeignKey(Dataset,
+    metadata = models.ManyToManyField(Dataset,
                                  blank=True,
-                                 null=True,
-                                 on_delete=models.PROTECT,
-                                 help_text="link this entry to a Data Catalog record",
+                                 help_text="link this entry to selected Data Catalog record(s)",
                                  )
 
     # project that the data are associated with
