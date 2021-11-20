@@ -62,20 +62,20 @@ class MediaSubType(models.Model):
     # description of the subtype
     name = models.CharField(max_length=256, 
                             unique=True,
-    )
+                            )
     
     # template indicates the type/subtype id
     template = models.CharField(max_length=256, 
                                 unique=True,
                                 null=True,
                                 blank=True,
-    )
+                                )
     
     # iana reference
     reference = models.CharField(max_length=256, 
                                  null=True,
                                  blank=True,
-    )
+                                 )
     
     # indicates now obsolete models
     obsolete = models.BinaryField(null=True, blank=True)
@@ -86,6 +86,7 @@ class MediaSubType(models.Model):
         else:
             n = self.name
         return "{}".format(n)
+
 
 class DataField(models.Model):
     # date the record was created
@@ -99,33 +100,34 @@ class DataField(models.Model):
     
     # field name
     name = models.CharField(max_length=256, 
-                                help_text="The name of the field as it appears in schema",
-    )
+                            help_text="The name of the field as it appears in schema",
+                            )
     
     # field description
     description = models.CharField(max_length=256, 
-                                    help_text="Description of the field",
-    )
+                                   help_text="Description of the field",
+                                   )
     
     # descriptions defining scope of data
     scope = models.CharField(max_length=256, 
-                            null=True,
-                            blank=True,
-                            help_text="Descriptions of the scope of the data (eg. min, max, number of records, number of null values, number of unique values)",
-    )                                
+                             null=True,
+                             blank=True,
+                             help_text="Descriptions of the scope of the data (eg. min, max, number of records, number of null values, number of unique values)",
+                             )
     
     def __str__(self):
         if self.scope:
             s = "{}...".format(self.scope[:20])
         else:
             s = "---"
-        return "{} ({}...); {}".format(  self.name, 
-                                            self.description[:20],
-                                            s,
-                                            )
+        return "{} ({}...); {}".format(self.name,
+                                       self.description[:20],
+                                       s,
+                                       )
 
     def get_absolute_url(self):
         return reverse('datacatalog:datafield-view', kwargs={'pk': self.pk})
+
 
 class ConfidentialityImpact(models.Model):
     """
@@ -144,21 +146,21 @@ class ConfidentialityImpact(models.Model):
     record_author = models.ForeignKey(User, on_delete=models.PROTECT)
 
     # the confidentiality impact level
-    impact_level = models.CharField(   "Impact Level", 
-                                        max_length=32, 
-                                        unique=False, 
-                                        null=False, 
-                                        blank=False,
-                                        help_text="Level as defined by the standard",
-    )   
+    impact_level = models.CharField("Impact Level",
+                                    max_length=32,
+                                    unique=False,
+                                    null=False,
+                                    blank=False,
+                                    help_text="Level as defined by the standard",
+                                    )
     
     # for ranking the different scales, we include a separate rank field.
     # 1 is the highest risk level
-    impact_rank = models.IntegerField(  unique=False, 
-                                        null=False, 
-                                        blank=False,
-                                        help_text="Rank of impact: 1 is highest risk",
-    )
+    impact_rank = models.IntegerField(unique=False,
+                                      null=False,
+                                      blank=False,
+                                      help_text="Rank of impact: 1 is highest risk",
+                                      )
     
     # standard
     standard = models.CharField("Standard", 
@@ -167,7 +169,7 @@ class ConfidentialityImpact(models.Model):
                                 null=False, 
                                 blank=False,
                                 help_text="Standard defining the impact level",
-    )   
+                                )
     
     # definition
     definition = models.TextField(null=False, blank=False,)
@@ -181,6 +183,7 @@ class ConfidentialityImpact(models.Model):
     def get_absolute_url(self):
         return reverse('datacatalog:cil-view', kwargs={'pk': self.pk})
     
+
 class DataProvider(models.Model):
     """
     This class defines data providers.
@@ -222,8 +225,8 @@ class DataProvider(models.Model):
     )
     affiliation = models.CharField(
                         max_length=2,
-                        choices = AFFILIATION_CHOICES,
-                        default = GOVERNMENT,
+                        choices=AFFILIATION_CHOICES,
+                        default=GOVERNMENT,
     )
 
     # this is set to true after being checked by the Data Catalog curation team
@@ -237,6 +240,7 @@ class DataProvider(models.Model):
 
     def get_absolute_url(self):
         return reverse('datacatalog:provider-view', kwargs={'pk': self.pk})
+
 
 class StorageType(models.Model):
     """
@@ -263,6 +267,7 @@ class StorageType(models.Model):
 
     def __str__(self):
         return "{}".format(self.name)
+
 
 class Dataset(models.Model):
     """
@@ -294,34 +299,34 @@ class Dataset(models.Model):
     
     # dataset ID
     # http://schema.org/identifier
-    ds_id = models.CharField(   "Dataset ID", 
-                                max_length=128, 
-                                unique=True, 
-                                null=True, 
-                                blank=True,
-                                help_text="Unique identifer of the data set"
-    )
+    ds_id = models.CharField("Dataset ID",
+                             max_length=128,
+                             unique=True,
+                             null=True,
+                             blank=True,
+                             help_text="Unique identifer of the data set"
+                             )
     
     # dataset title/brief descriptor
     title = models.CharField(max_length=256, 
-                                unique=True,
-                                help_text="The name of the dataset, usually one sentence or short description of the dataset",
-    )
+                             unique=True,
+                             help_text="The name of the dataset, usually one sentence or short description of the dataset",
+                             )
     
     # description of dataset
     # https://schema.org/description
-    description = models.TextField( null=True, 
-                                    blank=True,
-                                    help_text="Description of dataset, including purpose, scope, etc",
-    )
+    description = models.TextField(null=True,
+                                   blank=True,
+                                   help_text="Description of dataset, including purpose, scope, etc",
+                                   )
     
     # a field to explicitly capture the fields present in a data model (if applicable)
-    ## Deprecated: to be replaced by the Data Dictionary fileField, 
-    ## which will subsequently be set to parse the dictionary to metadata.
+    # Deprecated: to be replaced by the Data Dictionary fileField,
+    # which will subsequently be set to parse the dictionary to metadata.
     data_fields = models.ManyToManyField(DataField, 
                                          blank=True,
                                          help_text="List of all fields present in any schema",
-    )
+                                         )
     
     # data dictionary (to have specified format for parsing to metadata, but otherwise
     # will allow upload of any file as a record.)
@@ -337,30 +342,30 @@ class Dataset(models.Model):
     period_start = models.DateField(null=True, 
                                     blank=True,
                                     help_text="Date of earliest data record",
-    )
+                                    )
     
     # end of temporal coverage (time of latest data record) 
     # https://schema.org/Date
-    period_end = models.DateField(  null=True, 
-                                    blank=True,
-                                    help_text="Date of latest data record"
-    )
+    period_end = models.DateField(null=True,
+                                  blank=True,
+                                  help_text="Date of latest data record"
+                                  )
     
     # date the data set was published
     # https://schema.org/Date
     publication_date = models.DateField(null=True, 
                                         blank=True,
                                         help_text="Publication date of the dataset"
-    )
+                                        )
     # dataset publisher 
     # https://schema.org/publisher
-    publisher = models.ForeignKey(  DataProvider,
-                                    blank=True,
-                                    null=True,
-                                    on_delete=models.PROTECT,
-                                    related_name='dataset_publisher',
-                                    help_text="Group responsible for publication of the data set",
-    )
+    publisher = models.ForeignKey(DataProvider,
+                                  blank=True,
+                                  null=True,
+                                  on_delete=models.PROTECT,
+                                  related_name='dataset_publisher',
+                                  help_text="Group responsible for publication of the data set",
+                                  )
     
     # dataset source, which can be different to the publisher
     data_source = models.ForeignKey(DataProvider,
@@ -369,20 +374,20 @@ class Dataset(models.Model):
                                     on_delete=models.PROTECT,
                                     related_name='dataset_source',
                                     help_text="Group responsible for production of the data",
-    )
+                                    )
     
     # keywords or topics related to the data
     # https://schema.org/codeValue
-    keywords = models.ManyToManyField(  Keyword, 
-                                        blank=True,
-                                        help_text="Add keywords related to data set",
-    )
+    keywords = models.ManyToManyField(Keyword,
+                                      blank=True,
+                                      help_text="Add keywords related to data set",
+                                      )
     
     # confidentiality impact level
-    cil = models.ManyToManyField(   ConfidentialityImpact,
-                                    blank=True,
-                                    help_text="Select an impact level based on data risk",
-    )
+    cil = models.ManyToManyField(ConfidentialityImpact,
+                                 blank=True,
+                                 help_text="Select an impact level based on data risk",
+                                 )
     
     # field to indicate the size of the dataset in terms of number of records
     num_records = models.IntegerField("Number of records", blank=True, null=True)
@@ -407,18 +412,18 @@ class Dataset(models.Model):
 
     record_scale = models.CharField(
                         max_length=2,
-                        choices = SCALE_CHOICES,
+                        choices=SCALE_CHOICES,
                         blank=True,
                         null=True,
                         help_text="indicate the scale, based on the number of records"
     )
     
     # URL of landing page to access data
-    landing_url = models.URLField(  max_length=256,
-                                    null=True, 
-                                    blank=True,
-                                    help_text="URL of page that allows access of data"
-    )
+    landing_url = models.URLField(max_length=256,
+                                  null=True,
+                                  blank=True,
+                                  help_text="URL of page that allows access of data"
+                                  )
     
     # notes or general comments
     comments = models.TextField(null=True, blank=True)
@@ -428,20 +433,18 @@ class Dataset(models.Model):
 
     # local contact person who is an expert on this dataset
     expert = models.ForeignKey(Person,
-                                null=True,
-                                blank=True, 
-                                on_delete=models.PROTECT,
-                                help_text="A local contact who is an expert on the data"
-                                )
+                               null=True,
+                               blank=True,
+                               on_delete=models.PROTECT,
+                               help_text="A local contact who is an expert on the data"
+                               )
     
     # media subtype (according to ontology at www.iana.org)
-    media_subtype = models.ManyToManyField( MediaSubType,
-                                            blank=True,
-                                            help_text="The media types of all files in data set"
-                                            
-    )
-    
-    
+    media_subtype = models.ManyToManyField(MediaSubType,
+                                           blank=True,
+                                           help_text="The media types of all files in data set"
+                                           )
+
     # this is set to true after being checked by the Data Catalog curation team
     curated = models.BooleanField(null=True, blank=True)
 
@@ -485,7 +488,6 @@ class Dataset(models.Model):
         return reverse('datacatalog:dataset-view', kwargs={'pk': self.pk})
 
 
-
 class Project(models.Model):
     """
     The Project model allows aggregation of multiple datasets together under a common
@@ -527,6 +529,7 @@ class Project(models.Model):
 
     def get_absolute_url(self):
         return reverse('datacatalog:project-view', kwargs={'pk': self.pk})
+
 
 class DataAccess(models.Model):
     """
@@ -578,9 +581,9 @@ class DataAccess(models.Model):
 
     # points to the dataset object that describes this set of data files
     metadata = models.ManyToManyField(Dataset,
-                                 blank=True,
-                                 help_text="link this entry to selected Data Catalog record(s)",
-                                 )
+                                      blank=True,
+                                      help_text="link this entry to selected Data Catalog record(s)",
+                                      )
 
     # project that the data are associated with
     project = models.ForeignKey(Project, blank=True, null=True, on_delete=models.PROTECT)
@@ -660,6 +663,7 @@ class DataAccess(models.Model):
         else:
             return False
 
+
 class GovernanceType(models.Model):
     """
     The GovernanceType model stores and defines all the specific types of governance
@@ -686,6 +690,7 @@ class GovernanceType(models.Model):
     def __str__(self):
         return "{}".format(self.name)
        
+
 class DataUseAgreement(models.Model):
     """
     The Datauseagreement model defines all the governance attributes of a single DUA 
@@ -748,8 +753,8 @@ class DataUseAgreement(models.Model):
     )
     scope = models.CharField(
                         max_length=2,
-                        choices = SCOPE_CHOICES,
-                        default = USER,
+                        choices=SCOPE_CHOICES,
+                        default=USER,
     )
     
     # date DUA signed
@@ -763,17 +768,17 @@ class DataUseAgreement(models.Model):
     
     # specify a document that supersedes this DUA instance
     defers_to_doc = models.ForeignKey('self', 
-                                        on_delete=models.PROTECT, 
-                                        null=True, 
-                                        blank=True,
-                                        related_name='overrules')
+                                      on_delete=models.PROTECT,
+                                      null=True,
+                                      blank=True,
+                                      related_name='overrules')
     
     # specify a document that is superseded by this DUA instance 
     supersedes_doc = models.ForeignKey('self', 
-                                        on_delete=models.PROTECT, 
-                                        null=True, 
-                                        blank=True,
-                                        related_name='superseded_by')
+                                       on_delete=models.PROTECT,
+                                       null=True,
+                                       blank=True,
+                                       related_name='superseded_by')
         
     # data destruction required at end?
     destruction_required = models.BooleanField(null=True)
@@ -826,7 +831,7 @@ class DataUseAgreement(models.Model):
         return reverse('datacatalog:dua-view', kwargs={'pk': self.pk})
 
     def allowed_user_string(self):
-        return  ", ".join([u.cwid for u in self.users.all()])
+        return ", ".join([u.cwid for u in self.users.all()])
 
     def attention_required(self):
         """
@@ -835,7 +840,7 @@ class DataUseAgreement(models.Model):
         """
         td = self.end_date - datetime.date.today() 
         
-        if td.days >  90:
+        if td.days > 90:
             status = "safe"
         
         # if doc defers to another doc, then we need not pay attention to this one:
