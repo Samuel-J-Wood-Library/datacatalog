@@ -1,6 +1,7 @@
 import csv
 import os
 from datetime import date
+from mimetypes import guess_type
 
 from dal import autocomplete
 from django.contrib import messages
@@ -530,7 +531,8 @@ def get_file_response(dd_file, content_type):
     
     except FileNotFoundError:
         raise Http404()
-        
+
+
 @login_required()
 def file_view(request, pk):
     dataset = Dataset.objects.get(pk=pk)
@@ -543,12 +545,13 @@ def file_view(request, pk):
     
     dd_filename, dd_extension = os.path.splitext(dd_file)
         
-    if dd_extension == "pdf":
+    if dd_extension.lower() == "pdf":
         try:
             return FileResponse(dd_file, content_type='application/pdf')
         except FileNotFoundError:
             raise Http404()
-    elif dd_extension == "csv":
+
+    elif dd_extension.lower() == "csv":
         try:
             response = HttpResponse(content_type='text/csv')
             response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
@@ -558,15 +561,21 @@ def file_view(request, pk):
                 for line in fh:
                     writer.writerow(line.split(','))
             return response
-        except (FileNotFoundError, ValueError) as e:
+        except (FileNotFoundError, ValueError):
             raise Http404()
             
-    elif dd_extension == "docx":
+    elif dd_extension.lower() == "docx":
         get_file_response(dd_file, content_type="application/vnd.ms-word")
-    elif dd_extension == "xlsx":
+    elif dd_extension.lower() == "xlsx":
         get_file_response(dd_file, content_type="application/vnd.ms-excel")
     else:
-        raise Http404()
+        mime_type = guess_type(dd_name)
+        with open(str(dd_file), 'r') as fh:
+            response = HttpResponse(fh.read(),
+                                    content_type=mime_type,
+                                    )
+            response['Content-Disposition'] = f'attachment; filename={os.path.basename(str(dd_file))}'
+            return response
 
 ####################
 ### Create views ###
