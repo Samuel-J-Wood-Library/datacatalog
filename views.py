@@ -548,7 +548,7 @@ def get_file_response(dd_file, content_type):
     try:
         with open(str(dd_file), 'rb') as fh:
             response = HttpResponse(fh.read(),
-                                    content_type="application/vnd.ms-word"
+                                    content_type=content_type,
                                     )
             response['Content-Disposition'] = 'inline; filename={}'.format(
                                                         os.path.basename(str(dd_file))
@@ -559,8 +559,34 @@ def get_file_response(dd_file, content_type):
         raise Http404()
 
 
+def file_view_response(file, name):
+    """
+    allows viewing or downloading of files
+    """
+    filename, extension_raw = os.path.splitext(name)
+    extension = extension_raw.lower()[1:]
+
+    if extension == "pdf":
+        try:
+            return FileResponse(file, content_type='application/pdf')
+        except FileNotFoundError:
+            raise Http404()
+    elif extension == "docx":
+        return get_file_response(file, content_type="application/vnd.ms-word")
+    elif extension == "xlsx":
+        return get_file_response(file, content_type="application/vnd.ms-excel")
+    else:
+        mime_type = guess_type(name)
+        with open(str(file), 'rb') as fh:
+            response = HttpResponse(fh.read(),
+                                    content_type=mime_type,
+                                    )
+            response['Content-Disposition'] = f'attachment; filename={os.path.basename(str(file))}'
+            return response
+
+
 @login_required()
-def file_view(request, pk):
+def datadict_view(request, pk):
     dataset = get_object_or_404(Dataset, pk=pk)
     # check to see if file is associated:
     try:
@@ -569,39 +595,22 @@ def file_view(request, pk):
     except ValueError:
         raise Http404()
 
-    dd_filename, dd_extension = os.path.splitext(dd_file)
+    response = file_view_response(dd_file, dd_name)
+    return response
 
-    if dd_extension.lower() == "pdf":
-        try:
-            return FileResponse(dd_file, content_type='application/pdf')
-        except FileNotFoundError:
-            raise Http404()
 
-    elif dd_extension.lower() == "csv":
-        try:
-            response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+@login_required()
+def methodfile_view(request, pk):
+    rr = get_object_or_404(RetentionRequest, pk=pk)
+    # check to see if file is associated:
+    try:
+        methodfile_file = rr.methodfile.file
+        methodfile_name = rr.methodfile.name
+    except ValueError:
+        raise Http404()
 
-            writer = csv.writer(response)
-            with open(str(dd_file), 'rb') as fh:
-                for line in fh:
-                    writer.writerow(line.split(','))
-            return response
-        except (FileNotFoundError, ValueError):
-            raise Http404()
-
-    elif dd_extension.lower() == "docx":
-        get_file_response(dd_file, content_type="application/vnd.ms-word")
-    elif dd_extension.lower() == "xlsx":
-        get_file_response(dd_file, content_type="application/vnd.ms-excel")
-    else:
-        mime_type = guess_type(dd_name)
-        with open(str(dd_file), 'rb') as fh:
-            response = HttpResponse(fh.read(),
-                                    content_type=mime_type,
-                                    )
-            response['Content-Disposition'] = f'attachment; filename={os.path.basename(str(dd_file))}'
-            return response
+    response = file_view_response(methodfile_file, methodfile_name)
+    return response
 
 # ################## #
 # ## Create views ## #
@@ -874,10 +883,11 @@ class RetentionWorkflowDataView(generic.TemplateView):
         # continue to summary page.
         if 'submitexisting' in request.POST:
             # create a PersonForm based on person and form data
-            rr_form = RetentionWorkflowDataForm(instance=retention_request, data=request.POST)
+            rr_form = RetentionWorkflowDataForm(instance=retention_request, data=request.POST, files=request.FILES)
             if rr_form.is_bound and rr_form.is_valid():
                 retention_request = rr_form.save()
-                messages.add_message(request, messages.SUCCESS,
+                messages.add_message(request,
+                                     messages.SUCCESS,
                                      f"Data locations added to {retention_request.name}.")
             else:
                 messages.error(request, rr_form.errors)

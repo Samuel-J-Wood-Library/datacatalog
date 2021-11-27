@@ -35,21 +35,7 @@
 <h2>
     Retention Request: {{ retentionrequest.name }}
 </h2>
-<h2>
-    {% if retentionrequest.locked is not True %}
-        {% if request.user|has_group:"datacatalog_editor" or request.user.username == retentionpi.cwid or request.user.username == retentionadmin.cwid or request.user == retentionrequest.record_author %}
-        <span>
-            <a 
-               class="btn btn-primary"
-               href="{% url 'datacatalog:retention-update' retentionrequest.pk %}">
-               Update retention request details
-            </a>
-        </span>
-        {% endif %}
-    {% else %}
-        <span class="badge badge-danger">Request is now locked</span>
-    {% endif %}
-</h2>
+
 
     {% if retentionrequest.verified %}
         <h2><span class="badge badge-success">Request has been verified</span></h2>
@@ -62,6 +48,25 @@
                 {{ retentionrequest.milestone_pointer }} ({{ retentionrequest.milestone_date }})
         </small>
     </h3>
+
+<h2>
+    {% if retentionrequest.locked is not True %}
+        {% if request.user|has_group:"datacatalog_editor" or request.user.username == retentionpi.cwid or request.user.username == retentionadmin.cwid or request.user == retentionrequest.record_author %}
+        <span>
+            <a
+               class="btn btn-primary"
+               href="{% url 'datacatalog:retention-update' retentionrequest.pk %}">
+               Update retention request details
+            </a>
+        </span>
+        {% endif %}
+    {% else %}
+        <span class="badge badge-danger">Request is now locked</span>
+    {% endif %}
+    <a  class="btn btn-info" href="{% url 'datacatalog:methodfile-view' retentionrequest.pk %}"
+        target="_blank">View methods file
+    </a>
+</h2>
 
 <table class="table table-striped table-hover table-sm">
     <tr><td>Project</td>
