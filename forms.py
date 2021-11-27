@@ -386,6 +386,7 @@ class RetentionRequestForm(forms.ModelForm):
                      layout_two_equal('milestone','project'),
                      layout_two_equal('milestone_pointer', 'milestone_date'),
                      'to_archive',
+                     'methodfile',
                      'comments',
                      style="font-weight: normal;",
                      ),
@@ -399,6 +400,7 @@ class RetentionRequestForm(forms.ModelForm):
                   'milestone_date',
                   'milestone_pointer',
                   'to_archive',
+                  'methodfile',
                   'comments',
                   ]
 
@@ -486,6 +488,7 @@ class RetentionWorkflowDataForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(RetentionWorkflowDataForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.fields['methodfile'].label = "Methods file"
         self.helper.form_id = 'retentionWorkflowDataForm'
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('submitexisting', 'Continue to milestone'))
@@ -493,6 +496,7 @@ class RetentionWorkflowDataForm(forms.ModelForm):
             Fieldset("",
                      'project',
                      'to_archive',
+                     'methodfile',
                      style="font-weight: normal;",
                      ),
         )
@@ -502,6 +506,7 @@ class RetentionWorkflowDataForm(forms.ModelForm):
         fields = [
                   'project',
                   'to_archive',
+                  'methodfile',
                   ]
 
         widgets = {
@@ -522,7 +527,7 @@ class RetentionWorkflowNewDataForm(forms.ModelForm):
         self.fields['public'].label = "Add public link for data sharing to catalog:"
         self.helper.form_id = 'retentionWorkflowNewDataForm'
         self.helper.form_method = 'post'
-        self.helper.add_input(Submit('submitnew', 'Add to project'))
+        self.helper.add_input(Submit('submitnew', 'Create and add to project'))
         self.helper.layout = Layout(
             Fieldset("",
                      'name',

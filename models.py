@@ -21,7 +21,15 @@ def dictionary_directory_path(instance, filename):
 def project_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/pi<id>/gov_type/<filename>
     return '{0}/{1}/{2}'.format(instance.pi, instance.governance_type.name, filename)
- 
+
+
+def method_directory_path(instance, filename):
+    """
+    This function specifies the filepath to save uploaded data retention method files to.
+    """
+    # file will be uploaded to MEDIA_ROOT/methods/RR<pk>/<filename>
+    return f'methods/RR{instance.pk}/{filename}'
+
 
 class Keyword(models.Model):
     """
@@ -112,7 +120,10 @@ class DataField(models.Model):
     scope = models.CharField(max_length=256, 
                              null=True,
                              blank=True,
-                             help_text="Descriptions of the scope of the data (eg. min, max, number of records, number of null values, number of unique values)",
+                             help_text="""
+                                       Descriptions of the scope of the data (eg. min, max, number of records, number
+                                       of null values, number of unique values)
+                                       """,
                              )
     
     def __str__(self):
@@ -310,7 +321,9 @@ class Dataset(models.Model):
     # dataset title/brief descriptor
     title = models.CharField(max_length=256, 
                              unique=True,
-                             help_text="The name of the dataset, usually one sentence or short description of the dataset",
+                             help_text="""
+                                       The name of the dataset, usually one sentence or short description of the dataset
+                                       """,
                              )
     
     # description of dataset
@@ -941,6 +954,16 @@ class RetentionRequest(models.Model):
                                         help_text="Select all data for retention from the project chosen above",
                                         )
 
+    # methods documentation linking source files and results files
+    methodfile = models.FileField(
+                            upload_to=method_directory_path,
+                            null=True,
+                            help_text="""
+                                      Upload a document describing steps required to generate results files from 
+                                      source data. 
+                                      """,
+                            )
+
     # for additional information necessary for archiving
     comments = models.TextField(null=True, blank=True)
 
@@ -964,9 +987,10 @@ class RetentionRequest(models.Model):
         checks viewing permission of instance against restricted fields, and the logged in user via requests
         and returns True if the model instance is viewable by the user.
         """
-
         user = getattr(request, 'user', None)
-        if user.has_perm('datacatalog.view_retentionrequest') or self.project.pi.cwid == user.username or self.project.admin.cwid == user.username:
+        if (user.has_perm('datacatalog.view_retentionrequest') or
+                self.project.pi.cwid == user.username or
+                self.project.admin.cwid == user.username):
             return True
         else:
             return False

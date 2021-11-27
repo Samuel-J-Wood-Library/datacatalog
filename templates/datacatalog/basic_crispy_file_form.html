@@ -1,0 +1,18 @@
+{% extends 'datacatalog/base-catalog.html' %}
+
+{% load static %}
+{% load bootstrap4 %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+{{ form.media }}
+
+<form enctype="multipart/form-data" action="" method="post">
+	{% csrf_token %}
+    {% crispy form %}
+</form>    
+    
+
+{% endblock %}
