@@ -559,58 +559,60 @@ def get_file_response(dd_file, content_type):
         raise Http404()
 
 
-def file_view_response(file, name):
+def file_view_response(model_instance):
     """
     allows viewing or downloading of files
     """
-    filename, extension_raw = os.path.splitext(name)
+    # check to see if file is associated:
+    try:
+        doc_file = model_instance.methodfile.file
+        doc_name = model_instance.methodfile.name
+    except ValueError:
+        raise Http404()
+
+
+    filename, extension_raw = os.path.splitext(doc_name)
     extension = extension_raw.lower()[1:]
 
     if extension == "pdf":
         try:
-            return FileResponse(file, content_type='application/pdf')
+            return FileResponse(doc_file, content_type='application/pdf')
         except FileNotFoundError:
             raise Http404()
     elif extension == "docx":
-        return get_file_response(file, content_type="application/vnd.ms-word")
+        return get_file_response(doc_file, content_type="application/vnd.ms-word")
     elif extension == "xlsx":
-        return get_file_response(file, content_type="application/vnd.ms-excel")
+        return get_file_response(doc_file, content_type="application/vnd.ms-excel")
     else:
-        mime_type = guess_type(name)
-        with open(str(file), 'rb') as fh:
+        mime_type = guess_type(doc_name)
+        with open(str(doc_file), 'rb') as fh:
             response = HttpResponse(fh.read(),
                                     content_type=mime_type,
                                     )
-            response['Content-Disposition'] = f'attachment; filename={os.path.basename(str(file))}'
+            response['Content-Disposition'] = f'attachment; filename={os.path.basename(str(doc_file))}'
             return response
 
 
 @login_required()
 def datadict_view(request, pk):
-    dataset = get_object_or_404(Dataset, pk=pk)
-    # check to see if file is associated:
-    try:
-        dd_file = dataset.data_dictionary.file
-        dd_name = dataset.data_dictionary.name
-    except ValueError:
-        raise Http404()
-
-    response = file_view_response(dd_file, dd_name)
+    model_instance = get_object_or_404(Dataset, pk=pk)
+    response = file_view_response(model_instance)
     return response
 
 
 @login_required()
 def methodfile_view(request, pk):
-    rr = get_object_or_404(RetentionRequest, pk=pk)
-    # check to see if file is associated:
-    try:
-        methodfile_file = rr.methodfile.file
-        methodfile_name = rr.methodfile.name
-    except ValueError:
-        raise Http404()
-
-    response = file_view_response(methodfile_file, methodfile_name)
+    model_instance = get_object_or_404(RetentionRequest, pk=pk)
+    response = file_view_response(model_instance)
     return response
+
+
+@login_required()
+def duadoc_view(request, pk):
+    model_instance = get_object_or_404(DataUseAgreement, pk=pk)
+    response = file_view_response(model_instance)
+    return response
+
 
 # ################## #
 # ## Create views ## #

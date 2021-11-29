@@ -303,6 +303,7 @@ class DUAForm(forms.ModelForm):
         self.helper.layout = Layout(
                     Fieldset('<div class="alert alert-info">Data Use Agreement Details</div>',
                             div_duaname,
+                            'documentation',
                             'description',
                             div_provider_details,
                             'datasets',
@@ -325,6 +326,7 @@ class DUAForm(forms.ModelForm):
         model = DataUseAgreement
         fields = [  'duaid',
                     'title',
+                    'documentation',
                     'description',
                     'publisher',
                     'contact',

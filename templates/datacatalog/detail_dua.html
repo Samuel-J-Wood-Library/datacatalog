@@ -32,6 +32,20 @@
 </h2>
 {% endif %}
 
+</br>
+
+{% if request.user|has_group:"datacatalog_editor" or request.user.username == datauseagreement.pi.cwid or request.user == datauseagreement.record_author %}
+    <a  class="btn btn-primary" href="{% url 'datacatalog:dua-update' datauseagreement.pk %}">Update DUA details</a>
+{% endif %}
+{% if  datauseagreement.documentation %}
+    <a  class="btn btn-info"
+        href="{% url 'datacatalog:dua-doc-view' datauseagreement.pk %}"
+        target="_blank">View governance doc</a>
+{% endif %}
+
+</br></br>
+
+
 <h4>description</h4>
 <p> {{ datauseagreement.description|linebreaks }}</p>
 

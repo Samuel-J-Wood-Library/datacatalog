@@ -20,7 +20,7 @@ def dictionary_directory_path(instance, filename):
 
 def project_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/pi<id>/gov_type/<filename>
-    return '{0}/{1}/{2}'.format(instance.pi, instance.governance_type.name, filename)
+    return 'duas/{0}/{1}/{2}'.format(instance.pi, instance.governance_type.name, filename)
 
 
 def method_directory_path(instance, filename):

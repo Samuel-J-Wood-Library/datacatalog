@@ -68,6 +68,7 @@ urlpatterns = [
          name='provider-view'
          ),
     path('duas/<int:pk>', views.DataUseAgreementDetailView.as_view(), name='dua-view'),
+    path('duas/<int:pk>/doc', views.duadoc_view, name='dua-doc-view'),
     path('keywords/<int:pk>', views.KeywordDetailView.as_view(), name='keyword-view'),
     path('datafield/<int:pk>', 
          views.DataFieldDetailView.as_view(),
