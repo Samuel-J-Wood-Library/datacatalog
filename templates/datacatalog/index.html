@@ -50,7 +50,7 @@
          <div class="card shadow">
           <div class="card-body">
             <h5 class="card-title">View Datasets</h5>
-            <p class="card-text">View details of all {{ ds_count }} publicly listed datasets used for research
+            <p class="card-text">View details of {{ ds_count }} publicly listed datasets used for research
                                 at WCM.</p>
           </div>
           <div class="card-footer">
@@ -63,8 +63,14 @@
 </div>
 
 {% if request.user|has_group:"dua_viewing_privileges" %}
-  <a  class="btn btn-primary" href="{% url 'datacatalog:duas' %}">View {{ dua_count }} data use agreements</a>
-  <a  class="btn btn-primary" href="{% url 'datacatalog:access' %}">View {{ access_count }} data locations</a>
+    </br>
+    </br>
+  <a  class="btn btn-primary" href="{% url 'datacatalog:retention-active' %}">
+      View {{ unlocked_requests }} unlocked requests</a>
+  <a  class="btn btn-primary" href="{% url 'datacatalog:duas' %}">
+      View {{ dua_count }} data use agreements</a>
+  <a  class="btn btn-primary" href="{% url 'datacatalog:access' %}">
+      View {{ access_count }} data locations</a>
 {% endif %}
 
 </br>

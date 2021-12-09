@@ -70,8 +70,12 @@
 
 <table class="table table-striped table-hover table-sm">
     <tr><td>Project</td>
-        <td><a href="{% url 'datacatalog:project-view' retentionrequest.project.pk %}">
+        <td>{% if retentionrequest.project %}
+                <a href="{% url 'datacatalog:project-view' retentionrequest.project.pk %}">
                     {{ retentionrequest.project }}</a>
+            {% else %}
+                No project specified.
+            {% endif %}
         </td></tr>
     <tr><td>PI</td><td>{{ retentionpi }}</td></tr>
     <tr><td>Admin</td><td>{{ retentionadmin }}</td></tr>

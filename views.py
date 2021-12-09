@@ -160,8 +160,6 @@ class CILAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
 
 
 class IndexView(LoginRequiredMixin, generic.ListView):
-    login_url = '/login/'
-
     template_name = 'datacatalog/index.html'
     context_object_name = 'dataset_list'
 
@@ -174,25 +172,20 @@ class IndexView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         ds_count = Dataset.objects.filter(published=True).count()
-        pub_count = DataProvider.objects.filter(published=True).count()
-        kw_count = Keyword.objects.filter(published=True).count()
         dua_count = DataUseAgreement.objects.filter(published=True).count()
         access_count = DataAccess.objects.filter(published=True).count()
+        unlocked_requests = RetentionRequest.objects.exclude(locked=True).count()
 
         context = super(IndexView, self).get_context_data(**kwargs)
-        context.update({
-                        'ds_count': ds_count,
-                        'pub_count': pub_count,
-                        'kw_count': kw_count,
+        context.update({'ds_count': ds_count,
                         'dua_count': dua_count,
                         'access_count': access_count,
-        })
+                        'unlocked_requests': unlocked_requests,
+                        })
         return context
 
 
 class IndexDatasetView(LoginRequiredMixin, generic.ListView):
-    login_url = '/login/'
-
     template_name = 'datacatalog/index_datasets.html'
     context_object_name = 'dataset_list'
 
@@ -210,8 +203,6 @@ class IndexDatasetView(LoginRequiredMixin, generic.ListView):
 
 
 class IndexDUAView(PermissionRequiredMixin, generic.ListView):
-    login_url = '/login/'
-
     template_name = 'datacatalog/index_duas.html'
     context_object_name = 'dua_list'
     permission_required = 'datacatalog.view_datauseagreement'
@@ -229,8 +220,6 @@ class IndexDUAView(PermissionRequiredMixin, generic.ListView):
 
 
 class IndexKeywordView(LoginRequiredMixin, generic.ListView):
-    login_url = '/login/'
-
     template_name = 'datacatalog/index_keywords.html'
     context_object_name = 'keyword_list'
 
@@ -248,8 +237,6 @@ class IndexKeywordView(LoginRequiredMixin, generic.ListView):
 
 
 class IndexProjectByUserView(LoginRequiredMixin, generic.ListView):
-    login_url = '/login/'
-
     template_name = 'datacatalog/index_projects.html'
     context_object_name = 'project_list'
 
@@ -280,8 +267,6 @@ class IndexProjectByUserView(LoginRequiredMixin, generic.ListView):
 
 
 class IndexDataAccessView(PermissionRequiredMixin, generic.ListView):
-    login_url = '/login/'
-
     template_name = 'datacatalog/index_dataaccess.html'
     context_object_name = 'access_list'
     permission_required = 'datacatalog.view_dataaccess'
@@ -300,8 +285,6 @@ class IndexDataAccessView(PermissionRequiredMixin, generic.ListView):
 
 
 class IndexDataProviderView(LoginRequiredMixin, generic.ListView):
-    login_url = '/login/'
-
     template_name = 'datacatalog/index_dataproviders.html'
     context_object_name = 'provider_list'
 
@@ -330,8 +313,6 @@ class IndexDataProviderView(LoginRequiredMixin, generic.ListView):
 
 
 class IndexRetentionRequestView(PermissionRequiredMixin, generic.ListView):
-    login_url = '/login/'
-
     template_name = 'datacatalog/index_retentionrequests.html'
     context_object_name = 'retention_requests'
     permission_required = 'datacatalog.view_retentionrequest'
@@ -349,8 +330,6 @@ class IndexRetentionRequestView(PermissionRequiredMixin, generic.ListView):
 
 
 class IndexActiveRetentionRequestView(PermissionRequiredMixin, generic.ListView):
-    login_url = '/login/'
-
     template_name = 'datacatalog/index_retentionrequests_active.html'
     context_object_name = 'retention_requests'
     permission_required = 'datacatalog.view_retentionrequest'
