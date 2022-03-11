@@ -530,7 +530,7 @@ class Project(models.Model):
     pi = models.ForeignKey(Person, on_delete=models.PROTECT, related_name='pi_project_person')
 
     # project administrator
-    admin = models.ForeignKey(Person, on_delete=models.PROTECT, related_name='admin_person', null=True, blank=True,help_text="Person able to check for completeness of the dataset(s) and the associated metadata. (Ex.: postdoc, grad. students, PI, ...)",)
+    admin = models.ForeignKey(Person, on_delete=models.PROTECT, related_name='admin_person', null=True, blank=True,help_text="Person able to check for completeness of the dataset(s) and the associated metadata. (Ex.: postdoc, grad. student, PI, ...)",)
 
     # project sponsor
     sponsor = models.CharField(max_length=128, null=True, blank=True)
