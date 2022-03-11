@@ -330,7 +330,7 @@ class Dataset(models.Model):
     # https://schema.org/description
     description = models.TextField(null=True,
                                    blank=True,
-                                   help_text="Description of dataset, including purpose, scope, etc",
+                                   help_text="Description of dataset, including purpose, scope, and any other info necessary to understand the origin of the dataset.",
                                    )
     
     # a field to explicitly capture the fields present in a data model (if applicable)
@@ -393,7 +393,7 @@ class Dataset(models.Model):
     # https://schema.org/codeValue
     keywords = models.ManyToManyField(Keyword,
                                       blank=True,
-                                      help_text="Add keywords related to data set",
+                                      help_text="Add keywords related to data set. If a keyword is missing, please create a new one with the 'Submit New:' top right menu > Keyword.",
                                       )
     
     # confidentiality impact level
@@ -403,7 +403,9 @@ class Dataset(models.Model):
                                  )
     
     # field to indicate the size of the dataset in terms of number of records
-    num_records = models.IntegerField("Number of records", blank=True, null=True)
+    num_records = models.IntegerField("Number of records", blank=True, null=True,
+                                 help_text="Examples: number of patients, number of samples, etc.",
+                                 )
     
     # indicate scale of the dataset based on the number of records
     UNITS = 'UN'
@@ -439,7 +441,9 @@ class Dataset(models.Model):
                                   )
     
     # notes or general comments
-    comments = models.TextField(null=True, blank=True)
+    comments = models.TextField(null=True, blank=True,
+                                  help_text="Any other useful information to a project or dataset outsider.",
+                                  )
         
     # pointer to the generic instructions required for accessing this data
     # access_requirements = models.ManyToManyField(DataAccess, blank=True,)
@@ -468,7 +472,7 @@ class Dataset(models.Model):
     public = models.BooleanField(null=True,
                                  blank=True,
                                  default=True,
-                                 help_text="Whether to make this record visible in the Data Catalog",
+                                 help_text="Whether to make this record visible in the Data Catalog. If not public, only the dataset metadata will be made visible (in agreement with any Data Usage Agreement provided) and not the link to the dataset.",
                                  )
 
     # specify the users who have access. If none specified, then all users have
@@ -520,13 +524,13 @@ class Project(models.Model):
     name = models.CharField(max_length=128, unique=True)
 
     # brief description of project
-    description = models.TextField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True, help_text="Description of dataset, including purpose, scope, and any other info necessary to understand the origin of the dataset.")
 
     # principle investigator
     pi = models.ForeignKey(Person, on_delete=models.PROTECT, related_name='pi_project_person')
 
     # project administrator
-    admin = models.ForeignKey(Person, on_delete=models.PROTECT, related_name='admin_person', null=True, blank=True,)
+    admin = models.ForeignKey(Person, on_delete=models.PROTECT, related_name='admin_person', null=True, blank=True,help_text="Person able to check for completeness of the dataset(s) and the associated metadata. (Ex.: postdoc, grad. students, PI, ...)",)
 
     # project sponsor
     sponsor = models.CharField(max_length=128, null=True, blank=True)
@@ -576,26 +580,26 @@ class DataAccess(models.Model):
     unique_id = models.CharField(max_length=256,
                                  blank=True,
                                  null=True,
-                                 help_text="system-generated unique identifier",
+                                 help_text="system-generated unique identifier. Only for LabArchive and STARFISH.",
                                  )
 
     # shareable link that gives access to the digital objects/collection
     shareable_link = models.URLField(blank=True,
                                      null=True,
                                      max_length=1024,
-                                     help_text="system-generated shareable URL to the data",
+                                     help_text="system-generated shareable URL to the data. This link will only be visible to ITS admins.",
                                      )
 
     # description of digital object locations - as filepaths
     filepaths = models.TextField(blank=True,
                                  null=True,
-                                 help_text="describe the paths to all directories and/or files",
+                                 help_text="describe the paths to all directories and/or files. Only for FileShare. Can be used for complementary info on file location for Box and/or OneDrive (in addition of a shareable link). Example: /absolute/path/to/my/file.csv.",
                                  )
 
     # points to the dataset object that describes this set of data files
     metadata = models.ManyToManyField(Dataset,
                                       blank=True,
-                                      help_text="link this entry to selected Data Catalog record(s)",
+                                      help_text="link this entry to existing Data Catalog record(s)",
                                       )
 
     # project that the data are associated with
@@ -741,8 +745,9 @@ class DataUseAgreement(models.Model):
     # provider contact individual
     contact = models.ForeignKey(Person, 
                                 related_name='contact_person',
-                                on_delete=models.CASCADE
-                                )
+                                on_delete=models.CASCADE, 
+                                help_text="person to contact to get information and/or access to the dataset.",
+                               )
     
     # principal investigator
     pi = models.ForeignKey(Person, related_name='pi_person', on_delete=models.CASCADE)
@@ -916,7 +921,7 @@ class RetentionRequest(models.Model):
                                 on_delete=models.PROTECT,
                                 null=True,
                                 blank=True,
-                                help_text="Select from your available projects",
+                                help_text="Select from your available projects. If none is available or the project does not exist, please create a new project.",
                                 )
 
     # Milestone that defines the reason for data retention
@@ -951,7 +956,7 @@ class RetentionRequest(models.Model):
     # digital objects for archiving
     to_archive = models.ManyToManyField(DataAccess,
                                         related_name='retention_requests',
-                                        help_text="Select all data for retention from the project chosen above",
+                                        help_text="Select all data for retention from the project chosen above. Multiple data locations can be entered here.",
                                         )
 
     # methods documentation linking source files and results files
@@ -965,7 +970,7 @@ class RetentionRequest(models.Model):
                             )
 
     # for additional information necessary for archiving
-    comments = models.TextField(null=True, blank=True)
+    comments = models.TextField(null=True, blank=True,help_text="Any other useful information to a project or dataset outsider.")
 
     # ITS ticket ID
     ticket = models.CharField(max_length=32, null=True, blank=True)
