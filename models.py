@@ -108,12 +108,12 @@ class DataField(models.Model):
     
     # field name
     name = models.CharField(max_length=256, 
-                            help_text="The name of the field as it appears in schema",
+                            help_text="The name of the field as it appears in schema.",
                             )
     
     # field description
     description = models.CharField(max_length=256, 
-                                   help_text="Description of the field",
+                                   help_text="Description of the field.",
                                    )
     
     # descriptions defining scope of data
@@ -122,7 +122,7 @@ class DataField(models.Model):
                              blank=True,
                              help_text="""
                                        Descriptions of the scope of the data (eg. min, max, number of records, number
-                                       of null values, number of unique values)
+                                       of null values, number of unique values).
                                        """,
                              )
     
@@ -162,7 +162,7 @@ class ConfidentialityImpact(models.Model):
                                     unique=False,
                                     null=False,
                                     blank=False,
-                                    help_text="Level as defined by the standard",
+                                    help_text="Level as defined by the standard.",
                                     )
     
     # for ranking the different scales, we include a separate rank field.
@@ -170,7 +170,7 @@ class ConfidentialityImpact(models.Model):
     impact_rank = models.IntegerField(unique=False,
                                       null=False,
                                       blank=False,
-                                      help_text="Rank of impact: 1 is highest risk",
+                                      help_text="Rank of impact: 1 is highest risk.",
                                       )
     
     # standard
@@ -179,7 +179,7 @@ class ConfidentialityImpact(models.Model):
                                 unique=False, 
                                 null=False, 
                                 blank=False,
-                                help_text="Standard defining the impact level",
+                                help_text="Standard defining the impact level.",
                                 )
     
     # definition
@@ -315,14 +315,14 @@ class Dataset(models.Model):
                              unique=True,
                              null=True,
                              blank=True,
-                             help_text="Unique identifer of the data set"
+                             help_text="Unique identifer of the data set."
                              )
     
     # dataset title/brief descriptor
     title = models.CharField(max_length=256, 
                              unique=True,
                              help_text="""
-                                       The name of the dataset, usually one sentence or short description of the dataset
+                                       The name of the dataset, usually one sentence or short description of the dataset.
                                        """,
                              )
     
@@ -338,7 +338,7 @@ class Dataset(models.Model):
     # which will subsequently be set to parse the dictionary to metadata.
     data_fields = models.ManyToManyField(DataField, 
                                          blank=True,
-                                         help_text="List of all fields present in any schema",
+                                         help_text="List of all fields present in any schema.",
                                          )
     
     # data dictionary (to have specified format for parsing to metadata, but otherwise
@@ -354,21 +354,21 @@ class Dataset(models.Model):
     # https://schema.org/Date
     period_start = models.DateField(null=True, 
                                     blank=True,
-                                    help_text="Date of earliest data record",
+                                    help_text="Date of earliest data record.",
                                     )
     
     # end of temporal coverage (time of latest data record) 
     # https://schema.org/Date
     period_end = models.DateField(null=True,
                                   blank=True,
-                                  help_text="Date of latest data record"
+                                  help_text="Date of latest data record."
                                   )
     
     # date the data set was published
     # https://schema.org/Date
     publication_date = models.DateField(null=True, 
                                         blank=True,
-                                        help_text="Publication date of the dataset"
+                                        help_text="Publication date of the dataset."
                                         )
     # dataset publisher 
     # https://schema.org/publisher
@@ -377,7 +377,7 @@ class Dataset(models.Model):
                                   null=True,
                                   on_delete=models.PROTECT,
                                   related_name='dataset_publisher',
-                                  help_text="Group responsible for publication of the data set",
+                                  help_text="Group responsible for publication of the data set.",
                                   )
     
     # dataset source, which can be different to the publisher
@@ -399,7 +399,7 @@ class Dataset(models.Model):
     # confidentiality impact level
     cil = models.ManyToManyField(ConfidentialityImpact,
                                  blank=True,
-                                 help_text="Select an impact level based on data risk",
+                                 help_text="Select an impact level based on data risk.",
                                  )
     
     # field to indicate the size of the dataset in terms of number of records
@@ -430,14 +430,14 @@ class Dataset(models.Model):
                         choices=SCALE_CHOICES,
                         blank=True,
                         null=True,
-                        help_text="indicate the scale, based on the number of records"
+                        help_text="Indicate the scale, based on the number of records."
     )
     
     # URL of landing page to access data
     landing_url = models.URLField(max_length=256,
                                   null=True,
                                   blank=True,
-                                  help_text="URL of page that allows access of data"
+                                  help_text="URL of page that allows access of data."
                                   )
     
     # notes or general comments
@@ -453,13 +453,13 @@ class Dataset(models.Model):
                                null=True,
                                blank=True,
                                on_delete=models.PROTECT,
-                               help_text="A local contact who is an expert on the data"
+                               help_text="A local contact who is an expert on the data."
                                )
     
     # media subtype (according to ontology at www.iana.org)
     media_subtype = models.ManyToManyField(MediaSubType,
                                            blank=True,
-                                           help_text="The media types of all files in data set"
+                                           help_text="The media types of all files in data set."
                                            )
 
     # this is set to true after being checked by the Data Catalog curation team
@@ -530,16 +530,16 @@ class Project(models.Model):
     pi = models.ForeignKey(Person, on_delete=models.PROTECT, related_name='pi_project_person')
 
     # project administrator
-    admin = models.ForeignKey(Person, on_delete=models.PROTECT, related_name='admin_person', null=True, blank=True,help_text="Person able to check for completeness of the dataset(s) and the associated metadata. (Ex.: postdoc, grad. student, PI, ...)",)
+    admin = models.ForeignKey(Person, on_delete=models.PROTECT, related_name='admin_person', null=True, blank=True,help_text="Person able to check for completeness of the dataset(s) and the associated metadata. (Ex.: postdoc, grad. student, PI, ...).",)
 
     # project sponsor
     sponsor = models.CharField(max_length=128, null=True, blank=True)
 
     # sponsored project identifier
-    funding_id = models.CharField(max_length=64, null=True, blank=True, help_text="Weill research gateway grant ID",)
+    funding_id = models.CharField(max_length=64, null=True, blank=True, help_text="Weill research gateway grant ID.",)
 
     # expected date of project completion
-    completion = models.DateField(null=True, blank=True, help_text="Expected end date of project",)
+    completion = models.DateField(null=True, blank=True, help_text="Expected end date of project.",)
 
     def __str__(self):
         return "{}".format(self.name)
@@ -573,33 +573,33 @@ class DataAccess(models.Model):
                                      blank=True,
                                      null=True,
                                      on_delete=models.PROTECT,
-                                     help_text="Select the system storing the data",
+                                     help_text="Select the system storing the data.",
                                      )
 
     # unique identifier of digital objects collection (eg LabArchives notebook ID)
     unique_id = models.CharField(max_length=256,
                                  blank=True,
                                  null=True,
-                                 help_text="system-generated unique identifier. Only for LabArchive and STARFISH.",
+                                 help_text="System-generated unique identifier. Only for LabArchive and STARFISH.",
                                  )
 
     # shareable link that gives access to the digital objects/collection
     shareable_link = models.URLField(blank=True,
                                      null=True,
                                      max_length=1024,
-                                     help_text="system-generated shareable URL to the data. This link will only be visible to ITS admins.",
+                                     help_text="System-generated shareable URL to the data. This link will only be visible to ITS admins.",
                                      )
 
     # description of digital object locations - as filepaths
     filepaths = models.TextField(blank=True,
                                  null=True,
-                                 help_text="describe the paths to all directories and/or files. Only for FileShare. Can be used for complementary info on file location for Box and/or OneDrive (in addition of a shareable link). Example: /absolute/path/to/my/file.csv.",
+                                 help_text="Describe the paths to all directories and/or files. Only for FileShare. Can be used for complementary info on file location for Box and/or OneDrive (in addition of a shareable link). Example: /absolute/path/to/my/file.csv.",
                                  )
 
     # points to the dataset object that describes this set of data files
     metadata = models.ManyToManyField(Dataset,
                                       blank=True,
-                                      help_text="link this entry to existing Data Catalog record(s)",
+                                      help_text="Link this entry to existing Data Catalog record(s).",
                                       )
 
     # project that the data are associated with
@@ -628,7 +628,7 @@ class DataAccess(models.Model):
 
     # details for gaining access to the dataset
     access_instructions = models.TextField(blank=True, null=True,
-                                           help_text="Any additional instructions for accessing the data")
+                                           help_text="Any additional instructions for accessing the data.")
 
     # whether this record is to be publicly available
     public = models.BooleanField(null=True, blank=True, default=False)
@@ -913,7 +913,7 @@ class RetentionRequest(models.Model):
     # short description of the request
     name = models.CharField("Short description",
                             max_length=256,
-                            help_text="A name to help identify this request",
+                            help_text="A name to help identify this request.",
                             )
 
     # project associated with the milestone
@@ -944,7 +944,7 @@ class RetentionRequest(models.Model):
 
     # date in which the milestone itself is completed
     milestone_date = models.DateField(default=date.today,
-                                      help_text="The date this milestone comes into effect",
+                                      help_text="The date this milestone comes into effect.",
                                       )
 
     # unambiguous pointer to milestone record
@@ -965,7 +965,7 @@ class RetentionRequest(models.Model):
                             null=True,
                             help_text="""
                                       Upload a document describing steps required to generate results files from 
-                                      source data. 
+                                      source/raw data. 
                                       """,
                             )
 
