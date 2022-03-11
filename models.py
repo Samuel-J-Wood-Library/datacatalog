@@ -621,10 +621,10 @@ class DataAccess(models.Model):
     access_cost = models.IntegerField(null=True, blank=True)
 
     # whether the digital objects are publicly available
-    public_data = models.BooleanField(null=True, blank=True, default=False)
+    public_data = models.BooleanField(null=True, blank=True, default=False, help_text="If Yes, the shareable link you provided in the dataset location description will be publicly shared. If No, no link to the dataset location will be shared. If Unknown, no link to the dataset location will be shared and owners can change this option later.)
 
     # email for others to request access to the digital objects
-    steward_email = models.EmailField(null=True, blank=True, )
+    steward_email = models.EmailField(null=True, blank=True, help_text="Person to contact to get more information on the dataset and on how to access it.")
 
     # details for gaining access to the dataset
     access_instructions = models.TextField(blank=True, null=True,
@@ -950,7 +950,7 @@ class RetentionRequest(models.Model):
     # unambiguous pointer to milestone record
     milestone_pointer = models.CharField(max_length=64,
                                          default="Enter reference here",
-                                         help_text="DOI, WRG ID, or HR reference",
+                                         help_text="DOI, WRG ID, or HR reference.",
                                          )
 
     # digital objects for archiving
