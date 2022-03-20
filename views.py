@@ -357,7 +357,7 @@ class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         # check permission to view project details:
-        if self.object.viewing_is_permitted():
+        if self.object.viewing_is_permitted(self.request):
             access_permission = True
             metadata = Dataset.objects.filter(dataaccess__project=self.object).distinct()
             project = self.object
@@ -471,7 +471,7 @@ class RetentionDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = 'datacatalog/detail_retention.html'
 
     def get_context_data(self, **kwargs):
-        if self.object.viewing_is_permitted():
+        if self.object.viewing_is_permitted(self.request):
             retentionpi = self.object.project.pi
             retentionadmin = self.object.project.admin
             retentionobject = self.object
@@ -612,6 +612,43 @@ def duadoc_view(request, pk):
 # ################## #
 # ## Create views ## #
 # ################## #
+def check_or_create_user(user):
+    """
+    check if logged in user is in the persons database. If they are, return
+    the user instance. If not, create a new person in the database, and then
+    return the instance.
+    """
+    # 1st, check the user is in persons database:
+    try:
+        person = Person.objects.get(cwid=user.username)
+    except Person.DoesNotExist:
+        # if not in database, create new record
+        person = Person(first_name=user.first_name,
+                        last_name=user.last_name,
+                        cwid=user.username,
+                        )
+        person.save()
+    return person
+
+def check_or_add_to_project(person, project):
+    """
+    if creator of a new project is not in any of the fields (pi, other pis, other editors),
+    then add them to the other editors field.
+
+    person: an instance from the persons.Person class
+    project: an instance from the Project class
+    """
+    # add the record creator to the other_editors field if not already in the project people lists:
+    if (person == project.pi or
+            project.other_pis.filter(cwid=person.cwid).exists() or
+            project.other_editors.filter(cwid=person.cwid).exists()
+    ):
+
+        return True
+    else:
+        project.other_editors.add(person)
+        project.save()
+        return False
 
 
 class ProjectCreateView(LoginRequiredMixin, CreateView):
@@ -626,22 +663,15 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
         user = self.request.user
         self.object.record_author = user
 
-        # add record creator to other_editors field if not already on.
-        # look for the user in persons database:
-        try:
-            person = Person.objects.get(cwid=user.username)
-        except Person.DoesNotExist:
-            # if not in database, create new record
-            person = Person(first_name=user.first_name, last_name=user.last_name, cwid=user.username)
-            person.save()
+        self.object.save()
+
+        # add record creator to other_editors field if not already added.
+        # 1st, check the user is in persons database:
+        person = check_or_create_user(user)
 
         # add the record creator to the other_editors field if not already in the project people lists:
-        if person==self.object.pi or self.object.other_pis.isin(person) or self.object.other_editors.isin(person):
-            pass
-        else:
-            self.object.other_editors.add(person)
+        check_result = check_or_add_to_project(person, self.object)
 
-        self.object.save()
         return super(ProjectCreateView, self).form_valid(form)
 
 
@@ -848,6 +878,11 @@ class RetentionWorkflowProjectView(generic.TemplateView):
                 new_project = new_project_form.save(commit=False)
                 new_project.record_author = request.user
                 new_project.save()
+
+                # add record creator to other_editors field if not already added.
+                person = check_or_create_user(request.user)
+                check_result = check_or_add_to_project(person, new_project)
+
                 project_pk = new_project.pk
                 messages.add_message(request, messages.SUCCESS,
                                      f"Project {new_project.pk} {new_project.name} created.")

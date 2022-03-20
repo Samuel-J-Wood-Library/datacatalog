@@ -528,7 +528,6 @@ class Project(models.Model):
     # additional PIs to have access to the project record
     other_pis = models.ManyToManyField(Person,
                                        related_name='other_pis',
-                                       null=True,
                                        blank=True,
                                        help_text="Additional PIs related to the project",
                                        )
@@ -539,7 +538,6 @@ class Project(models.Model):
     # list of all other people who are to have access to the project record
     other_editors = models.ManyToManyField(Person,
                                            related_name='other_editors',
-                                           null=True,
                                            blank=True,
                                            help_text="Additional people to give access to edit the project",
                                            )
@@ -559,11 +557,11 @@ class Project(models.Model):
         and returns True if the model instance is viewable by the user.
         """
         user = getattr(request, 'user', None)
-        if user.id == self.pi.cwid:
+        if user.username == self.pi.cwid:
             return True
-        elif self.other_pis.filter(id=user.id).exists():
+        elif self.other_pis.filter(cwid=user.username).exists():
             return True
-        elif self.other_editors.filter(id=user.id).exists():
+        elif self.other_editors.filter(cwid=user.username).exists():
             return True
         else:
             return False
