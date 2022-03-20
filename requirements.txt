@@ -2,5 +2,5 @@ Django>=2.2.13
 django-autocomplete-light==3.3.0rc1
 django-bootstrap4==0.0.7
 django-crispy-forms==1.7.0
-numpy==1.16.3
+numpy==1.21.0
 psycopg2==2.7.3.2
