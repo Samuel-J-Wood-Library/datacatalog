@@ -1,4 +1,3 @@
-import csv
 import os
 from datetime import date
 from mimetypes import guess_type
@@ -21,6 +20,8 @@ from django.urls import reverse
 from .models import Dataset, DataUseAgreement, DataAccess, Keyword, DataProvider
 from .models import MediaSubType, DataField, ConfidentialityImpact, Project
 from .models import RetentionRequest
+
+from persons.models import Person
 
 from .forms import DatasetForm, DUAForm, ProjectForm, DataAccessForm, RetentionRequestForm
 from .forms import RetentionWorkflowExistingProjectForm, RetentionWorkflowNewProjectForm
@@ -553,14 +554,14 @@ def get_file_response(dd_file, content_type):
         raise Http404()
 
 
-def file_view_response(model_instance):
+def file_view_response(model_file):
     """
     allows viewing or downloading of files
     """
     # check to see if file is associated:
     try:
-        doc_file = model_instance.methodfile.file
-        doc_name = model_instance.methodfile.name
+        doc_file = model_file.file
+        doc_name = model_file.name
     except ValueError:
         raise Http404()
 
@@ -590,21 +591,21 @@ def file_view_response(model_instance):
 @login_required()
 def datadict_view(request, pk):
     model_instance = get_object_or_404(Dataset, pk=pk)
-    response = file_view_response(model_instance)
+    response = file_view_response(model_file=model_instance.data_dictionary)
     return response
 
 
 @login_required()
 def methodfile_view(request, pk):
     model_instance = get_object_or_404(RetentionRequest, pk=pk)
-    response = file_view_response(model_instance)
+    response = file_view_response(model_file=model_instance.methodfile)
     return response
 
 
 @login_required()
 def duadoc_view(request, pk):
     model_instance = get_object_or_404(DataUseAgreement, pk=pk)
-    response = file_view_response(model_instance)
+    response = file_view_response(model_file=model_instance.documentation)
     return response
 
 
