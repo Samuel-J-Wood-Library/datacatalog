@@ -525,8 +525,24 @@ class Project(models.Model):
     # principle investigator
     pi = models.ForeignKey(Person, on_delete=models.PROTECT, related_name='pi_project_person')
 
-    # project administrator
+    # additional PIs to have access to the project record
+    other_pis = models.ManyToManyField(Person,
+                                       related_name='other_pis',
+                                       null=True,
+                                       blank=True,
+                                       help_text="Additional PIs related to the project",
+                                       )
+
+    # DEPRECATED: project administrator. This field will be dropped in a future update.
     admin = models.ForeignKey(Person, on_delete=models.PROTECT, related_name='admin_person', null=True, blank=True,)
+
+    # list of all other people who are to have access to the project record
+    other_editors = models.ManyToManyField(Person,
+                                           related_name='other_editors',
+                                           null=True,
+                                           blank=True,
+                                           help_text="Additional people to give access to edit the project",
+                                           )
 
     # project sponsor
     sponsor = models.CharField(max_length=128, null=True, blank=True)
@@ -536,6 +552,21 @@ class Project(models.Model):
 
     # expected date of project completion
     completion = models.DateField(null=True, blank=True, help_text="Expected end date of project",)
+
+    def viewing_is_permitted(self, request):
+        """
+        checks viewing permission of instance against restricted field, and the logged in user via requests
+        and returns True if the model instance is viewable by the user.
+        """
+        user = getattr(request, 'user', None)
+        if user.id == self.pi.cwid:
+            return True
+        elif self.other_pis.filter(id=user.id).exists():
+            return True
+        elif self.other_editors.filter(id=user.id).exists():
+            return True
+        else:
+            return False
 
     def __str__(self):
         return "{}".format(self.name)

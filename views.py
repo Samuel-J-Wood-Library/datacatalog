@@ -355,11 +355,26 @@ class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = 'datacatalog/detail_project.html'
 
     def get_context_data(self, **kwargs):
-        metadata = Dataset.objects.filter(dataaccess__project=self.object).distinct()
+        # check permission to view project details:
+        if self.object.viewing_is_permitted():
+            access_permission = True
+            metadata = Dataset.objects.filter(dataaccess__project=self.object).distinct()
+            project = self.object
+            pi = self.object.pi
+
+        else:
+            access_permission = False
+            metadata = None
+            project = None
+            pi = self.object.pi
 
         context = super(ProjectDetailView, self).get_context_data(**kwargs)
         context.update({'dataset_list': metadata,
+                        'access_permission': access_permission,
+                        'project': project,
+                        'pi': pi,
                         })
+
         return context
 
 
@@ -455,7 +470,7 @@ class RetentionDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = 'datacatalog/detail_retention.html'
 
     def get_context_data(self, **kwargs):
-        if self.object.viewing_is_permitted:
+        if self.object.viewing_is_permitted():
             retentionpi = self.object.project.pi
             retentionadmin = self.object.project.admin
             retentionobject = self.object
@@ -605,8 +620,25 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
+
         # update who last edited record
-        self.object.record_author = self.request.user
+        user = self.request.user
+        self.object.record_author = user
+
+        # add record creator to other_editors field if not already on.
+        # look for the user in persons database:
+        try:
+            person = Person.objects.get(cwid=user.username)
+        except Person.DoesNotExist:
+            # if not in database, create new record
+            person = Person(first_name=user.first_name, last_name=user.last_name, cwid=user.username)
+            person.save()
+
+        # add the record creator to the other_editors field if not already in the project people lists:
+        if person==self.object.pi or self.object.other_pis.isin(person) or self.object.other_editors.isin(person):
+            pass
+        else:
+            self.object.other_editors.add(person)
 
         self.object.save()
         return super(ProjectCreateView, self).form_valid(form)

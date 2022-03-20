@@ -26,6 +26,20 @@
 </style>
 
 {### Project Header ###}
+{% if access_permission is False %}
+    <h1>You do not have permission to view this project. If you require access, please contact
+        {{ pi.first_name }} {{ pi.last_name }}
+
+        (<a href="emailto:{{ pi.email }}"
+           target="_blank">{{ pi.email}}</a>).
+
+        If you feel you should already have access, please contact
+
+        <a href="emailto:dcore-ticket@med.cornell.edu"
+           target="_blank">dcore-ticket@med.cornell.edu</a> </h1>
+
+{% endif %}
+
 
 <div class="card border-primary" style="width: 100%;">
     <div class="card-header">
