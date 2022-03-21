@@ -243,7 +243,8 @@ class ProjectForm(forms.ModelForm):
                      style="font-weight: normal;",
                      ),
             Fieldset('<div class="alert alert-info">Project Details</div>',
-                     layout_two_equal('pi', 'admin'),
+                     layout_two_equal('pi', 'other_pis'),
+                     'other_editors',
                      layout_two_equal('funding_id', 'completion'),
                      style="font-weight: normal;",
                      ),
@@ -254,15 +255,20 @@ class ProjectForm(forms.ModelForm):
         fields = ['name',
                   'description',
                   'pi',
+                  'other_pis',
+                  'other_editors',
                   'admin',
                   'funding_id',
                   'completion',
                   ]
 
         widgets = {'pi': autocomplete.ModelSelect2(
-            url='persons:autocomplete-person'
-        ),
-            'admin': autocomplete.ModelSelect2(
+                url='persons:autocomplete-person'
+            ),
+            'other_pis': autocomplete.ModelSelect2Multiple(
+                url='persons:autocomplete-person'
+            ),
+            'other_editors': autocomplete.ModelSelect2Multiple(
                 url='persons:autocomplete-person'
             ),
             'completion': DateInput(),
@@ -461,7 +467,8 @@ class RetentionWorkflowNewProjectForm(forms.ModelForm):
                      ),
             Fieldset('<div class="alert alert-info">Project Details</div>',
                      'pi',
-                     'admin',
+                     'other_pis',
+                     'other_editors',
                      layout_two_equal('funding_id', 'completion'),
                      style="font-weight: normal;",
                      ),
@@ -472,15 +479,20 @@ class RetentionWorkflowNewProjectForm(forms.ModelForm):
         fields = ['name',
                   'description',
                   'pi',
+                  'other_pis',
+                  'other_editors',
                   'admin',
                   'funding_id',
                   'completion',
                   ]
 
         widgets = {'pi': autocomplete.ModelSelect2(
-            url='persons:autocomplete-person'
-        ),
-            'admin': autocomplete.ModelSelect2(
+                url='persons:autocomplete-person'
+            ),
+            'other_pis': autocomplete.ModelSelect2Multiple(
+                url='persons:autocomplete-person'
+            ),
+            'other_editors': autocomplete.ModelSelect2Multiple(
                 url='persons:autocomplete-person'
             ),
             'completion': DateInput(),

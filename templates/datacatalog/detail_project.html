@@ -27,16 +27,17 @@
 
 {### Project Header ###}
 {% if access_permission is False %}
-    <h1>You do not have permission to view this project. If you require access, please contact
+    <h2>You do not have permission to view project "{{ project }}".</h2>
+    <h2> If you require access, please contact
         {{ pi.first_name }} {{ pi.last_name }}
 
-        (<a href="emailto:{{ pi.email }}"
-           target="_blank">{{ pi.email}}</a>).
+        (<a href="emailto:{{ pi.email_primary }}"
+           target="_blank">{{ pi.email_primary}}</a>).
 
         If you feel you should already have access, please contact
 
         <a href="emailto:dcore-ticket@med.cornell.edu"
-           target="_blank">dcore-ticket@med.cornell.edu</a> </h1>
+           target="_blank">dcore-ticket@med.cornell.edu</a> </h2>
 
 {% endif %}
 
@@ -67,8 +68,12 @@
         {% if project.pi %}
             <li><span class="text-info">Principal Investigator: </span> {{ project.pi }}</li>
         {% endif %}
-        {% if project.admin %}
-            <li><span class="text-info">Administrator:</span> {{ project.admin }}</li>
+        {% if project.other_pis %}
+            <li><span class="text-info">Other PIs:</span> {% for pi in project.other_pis.all %}{{ pi }}; {% endfor %}</li>
+        {% endif %}
+        {% if project.other_editors %}
+            <li><span class="text-info">Others with access to this record:</span>
+                {% for ed in project.other_editors.all %}{{ ed }}; {% endfor %}</li>
         {% endif %}
     </ul>
 

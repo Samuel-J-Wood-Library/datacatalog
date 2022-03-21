@@ -366,7 +366,7 @@ class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
         else:
             access_permission = False
             metadata = None
-            project = None
+            project = self.object.name
             pi = self.object.pi
 
         context = super(ProjectDetailView, self).get_context_data(**kwargs)
@@ -878,6 +878,7 @@ class RetentionWorkflowProjectView(generic.TemplateView):
                 new_project = new_project_form.save(commit=False)
                 new_project.record_author = request.user
                 new_project.save()
+                new_project_form.save_m2m()
 
                 # add record creator to other_editors field if not already added.
                 person = check_or_create_user(request.user)
