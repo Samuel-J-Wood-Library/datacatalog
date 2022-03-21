@@ -1,7 +1,7 @@
 from dal import autocomplete
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout, Div, Fieldset, HTML
+from crispy_forms.layout import Submit, Layout, Div, Fieldset, HTML, Field
 
 from django import forms
 
@@ -503,6 +503,7 @@ class RetentionWorkflowDataForm(forms.ModelForm):
         super(RetentionWorkflowDataForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.fields['methodfile'].label = "Methods file"
+        self.fields['to_archive'].help_text = "Select all data from the project that needs to be archived"
         self.helper.form_id = 'retentionWorkflowDataForm'
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('submitexisting', 'Continue to milestone'))
@@ -581,11 +582,10 @@ class RetentionWorkflowNewDataForm(forms.ModelForm):
                                 ),
         }
 
-class RetentionWorkflowSummaryForm(forms.ModelForm):
+class RetentionWorkflowMilestoneForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(RetentionWorkflowSummaryForm, self).__init__(*args, **kwargs)
-        if self.fields['milestone_pointer'].initial == "Enter reference here":
-            self.fields['milestone_pointer'].initial = ""
+        super(RetentionWorkflowMilestoneForm, self).__init__(*args, **kwargs)
+        self.fields['milestone'].initial = ""
         self.helper = FormHelper()
         self.helper.form_id = 'retentionWorkflowSummaryForm'
         self.helper.form_method = 'post'
@@ -593,7 +593,7 @@ class RetentionWorkflowSummaryForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset('',
                      'milestone',
-                     layout_two_equal('milestone_pointer', 'milestone_date'),
+                     layout_two_equal(Field('milestone_pointer', placeholder="enter reference here"), 'milestone_date'),
                      'comments',
                      style="font-weight: normal;",
                      ),

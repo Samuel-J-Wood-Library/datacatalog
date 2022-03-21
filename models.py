@@ -973,7 +973,6 @@ class RetentionRequest(models.Model):
 
     # unambiguous pointer to milestone record
     milestone_pointer = models.CharField(max_length=64,
-                                         default="Enter reference here",
                                          help_text="DOI, WRG ID, or HR reference",
                                          )
 

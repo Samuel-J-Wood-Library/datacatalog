@@ -25,7 +25,7 @@ from persons.models import Person
 
 from .forms import DatasetForm, DUAForm, ProjectForm, DataAccessForm, RetentionRequestForm
 from .forms import RetentionWorkflowExistingProjectForm, RetentionWorkflowNewProjectForm
-from .forms import RetentionWorkflowDataForm, RetentionWorkflowNewDataForm, RetentionWorkflowSummaryForm
+from .forms import RetentionWorkflowDataForm, RetentionWorkflowNewDataForm, RetentionWorkflowMilestoneForm
 
 # ################################## #
 # #####  AUTOCOMPLETE  VIEWS   ##### #
@@ -68,11 +68,13 @@ class ProjectByUserAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySet
     the project pi, or the project admin.
     """
     def get_queryset(self):
-        user = self.request.user
+        #user = self.request.user
+        user = Person.objects.get(cwid=self.request.user.username)
+        print(user)
         qs = Project.objects.filter(
-                            Q(record_author=user) |
-                            Q(pi__cwid=user.username) |
-                            Q(admin__cwid=user.username)
+                            Q(pi=user) |
+                            Q(other_pis=user) |
+                            Q(other_editors=user)
         )
 
         if self.q:
@@ -842,30 +844,62 @@ class RetentionUpdateView(LoginRequiredMixin, UpdateView):
 # ## RetentionWorkflow views ## #
 # ############################# #
 
+class RetentionWorkflowMilestoneView(generic.TemplateView):
+    template_name = 'datacatalog/workflow_milestone.html'
+
+    def get_context_data(self, **kwargs):
+
+        context = super(RetentionWorkflowMilestoneView, self).get_context_data(**kwargs)
+        context.update({
+            'form': RetentionWorkflowMilestoneForm(),
+        })
+        return context
+
+    def post(self, request, *args, **kwargs):
+        # once the submit milestone button is clicked
+        # create new retention request
+        retention_request_form = RetentionWorkflowMilestoneForm(data=request.POST)
+        if retention_request_form.is_bound and retention_request_form.is_valid():
+            retention_request = retention_request_form.save(commit=False)
+            retention_request.record_author = request.user
+            retention_request.name = f"retention for milestone {retention_request.get_milestone_display()} {retention_request.milestone_pointer} {date.today()}"
+            retention_request.save()
+            messages.add_message(request, messages.SUCCESS,
+                                 f"{retention_request.name}  created.")
+        else:
+            messages.error(request, retention_request_form.errors)
+
+        return HttpResponseRedirect(reverse('datacatalog:wizard-project', kwargs={'pk': retention_request.pk}))
 
 class RetentionWorkflowProjectView(generic.TemplateView):
     template_name = 'datacatalog/workflow_project.html'
 
     def get_context_data(self, **kwargs):
+        retention_request = get_object_or_404(RetentionRequest, pk=self.kwargs['pk'])
+
         context = super(RetentionWorkflowProjectView, self).get_context_data(**kwargs)
         context.update({
-            'form_existing': RetentionWorkflowExistingProjectForm(),
+            'retention_request': retention_request,
+            'form_existing': RetentionWorkflowExistingProjectForm(instance=retention_request),
             'form_new': RetentionWorkflowNewProjectForm(),
         })
         return context
 
     def post(self, request, *args, **kwargs):
+        # retrieve the primary key of the retention request from url
+        rr_pk = self.kwargs['pk']
+
+        # retrieve the RetentionRequest model instance based on pk
+        retention_request = get_object_or_404(RetentionRequest, pk=rr_pk)
+
         # if the submit existing project button is pressed
         # create new retention request
         if 'submitexisting' in request.POST:
-            retention_request_form = RetentionWorkflowExistingProjectForm(data=request.POST)
+            retention_request_form = RetentionWorkflowExistingProjectForm(instance=retention_request, data=request.POST)
             if retention_request_form.is_bound and retention_request_form.is_valid():
-                retention_request = retention_request_form.save(commit=False)
-                retention_request.record_author = request.user
-                retention_request.name = f"retention for project {retention_request.project} {date.today()}"
                 retention_request.save()
                 messages.add_message(request, messages.SUCCESS,
-                                     f"{retention_request.name}  created.")
+                                     f"project added to {retention_request.name}.")
             else:
                 messages.error(request, retention_request_form.errors)
 
@@ -885,19 +919,13 @@ class RetentionWorkflowProjectView(generic.TemplateView):
                 check_result = check_or_add_to_project(person, new_project)
 
                 project_pk = new_project.pk
-                messages.add_message(request, messages.SUCCESS,
-                                     f"Project {new_project.pk} {new_project.name} created.")
 
-                # create new data retention request, and connect to new project.
-                retention_name = f"retention for project {project_pk} {date.today()}"
-                retention_request = RetentionRequest(project=new_project,
-                                                     record_author=request.user,
-                                                     name=retention_name,
-                                                     )
+                # connect  new project to existing retention request
+                retention_request.project = new_project
                 retention_request.save()
 
                 messages.add_message(request, messages.SUCCESS,
-                                         f"{retention_request.name} started.")
+                                     f"Project {new_project.pk} {new_project.name} created and added to request.")
 
             else:
                 messages.error(request, new_project_form.errors)
@@ -943,8 +971,8 @@ class RetentionWorkflowDataView(generic.TemplateView):
                 messages.error(request, rr_form.errors)
                 return HttpResponseRedirect(reverse('datacatalog:wizard-data', kwargs={'pk': rr_pk}))
 
-            # move to update summary
-            return HttpResponseRedirect(reverse('datacatalog:wizard-milestone', kwargs={'pk': rr_pk}))
+            # move to milestone details
+            return HttpResponseRedirect(reverse('datacatalog:retention-update', kwargs={'pk': rr_pk}))
 
         # if the submit new project button is pressed
         # save any updates to the existing data form that were made,
@@ -976,10 +1004,10 @@ class RetentionWorkflowDataView(generic.TemplateView):
         return HttpResponseRedirect(reverse('datacatalog:wizard-data', kwargs={'pk': rr_pk}))
 
 
-class RetentionWorkflowSummaryView(LoginRequiredMixin, UpdateView):
+class RetentionWorkflowMilestoneViewOLD(LoginRequiredMixin, UpdateView):
     model = RetentionRequest
-    form_class = RetentionWorkflowSummaryForm
-    template_name = "datacatalog/workflow_summary.html"
+    form_class = RetentionWorkflowMilestoneForm
+    template_name = "datacatalog/workflow_milestone.html"
     initial = { 'milestone':"",
                 'milestone_pointer':"",
                 'milestone_date':"",
@@ -988,7 +1016,7 @@ class RetentionWorkflowSummaryView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         instance = form.save()
         self.success_url = reverse('datacatalog:retention-update', kwargs={'pk': instance.pk})
-        return super(RetentionWorkflowSummaryView, self).form_valid(form)
+        return super(RetentionWorkflowMilestoneViewOLD, self).form_valid(form)
 
 
 # ############################ #

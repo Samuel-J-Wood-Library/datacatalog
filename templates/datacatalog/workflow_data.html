@@ -31,23 +31,7 @@
 <div class="card-deck">
     <div class="card shadow">
         <div class="card-header bg-light">
-            <h3>Choose existing data locations:</h3>
-        </div>
-        <div class="card-body">
-
-            {{ form_existing.media }}
-
-            <form enctype="multipart/form-data" action="" method="post">
-                {% csrf_token %}
-                {% crispy form_existing %}
-            </form>
-        </div>
-
-    </div>
-
-    <div class="card shadow">
-        <div class="card-header bg-light">
-            <h3>Create a new data location description:</h3>
+            <h3>1. Create additional data location descriptions, if needed:</h3>
         </div>
         <div class="card-body">
 
@@ -56,6 +40,22 @@
             <form action="" method="post">
                 {% csrf_token %}
                 {% crispy form_new %}
+            </form>
+        </div>
+
+    </div>
+
+    <div class="card shadow">
+        <div class="card-header bg-light">
+            <h3>2. Select all relevant data locations and upload methods file:</h3>
+        </div>
+        <div class="card-body">
+
+            {{ form_existing.media }}
+
+            <form enctype="multipart/form-data"  action="" method="post">
+                {% csrf_token %}
+                {% crispy form_existing %}
             </form>
         </div>
     </div>
