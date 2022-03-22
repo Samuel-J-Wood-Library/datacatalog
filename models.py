@@ -410,7 +410,9 @@ class Dataset(models.Model):
                                  )
     
     # field to indicate the size of the dataset in terms of number of records
-    num_records = models.IntegerField("Number of records", blank=True, null=True)
+    num_records = models.IntegerField("Number of records", blank=True, null=True,
+                                      help_text="sample size of the dataset"
+                                      )
     
     # indicate scale of the dataset based on the number of records
     UNITS = 'UN'
@@ -614,20 +616,20 @@ class DataAccess(models.Model):
     unique_id = models.CharField(max_length=256,
                                  blank=True,
                                  null=True,
-                                 help_text="system-generated unique identifier",
+                                 help_text="system-generated unique identifier for e.g. LabArchives",
                                  )
 
     # shareable link that gives access to the digital objects/collection
     shareable_link = models.URLField(blank=True,
                                      null=True,
                                      max_length=1024,
-                                     help_text="system-generated shareable URL to the data",
+                                     help_text="system-generated shareable URL to the data, e.g. OneDrive",
                                      )
 
     # description of digital object locations - as filepaths
     filepaths = models.TextField(blank=True,
                                  null=True,
-                                 help_text="describe the paths to all directories and/or files",
+                                 help_text="describe the paths to all directories and/or files, e.g. department fileshare",
                                  )
 
     # points to the dataset object that describes this set of data files
@@ -655,10 +657,14 @@ class DataAccess(models.Model):
     access_cost = models.IntegerField(null=True, blank=True)
 
     # whether the digital objects are publicly available
-    public_data = models.BooleanField(null=True, blank=True, default=False)
+    public_data = models.BooleanField(null=True, blank=True, default=False,
+                                      help_text="Choose yes to make this information publicly visible"
+                                      )
 
     # email for others to request access to the digital objects
-    steward_email = models.EmailField(null=True, blank=True, )
+    steward_email = models.EmailField(null=True, blank=True,
+                                      help_text="Person to contact for data access"
+                                      )
 
     # details for gaining access to the dataset
     access_instructions = models.TextField(blank=True, null=True,
@@ -1002,7 +1008,7 @@ class RetentionRequest(models.Model):
                             null=True,
                             help_text="""
                                       Upload a document describing steps required to generate results files from 
-                                      source data 
+                                      source/raw data 
                                       """,
                             )
 

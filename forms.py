@@ -526,7 +526,7 @@ class RetentionWorkflowDataForm(forms.ModelForm):
         self.fields['to_archive'].help_text = "Select all data from the project that needs to be archived"
         self.helper.form_id = 'retentionWorkflowDataForm'
         self.helper.form_method = 'post'
-        self.helper.add_input(Submit('submitexisting', 'Continue to milestone'))
+        self.helper.add_input(Submit('submitexisting', 'Continue to summary'))
         self.helper.layout = Layout(
             Fieldset("",
                      'project',
@@ -567,6 +567,9 @@ class RetentionWorkflowNewDataForm(forms.ModelForm):
             Fieldset("",
                      'name',
                      'storage_type',
+                     style="font-weight: normal;",
+                     ),
+            Fieldset('<div class="alert alert-secondary"><h4>Data location</h4><h6>Enter details in at least one of the following fields:</h6></div>',
                      'unique_id',
                      'shareable_link',
                      'filepaths',
@@ -609,7 +612,7 @@ class RetentionWorkflowMilestoneForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_id = 'retentionWorkflowSummaryForm'
         self.helper.form_method = 'post'
-        self.helper.add_input(Submit('submit', 'Continue to review'))
+        self.helper.add_input(Submit('submit', 'Continue to project details'))
         self.helper.layout = Layout(
             Fieldset('',
                      'milestone',
