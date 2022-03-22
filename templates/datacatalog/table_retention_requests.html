@@ -14,7 +14,11 @@
 {% for rr in retention_requests %}
     <tr>
     <td><a href="{% url 'datacatalog:retention-view' rr.pk %}">RR{{ rr.pk }}: {{ rr.name }}</a></td>
-    <td><a href="{% url 'datacatalog:project-view' rr.project.pk %}">{{ rr.project }}</a></td>
+    {% if rr.project %}
+        <td><a href="{% url 'datacatalog:project-view' rr.project.pk %}">{{ rr.project }}</a></td>
+    {% else %}
+        <td>None</td>
+    {% endif %}
     <td>{{ rr.get_milestone_display }}</td>
     <td> {{ rr.to_archive.count }}</td>
     <td>{{ rr.record_author }}</td>

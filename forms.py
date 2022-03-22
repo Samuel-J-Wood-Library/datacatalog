@@ -522,7 +522,9 @@ class RetentionWorkflowDataForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(RetentionWorkflowDataForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.fields['methodfile'].label = "Methods file"
+        self.fields['to_archive'].label = "List of all data locations"
+        self.fields['methodfile'].label = '''Methods file (<a href="https://medcornell.sharepoint.com/:x:/s/DataCore/ESDrN8oHNbFAgKAkQ3Ot2KcBfRy1y7B0MCW3on9Ib_P7Yw?e=AU2e1e" target="_blank">download template here</a>)'''
+
         self.fields['to_archive'].help_text = "Select all data from the project that needs to be archived"
         self.helper.form_id = 'retentionWorkflowDataForm'
         self.helper.form_method = 'post'
