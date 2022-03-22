@@ -1,5 +1,5 @@
 import os
-from datetime import date
+from datetime import datetime
 from mimetypes import guess_type
 
 from dal import autocomplete
@@ -70,7 +70,6 @@ class ProjectByUserAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySet
     def get_queryset(self):
         #user = self.request.user
         user = Person.objects.get(cwid=self.request.user.username)
-        print(user)
         qs = Project.objects.filter(
                             Q(pi=user) |
                             Q(other_pis=user) |
@@ -238,33 +237,45 @@ class IndexKeywordView(LoginRequiredMixin, generic.ListView):
         })
         return context
 
-
 class IndexProjectByUserView(LoginRequiredMixin, generic.ListView):
     template_name = 'datacatalog/index_projects.html'
     context_object_name = 'project_list'
 
     def get_queryset(self):
-        user = self.request.user
+        try:
+            user = Person.objects.get(cwid=self.request.user.username)
+        except Person.DoesNotExist:
+            user = None
+
         myprojects = Project.objects.filter(
-            Q(record_author=user) |
-            Q(pi__cwid=user.username) |
-            Q(admin__cwid=user.username)
+            Q(pi=user) |
+            Q(other_pis=user) |
+            Q(other_editors=user)
         ).distinct()
         return myprojects.order_by('record_creation',)
 
     def get_context_data(self, **kwargs):
-        user = self.request.user
+        try:
+            user = Person.objects.get(cwid=self.request.user.username)
+        except Person.DoesNotExist:
+            user = None
+
+        mypiprojects = Project.objects.filter(pi=user).distinct().order_by('record_creation',)
+        myotherpisprojects = Project.objects.filter(other_pis=user).distinct().order_by('record_creation',)
+        myothereditorsprojects = Project.objects.filter(other_editors=user).distinct().order_by('record_creation',)
 
         retention_requests = RetentionRequest.objects.filter(
-            Q(project__record_author=user) |
-            Q(project__pi__cwid=user.username) |
-            Q(project__admin__cwid=user.username) |
-            Q(record_author=user)
+            Q(project__pi=user) |
+            Q(project__other_pis=user) |
+            Q(project__other_editors=user)
         ).distinct()
 
         context = super(IndexProjectByUserView, self).get_context_data(**kwargs)
         context.update({
             'retention_requests': retention_requests,
+            'mypiprojects':mypiprojects,
+            'myotherpisprojects':myotherpisprojects,
+            'myothereditorsprojects': myothereditorsprojects,
         })
         return context
 
@@ -862,7 +873,7 @@ class RetentionWorkflowMilestoneView(generic.TemplateView):
         if retention_request_form.is_bound and retention_request_form.is_valid():
             retention_request = retention_request_form.save(commit=False)
             retention_request.record_author = request.user
-            retention_request.name = f"retention for milestone {retention_request.get_milestone_display()} {retention_request.milestone_pointer} {date.today()}"
+            retention_request.name = f"retention request {datetime.now()}"
             retention_request.save()
             messages.add_message(request, messages.SUCCESS,
                                  f"{retention_request.name}  created.")

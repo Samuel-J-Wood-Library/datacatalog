@@ -2,6 +2,7 @@
 <thead class="thead-default">
     <tr>
         <th>Name</th>
+        <th>Project</th>
         <th>Milestone</th>
         <th>Number of items</th>
         <th>Requested by </th>
@@ -13,6 +14,7 @@
 {% for rr in retention_requests %}
     <tr>
     <td><a href="{% url 'datacatalog:retention-view' rr.pk %}">RR{{ rr.pk }}: {{ rr.name }}</a></td>
+    <td><a href="{% url 'datacatalog:project-view' rr.project.pk %}">{{ rr.project }}</a></td>
     <td>{{ rr.get_milestone_display }}</td>
     <td> {{ rr.to_archive.count }}</td>
     <td>{{ rr.record_author }}</td>

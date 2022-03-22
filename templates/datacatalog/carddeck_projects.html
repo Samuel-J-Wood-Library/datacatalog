@@ -1,0 +1,29 @@
+    <div class="card-columns">
+
+    {% for project in project_list %}
+    {### CARD FOR PROJECT DETAILS ###}
+    <div class="card border-dark my-2 shadow">
+        <div class="card-header">
+            <h5 class="mb-2 text-muted">
+                <a href="{% url 'datacatalog:project-view' project.pk %}">{{ project.name }}</a>
+            </h5>
+        </div>
+        <div class="card-body">
+
+
+            <p> {{ project.description|linebreaks }}</p>
+        </div> {# card body #}
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><em>Dataset locations:</em></li>
+          {% for da in project.dataaccess_set.all %}
+            <li class="list-group-item"><a href="{% url 'datacatalog:access-view' da.pk %}">{{ da.storage_type.name }}</a></li>
+          {% endfor %}
+            <li class="list-group-item">
+                <a
+                    class="btn btn-primary"
+                    href="{% url 'datacatalog:access-add' %}">Add new data location</a></li>
+        </ul>
+    </div> {# card #}
+    {% endfor %}
+
+  </div> {# column div #}
