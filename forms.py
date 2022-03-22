@@ -498,6 +498,26 @@ class RetentionWorkflowNewProjectForm(forms.ModelForm):
             'completion': DateInput(),
         }
 
+class RetentionInventoryForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(RetentionInventoryForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'retentionInventoryForm'
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submitinventory', 'Upload inventory'))
+        self.helper.layout = Layout(
+            Fieldset("",
+                     'inventory',
+                     style="font-weight: normal;",
+                     ),
+        )
+
+    class Meta:
+        model = RetentionRequest
+        fields = [
+                  'inventory',
+                  ]
+
 class RetentionWorkflowDataForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(RetentionWorkflowDataForm, self).__init__(*args, **kwargs)

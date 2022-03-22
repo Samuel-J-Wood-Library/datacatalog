@@ -76,6 +76,7 @@ urlpatterns = [
          ),
     path('retention/<int:pk>', views.RetentionDetailView.as_view(), name='retention-view'),
     path('retention/methods/<int:pk>', views.methodfile_view, name='methodfile-view'),
+    path('retention/inventory/<int:pk>', views.inventoryfile_view, name='inventory-view'),
 
     # create views
     path('project/add', views.ProjectCreateView.as_view(), name='project-add'),

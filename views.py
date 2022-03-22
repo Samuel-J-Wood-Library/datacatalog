@@ -26,6 +26,7 @@ from persons.models import Person
 from .forms import DatasetForm, DUAForm, ProjectForm, DataAccessForm, RetentionRequestForm
 from .forms import RetentionWorkflowExistingProjectForm, RetentionWorkflowNewProjectForm
 from .forms import RetentionWorkflowDataForm, RetentionWorkflowNewDataForm, RetentionWorkflowMilestoneForm
+from .forms import RetentionInventoryForm
 
 # ################################## #
 # #####  AUTOCOMPLETE  VIEWS   ##### #
@@ -495,11 +496,14 @@ class RetentionDetailView(LoginRequiredMixin, generic.DetailView):
             retentionpi = None
             retentionadmin = None
 
+        retention_request = self.object
+
         context = super(RetentionDetailView, self).get_context_data(**kwargs)
         context.update({'retentionrequest': retentionobject,
                         'retentionpi': retentionpi,
                         'retentionadmin': retentionadmin,
                         'accessdenied': accessdenied,
+                        'form_inventory': RetentionInventoryForm(instance=retention_request),
                         })
         return context
 
@@ -507,6 +511,7 @@ class RetentionDetailView(LoginRequiredMixin, generic.DetailView):
         """
         this is to handle single button actions available on the details page, to update boolean fields in the model.
         """
+
         # if the Lock Request button is pressed
         # update model locked field to True
         if 'marklocked' in request.POST:
@@ -541,12 +546,26 @@ class RetentionDetailView(LoginRequiredMixin, generic.DetailView):
         # update each data access model data_retained field to True
         elif 'markarchived' in request.POST:
             retention_request = get_object_or_404(RetentionRequest, pk=self.kwargs['pk'])
+            retention_request.archived = True
+            retention_request.locked = True
             for da in retention_request.to_archive.all():
                 da.data_retained = True
                 da.save()
 
             messages.add_message(request, messages.SUCCESS,
-                                 f"{retention_request.to_archive.count()} data locations marked as archived.")
+                                 f"{retention_request.to_archive.count()} data locations marked as archived, request locked.")
+
+        elif 'submitinventory' in request.POST:
+            retention_request = get_object_or_404(RetentionRequest, pk=self.kwargs['pk'])
+
+            rr_form = RetentionInventoryForm(instance=retention_request, data=request.POST, files=request.FILES)
+            if rr_form.is_bound and rr_form.is_valid():
+                retention_request = rr_form.save()
+                messages.add_message(request,
+                                     messages.SUCCESS,
+                                     f"Data inventory added to {retention_request.name}.")
+            else:
+                messages.error(request, rr_form.errors)
 
         # return to detail view
         return HttpResponseRedirect(reverse('datacatalog:retention-view', kwargs={'pk': self.kwargs['pk']}))
@@ -614,6 +633,11 @@ def methodfile_view(request, pk):
     response = file_view_response(model_file=model_instance.methodfile)
     return response
 
+@login_required()
+def inventoryfile_view(request, pk):
+    model_instance = get_object_or_404(RetentionRequest, pk=pk)
+    response = file_view_response(model_file=model_instance.inventory)
+    return response
 
 @login_required()
 def duadoc_view(request, pk):

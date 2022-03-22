@@ -30,6 +30,13 @@ def method_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/methods/RR<pk>/<filename>
     return f'methods/RR{instance.pk}/{filename}'
 
+def inventory_directory_path(instance, filename):
+    """
+    This function specifies the filepath to save uploaded inventory of archived files to.
+    """
+    # file will be uploaded to MEDIA_ROOT/inventory/RR<pk>/<filename>
+    return f'inventory/RR{instance.pk}/{filename}'
+
 
 class Keyword(models.Model):
     """
@@ -995,7 +1002,7 @@ class RetentionRequest(models.Model):
                             null=True,
                             help_text="""
                                       Upload a document describing steps required to generate results files from 
-                                      source data. 
+                                      source data 
                                       """,
                             )
 
@@ -1010,6 +1017,15 @@ class RetentionRequest(models.Model):
 
     # set to True once the researcher has validated the retention contents
     verified = models.BooleanField(null=True, blank=True, default=False)
+
+    # set to True once the researcher has validated the retention contents
+    archived = models.BooleanField(null=True, blank=True, default=False)
+
+    inventory = models.FileField(
+                        upload_to=inventory_directory_path,
+                        null=True,
+                        help_text="""Document list of all files archived""",
+                        )
 
     def __str__(self):
         return "{}: {}".format(self.record_creation, self.name)
