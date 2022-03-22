@@ -1,0 +1,32 @@
+{% extends 'datacatalog/base-catalog.html' %}
+
+{% load static %}
+{% load bootstrap4 %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        <h2>DATA RETENTION REQUEST WIZARD</h2>
+        <h3>Step 4 of 4: Verify and submit</h3>
+    </div>
+    <div class="card-body">
+
+        <p>
+            After this form is submitted, we will contact you within 10 business days about next steps.
+        </p>
+    </div>
+</div>
+</br>
+
+{{ form.media }}
+
+<form enctype="multipart/form-data" action="" method="post">
+	{% csrf_token %}
+    {% crispy form %}
+</form>
+
+
+{% endblock %}

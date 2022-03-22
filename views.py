@@ -75,7 +75,7 @@ class ProjectByUserAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySet
                             Q(pi=user) |
                             Q(other_pis=user) |
                             Q(other_editors=user)
-        )
+        ).distinct()
 
         if self.q:
             qs = qs.filter(name__icontains=self.q)
@@ -972,7 +972,7 @@ class RetentionWorkflowDataView(generic.TemplateView):
                 return HttpResponseRedirect(reverse('datacatalog:wizard-data', kwargs={'pk': rr_pk}))
 
             # move to milestone details
-            return HttpResponseRedirect(reverse('datacatalog:retention-update', kwargs={'pk': rr_pk}))
+            return HttpResponseRedirect(reverse('datacatalog:wizard-summary', kwargs={'pk': rr_pk}))
 
         # if the submit new project button is pressed
         # save any updates to the existing data form that were made,
@@ -1004,19 +1004,10 @@ class RetentionWorkflowDataView(generic.TemplateView):
         return HttpResponseRedirect(reverse('datacatalog:wizard-data', kwargs={'pk': rr_pk}))
 
 
-class RetentionWorkflowMilestoneViewOLD(LoginRequiredMixin, UpdateView):
+class RetentionWorkflowSummaryView(LoginRequiredMixin, UpdateView):
     model = RetentionRequest
-    form_class = RetentionWorkflowMilestoneForm
-    template_name = "datacatalog/workflow_milestone.html"
-    initial = { 'milestone':"",
-                'milestone_pointer':"",
-                'milestone_date':"",
-                }
-
-    def form_valid(self, form):
-        instance = form.save()
-        self.success_url = reverse('datacatalog:retention-update', kwargs={'pk': instance.pk})
-        return super(RetentionWorkflowMilestoneViewOLD, self).form_valid(form)
+    form_class = RetentionRequestForm
+    template_name = "datacatalog/workflow_summary.html"
 
 
 # ############################ #

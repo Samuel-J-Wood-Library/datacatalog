@@ -557,7 +557,9 @@ class Project(models.Model):
         and returns True if the model instance is viewable by the user.
         """
         user = getattr(request, 'user', None)
-        if user.username == self.pi.cwid:
+        if user.has_perm('datacatalog.view_project'):
+            return True
+        elif user.username == self.pi.cwid:
             return True
         elif self.other_pis.filter(cwid=user.username).exists():
             return True
@@ -688,13 +690,18 @@ class DataAccess(models.Model):
         checks viewing permission of instance against restricted field, and the logged in user via requests
         and returns True if the model instance is viewable by the user.
         """
-        if self.public:
-            return True
-        elif len(self.restricted) == 0:
-            return True
-
         user = getattr(request, 'user', None)
-        if self.restricted.filter(id=user.id).exists():
+        if user.has_perm('datacatalog.view_dataaccess'):
+            return True
+        elif user.username == self.project.pi.cwid:
+            return True
+        elif self.project.other_pis.filter(cwid=user.username).exists():
+            return True
+        elif self.project.other_editors.filter(cwid=user.username).exists():
+            return True
+        elif self.public:
+            return True
+        elif self.restricted.filter(cwid=user.username).exists():
             return True
         else:
             return False
@@ -1016,9 +1023,14 @@ class RetentionRequest(models.Model):
         and returns True if the model instance is viewable by the user.
         """
         user = getattr(request, 'user', None)
-        if (user.has_perm('datacatalog.view_retentionrequest') or
-                self.project.pi.cwid == user.username or
-                self.project.admin.cwid == user.username):
+
+        if user.has_perm('datacatalog.view_retentionrequest'):
+            return True
+        elif user.username == self.project.pi.cwid:
+            return True
+        elif self.project.other_pis.filter(cwid=user.username).exists():
+            return True
+        elif self.project.other_editors.filter(cwid=user.username).exists():
             return True
         else:
             return False
