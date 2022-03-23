@@ -29,7 +29,7 @@
 
 <h1>
     {{ dataset.title }} 
-    {% if request.user|has_group:"datacatalog_editor" %}
+    {% if request.user|has_group:"datacatalog_editor" or request.user == dataset.record_author %}
     <span style="float:right">
         <a  
            class="btn btn-primary" 

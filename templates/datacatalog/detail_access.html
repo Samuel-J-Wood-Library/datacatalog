@@ -75,10 +75,27 @@
 
  {### METADATA SUMMARY OF LINKED DATASET INFO ###}
  {% if dataaccess.metadata.count == 1 %}
-  <div class="col-sm">
+
+ <div class="col-sm">
     <h4>Metadata for {{ dataaccess.metadata.first.title }}</h4>
-    <a class="btn btn-primary" href="{% url 'datacatalog:dataset-view' dataaccess.metadata.first.pk %}">View full record</a>
-    </br></br>
+    <div class="btn-toolbar">
+        <div class="btn-group mr-2">
+            <a class="btn btn-primary" href="{% url 'datacatalog:dataset-view' dataaccess.metadata.first.pk %}">
+                View full record</a>
+        </div>
+
+        {% if request.user|has_group:"datacatalog_editor" or request.user == dataaccess.metadata.first.record_author %}
+        <span style="float:right">
+            <a
+               class="btn btn-primary"
+               href="{% url 'datacatalog:dataset-update' dataaccess.metadata.first.pk %}">
+               Update record details
+            </a>
+        </span>
+        {% endif %}
+
+    </div>
+     </br></br>
     {% with dataaccess.metadata.first as dataset %}
       {% include 'datacatalog/table_metadata.html' %}
     {% endwith %}
@@ -95,6 +112,15 @@
      </div>
      <div class="row">
         {% for ma in dataaccess.metadata.all %}
+        {% if request.user|has_group:"datacatalog_editor" or request.user == ma.record_author %}
+        <span style="float:right">
+            <a
+               class="btn btn-primary"
+               href="{% url 'datacatalog:dataset-update' ma.pk %}">
+               Update record details
+            </a>
+            </span>
+        {% endif %}
         <div class="col-sm">
             <h4>Metadata for {{ ma.title }}</h4>
             <a class="btn btn-primary" href="{% url 'datacatalog:dataset-view' ma.pk %}">View full record</a>

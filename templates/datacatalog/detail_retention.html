@@ -84,7 +84,8 @@
             {% endif %}
         </td></tr>
     <tr><td>PI</td><td>{{ retentionpi }}</td></tr>
-    <tr><td>Admin</td><td>{{ retentionadmin }}</td></tr>
+    <tr><td>Co-PI(s)</td><td>{% for pi in retentionrequest.project.other_pis.all %}{{ pi }};{% endfor %} </td></tr>
+    <tr><td>Other editor(s)</td><td>{% for ed in retentionrequest.project.other_editors.all %}{{ ed }}; {% endfor %}</td>
     <tr><td>Retention requested by</td><td>{{ retentionrequest.record_author.first_name }}
                                             {{ retentionrequest.record_author.last_name }}
                                             ({{ retentionrequest.record_author.username }})</td></tr>

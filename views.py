@@ -246,7 +246,7 @@ class IndexProjectByUserView(LoginRequiredMixin, generic.ListView):
         try:
             user = Person.objects.get(cwid=self.request.user.username)
         except Person.DoesNotExist:
-            user = None
+            user = -1
 
         myprojects = Project.objects.filter(
             Q(pi=user) |
@@ -259,7 +259,7 @@ class IndexProjectByUserView(LoginRequiredMixin, generic.ListView):
         try:
             user = Person.objects.get(cwid=self.request.user.username)
         except Person.DoesNotExist:
-            user = None
+            user = -1
 
         mypiprojects = Project.objects.filter(pi=user).distinct().order_by('record_creation',)
         myotherpisprojects = Project.objects.filter(other_pis=user).distinct().order_by('record_creation',)
@@ -830,11 +830,10 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "datacatalog/basic_crispy_form.html"
 
 
-class DatasetUpdateView(PermissionRequiredMixin, UpdateView):
+class DatasetUpdateView(LoginRequiredMixin, UpdateView):
     model = Dataset
     form_class = DatasetForm
     template_name = "datacatalog/basic_crispy_form.html"
-    permission_required = 'datacatalog.change_dataset'
 
 
 class DataAccessUpdateView(LoginRequiredMixin, UpdateView):
