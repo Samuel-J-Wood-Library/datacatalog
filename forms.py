@@ -181,7 +181,7 @@ class DataAccessForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DataAccessForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.fields['name'].label = "Short Description"
+        self.fields['name'].label = "Descriptive dataset name"
         self.fields['steward_email'].label = "Contact email"
         self.fields['metadata'].label = "Data Catalog record of dataset"
         self.fields['public'].label = "Add public link for data sharing to catalog:"
@@ -558,7 +558,7 @@ class RetentionWorkflowNewDataForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(RetentionWorkflowNewDataForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.fields['name'].label = "Short Description"
+        self.fields['name'].label = "Descriptive dataset name"
         self.fields['steward_email'].label = "Contact email"
         self.fields['metadata'].label = "Data Catalog record of dataset"
         self.fields['public'].label = "Add public link for data sharing to catalog:"
@@ -571,13 +571,13 @@ class RetentionWorkflowNewDataForm(forms.ModelForm):
                      'storage_type',
                      style="font-weight: normal;",
                      ),
-            Fieldset('<div class="alert alert-secondary"><h4>Data location</h4><h6>Enter details in at least one of the following fields:</h6></div>',
+            Fieldset('<div class="alert alert-info"><h4>Data location</h4><h6>Enter details in at least one of the following fields:</h6></div>',
                      'unique_id',
                      'shareable_link',
                      'filepaths',
                      style="font-weight: normal;",
                      ),
-            Fieldset('<div class="alert alert-info">Discovery and Access</div>',
+            Fieldset('<div class="alert alert-info"><h4>Discovery and Access</h4><h6>OPTIONAL. If you would like to make your data findable and accessible to other researchers at WCM through the Data Catalog, fill in the fields below.</h6></div>',
                      div_choose_add_dset,
                      'access_instructions',
                      'steward_email',

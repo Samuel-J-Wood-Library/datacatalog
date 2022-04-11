@@ -532,13 +532,18 @@ class Project(models.Model):
     description = models.TextField(null=True, blank=True)
 
     # principle investigator
-    pi = models.ForeignKey(Person, on_delete=models.PROTECT, related_name='pi_project_person')
+    pi = models.ForeignKey(Person,
+                           on_delete=models.PROTECT,
+                           verbose_name='PI',
+                           related_name='pi_project_person'
+                           )
 
     # additional PIs to have access to the project record
     other_pis = models.ManyToManyField(Person,
                                        related_name='other_pis',
                                        blank=True,
-                                       help_text="Additional PIs related to the project",
+                                       verbose_name='Other PIs',
+                                       help_text="additional PIs related to the project",
                                        )
 
     # DEPRECATED: project administrator. This field will be dropped in a future update.
@@ -548,17 +553,17 @@ class Project(models.Model):
     other_editors = models.ManyToManyField(Person,
                                            related_name='other_editors',
                                            blank=True,
-                                           help_text="Additional people to give access to edit the project",
+                                           help_text="additional people to give access to edit the project",
                                            )
 
     # project sponsor
     sponsor = models.CharField(max_length=128, null=True, blank=True)
 
     # sponsored project identifier
-    funding_id = models.CharField(max_length=64, null=True, blank=True, help_text="Weill research gateway grant ID",)
+    funding_id = models.CharField(max_length=64, null=True, blank=True, help_text="WRG project ID",)
 
     # expected date of project completion
-    completion = models.DateField(null=True, blank=True, help_text="Expected end date of project",)
+    completion = models.DateField(null=True, blank=True, help_text="expected completion date of project",)
 
     def viewing_is_permitted(self, request):
         """
@@ -613,29 +618,31 @@ class DataAccess(models.Model):
                                      )
 
     # unique identifier of digital objects collection (eg LabArchives notebook ID)
-    unique_id = models.CharField(max_length=256,
+    unique_id = models.CharField("Unique ID",
+                                 max_length=256,
                                  blank=True,
                                  null=True,
-                                 help_text="system-generated unique identifier for e.g. LabArchives",
+                                 help_text="system-generated unique identifier for e.g. Starfish",
                                  )
 
     # shareable link that gives access to the digital objects/collection
-    shareable_link = models.URLField(blank=True,
+    shareable_link = models.URLField("Link to your data location",
+                                     blank=True,
                                      null=True,
                                      max_length=1024,
-                                     help_text="system-generated shareable URL to the data, e.g. OneDrive",
+                                     help_text="system-generated shareable link to the data, e.g. OneDrive, LabArchives",
                                      )
 
     # description of digital object locations - as filepaths
     filepaths = models.TextField(blank=True,
                                  null=True,
-                                 help_text="describe the paths to all directories and/or files, e.g. department fileshare",
+                                 help_text="describe the full path to all directories and/or files, e.g. libsrv.med.cornell.edu/my_lab/myfolder/data.csv",
                                  )
 
     # points to the dataset object that describes this set of data files
     metadata = models.ManyToManyField(Dataset,
                                       blank=True,
-                                      help_text="link this entry to selected Data Catalog record(s)",
+                                      help_text="link this dataset to selected Data Catalog record(s)",
                                       )
 
     # project that the data are associated with
@@ -809,7 +816,7 @@ class DataUseAgreement(models.Model):
     INSTITUTE = 'IN'
     SCOPE_CHOICES = (
             (USER, "User"),
-            (PI, "Principle Investigator"),
+            (PI, "Principal Investigator"),
             (PROJECT, "Project"),
             (INSTITUTE, "Institution"),
     )
@@ -957,7 +964,7 @@ class RetentionRequest(models.Model):
     # short description of the request
     name = models.CharField("Short description",
                             max_length=256,
-                            help_text="A name to help identify this request",
+                            help_text="enter a name to identify this request",
                             )
 
     # project associated with the milestone
@@ -988,27 +995,26 @@ class RetentionRequest(models.Model):
 
     # date in which the milestone itself is completed
     milestone_date = models.DateField(default=date.today,
-                                      help_text="The date this milestone comes into effect",
+                                      help_text="expected completion date of milestone",
                                       )
 
     # unambiguous pointer to milestone record
     milestone_pointer = models.CharField(max_length=64,
-                                         help_text="DOI, WRG ID, or HR reference",
+                                         help_text="DOI of published article, WRG project ID, or HR offboarding form ID",
                                          )
 
     # digital objects for archiving
     to_archive = models.ManyToManyField(DataAccess,
                                         related_name='retention_requests',
-                                        help_text="Select all data for retention from the project chosen above",
+                                        help_text="select all data for retention from the project chosen above",
                                         )
 
     # methods documentation linking source files and results files
-    methodfile = models.FileField(
+    methodfile = models.FileField("Methods file",
                             upload_to=method_directory_path,
                             null=True,
                             help_text="""
-                                      Upload a document describing steps required to generate results files from 
-                                      source/raw data 
+                                      upload a document describing steps required to produce output data from raw data 
                                       """,
                             )
 
