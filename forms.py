@@ -195,6 +195,7 @@ class DataAccessForm(forms.ModelForm):
                      'storage_type',
                      layout_two_equal('unique_id', 'shareable_link'),
                      'filepaths',
+                     'multifiles',
                      style="font-weight: normal;",
                      ),
             Fieldset('<div class="alert alert-info">Discover and Access</div>',
@@ -213,6 +214,7 @@ class DataAccessForm(forms.ModelForm):
                   'unique_id',
                   'shareable_link',
                   'filepaths',
+                  'multifiles',
                   'metadata',
                   'project',
                   'steward_email',
@@ -226,6 +228,8 @@ class DataAccessForm(forms.ModelForm):
                    'project': autocomplete.ModelSelect2(
                                 url='datacatalog:autocomplete-project-byuser'
                                 ),
+                   'multifiles': forms.ClearableFileInput(attrs={'multiple':True}),
+
         }
 
 class ProjectForm(forms.ModelForm):
@@ -611,6 +615,7 @@ class RetentionWorkflowMilestoneForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(RetentionWorkflowMilestoneForm, self).__init__(*args, **kwargs)
         self.fields['milestone'].initial = ""
+        self.fields['milestone'].label = "nothing to see here"
         self.helper = FormHelper()
         self.helper.form_id = 'retentionWorkflowSummaryForm'
         self.helper.form_method = 'post'

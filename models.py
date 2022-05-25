@@ -22,6 +22,12 @@ def project_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/pi<id>/gov_type/<filename>
     return 'duas/{0}/{1}/{2}'.format(instance.pi, instance.governance_type.name, filename)
 
+def multifile_directory_path(instance, filename):
+    """
+    This function specifies the filepath to save uploaded files for archiving.
+    """
+    # file will be uploaded to MEDIA_ROOT/to_archive/<pk>/<filename>
+    return f'to_archive/DA{instance.pk}/{filename}'
 
 def method_directory_path(instance, filename):
     """
@@ -640,7 +646,8 @@ class DataAccess(models.Model):
                                  )
 
     # form for uploading multiple files directly through Django
-    multifiles = models.FileField(blank=True,
+    multifiles = models.FileField(upload_to=multifile_directory_path,
+                                  #blank=True,
                                   null=True,
                                   help_text="upload files directly for archiving",
                                   )

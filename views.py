@@ -7,6 +7,8 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect, FileResponse, Http404, HttpResponse
 
 from django.shortcuts import render, get_object_or_404
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView
@@ -756,13 +758,28 @@ class DataProviderCreateView(PermissionRequiredMixin, CreateView):
 class DataAccessCreateView(LoginRequiredMixin, CreateView):
     model = DataAccess
     form_class = DataAccessForm
-    template_name = "datacatalog/basic_crispy_form.html"
+    template_name = "datacatalog/basic_crispy_file_form.html"
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
         # update who last edited record
         self.object.record_author = self.request.user
         self.object.save()
+
+        pk = self.object.pk
+
+        print(f"I'm here with pk: {pk}")
+        print(self.request)
+
+        # identify if multifiles has been populated and save accordingly
+        if self.request.FILES:
+            print("I HAVE FILES!")
+            for f in self.request.FILES.getlist('multifiles'):
+                print(f"Another file!: {f.name}")
+                # save file to media/to_archive
+                file_path = default_storage.save(f'to_archive/DA{pk}/{f.name}', f)
+                print(file_path)
+
         return super(DataAccessCreateView, self).form_valid(form)
 
 
