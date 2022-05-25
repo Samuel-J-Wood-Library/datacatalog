@@ -639,6 +639,12 @@ class DataAccess(models.Model):
                                  help_text="describe the full path to all directories and/or files, e.g. libsrv.med.cornell.edu/my_lab/myfolder/data.csv",
                                  )
 
+    # form for uploading multiple files directly through Django
+    multifiles = models.FileField(blank=True,
+                                  null=True,
+                                  help_text="upload files directly for archiving",
+                                  )
+
     # points to the dataset object that describes this set of data files
     metadata = models.ManyToManyField(Dataset,
                                       blank=True,
