@@ -620,7 +620,7 @@ class RetentionWorkflowMilestoneForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(RetentionWorkflowMilestoneForm, self).__init__(*args, **kwargs)
         self.fields['milestone'].initial = ""
-        self.fields['milestone'].label = "nothing to see here"
+        self.fields['milestone'].label = "Milestone"
         self.helper = FormHelper()
         self.helper.form_id = 'retentionWorkflowSummaryForm'
         self.helper.form_method = 'post'
