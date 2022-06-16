@@ -51,13 +51,32 @@
 
     <br/>
 
+    <script>
+    function Field_switch() {
+
+        var label = document.getElementById('id_milestone')
+
+        if(label.options[document.getElementById('id_milestone').selectedIndex].value == "PU"){
+                document.getElementsByTagName('label')[1].innerHTML="DOI of the publication"
+                document.getElementsByTagName('label')[2].innerHTML="Publication date"
+        }
+        else if (label.options[document.getElementById('id_milestone').selectedIndex].value == "CO"){
+                document.getElementsByTagName('label')[1].innerHTML="WRG project ID"
+                document.getElementsByTagName('label')[2].innerHTML="Project/Grant end date"
+        }
+        else if (label.options[document.getElementById('id_milestone').selectedIndex].value == "TR"){
+                document.getElementsByTagName('label')[1].innerHTML="HR offboarding form ID"
+                document.getElementsByTagName('label')[2].innerHTML="Departure date"
+        }
+
+    };  </script>
+
 {{ form.media }}
 
 <form action="" method="post">
 	{% csrf_token %}
     {% crispy form %}
-</form>
 
-
+<script type="text/javascript"> window.addEventListener("load", Field_switch); </script> <script type="text/javascript"> var el = document.getElementById("id_milestone"); el.addEventListener("change", Field_switch);</script>
 
 {% endblock %}
