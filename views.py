@@ -754,6 +754,17 @@ class DataProviderCreateView(PermissionRequiredMixin, CreateView):
         self.object.save()
         return super(DataProviderCreateView, self).form_valid(form)
 
+def save_multifiles(pk, filelist):
+    "function to save multiple upload files and update the filepath field"
+    storage_list = ""
+    for f in filelist:
+        print(f"FILE UPLOADED: {f.name}")
+        # save file to media/to_archive
+        file_path = default_storage.save(f'to_archive/DA{pk}/{f.name}', f)
+        storage_list += f"\n{f.name}"
+        print(file_path)
+    return storage_list.strip()
+
 
 class DataAccessCreateView(LoginRequiredMixin, CreateView):
     model = DataAccess
@@ -768,18 +779,11 @@ class DataAccessCreateView(LoginRequiredMixin, CreateView):
 
         pk = self.object.pk
 
-        print(f"I'm here with pk: {pk}")
-        print(self.request)
-
         # identify if multifiles has been populated and save accordingly
         if self.request.FILES:
-            print("I HAVE FILES!")
-            for f in self.request.FILES.getlist('multifiles'):
-                print(f"Another file!: {f.name}")
-                # save file to media/to_archive
-                file_path = default_storage.save(f'to_archive/DA{pk}/{f.name}', f)
-                print(file_path)
-
+            storage_list = save_multifiles(pk, self.request.FILES.getlist('multifiles'))
+            self.object.fileupload_log = storage_list
+            self.object.save()
         return super(DataAccessCreateView, self).form_valid(form)
 
 
@@ -1025,11 +1029,12 @@ class RetentionWorkflowDataView(generic.TemplateView):
             # move to milestone details
             return HttpResponseRedirect(reverse('datacatalog:wizard-summary', kwargs={'pk': rr_pk}))
 
-        # if the submit new project button is pressed
+        # if the submit new data location button is pressed
         # save any updates to the existing data form that were made,
         # create new data access instance, then
         # add to existing retention request instance and return to same page.
         elif 'submitnew' in request.POST:
+            # populate Data Access form with supplied details
             new_da_form = RetentionWorkflowNewDataForm(data=request.POST)
             if new_da_form.is_bound and new_da_form.is_valid():
                 new_da = new_da_form.save(commit=False)
@@ -1037,6 +1042,12 @@ class RetentionWorkflowDataView(generic.TemplateView):
                 new_da.project = project
                 new_da.save()
                 da_pk = new_da.pk
+
+                # identify if multifiles has been populated and save accordingly
+                if request.FILES:
+                    storage_list = save_multifiles(da_pk, request.FILES.getlist('multifiles'))
+                    new_da.fileupload_log = storage_list
+                    new_da.save()
 
                 # update retention request by appending new data access to existing in to_archive
                 retention_request.to_archive.add(new_da)

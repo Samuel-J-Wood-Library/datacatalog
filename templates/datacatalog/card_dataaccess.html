@@ -19,10 +19,10 @@
                class="card-link">Go to data</a>
         {%  endif %}
 
-        {% if da.multifiles %}
+        {% if da.fileupload_log %}
             <br/><br/>
             <h6>Files uploaded:</h6>
-            <p class="card-text">{{ da.multifiles }}</p>
+            <p class="card-text">{{ da.fileupload_log | linebreaks }}</p>
         {% endif %}
 
         <p class="card-text">{{ da.filepaths|linebreaks }}</p>

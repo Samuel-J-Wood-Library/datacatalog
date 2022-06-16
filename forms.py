@@ -183,6 +183,7 @@ class DataAccessForm(forms.ModelForm):
         self.helper = FormHelper()
         self.fields['name'].label = "Descriptive dataset name"
         self.fields['steward_email'].label = "Contact email"
+        self.fields['multifiles'].label = "Directly upload files"
         self.fields['metadata'].label = "Data Catalog record of dataset"
         self.fields['public'].label = "Add public link for data sharing to catalog:"
         self.helper.form_id = 'dataaccessForm'
@@ -564,6 +565,7 @@ class RetentionWorkflowNewDataForm(forms.ModelForm):
         self.helper = FormHelper()
         self.fields['name'].label = "Descriptive dataset name"
         self.fields['steward_email'].label = "Contact email"
+        self.fields['multifiles'].label = "Directly upload files"
         self.fields['metadata'].label = "Data Catalog record of dataset"
         self.fields['public'].label = "Add public link for data sharing to catalog:"
         self.helper.form_id = 'retentionWorkflowNewDataForm'
@@ -576,6 +578,7 @@ class RetentionWorkflowNewDataForm(forms.ModelForm):
                      style="font-weight: normal;",
                      ),
             Fieldset('<div class="alert alert-info"><h4>Data location</h4><h6>Enter details in at least one of the following fields:</h6></div>',
+                     'multifiles',
                      'unique_id',
                      'shareable_link',
                      'filepaths',
@@ -596,6 +599,7 @@ class RetentionWorkflowNewDataForm(forms.ModelForm):
                   'storage_type',
                   'unique_id',
                   'shareable_link',
+                  'multifiles',
                   'filepaths',
                   'metadata',
                   'steward_email',
@@ -609,6 +613,7 @@ class RetentionWorkflowNewDataForm(forms.ModelForm):
                    'project': autocomplete.ModelSelect2(
                                 url='datacatalog:autocomplete-project-byuser'
                                 ),
+                   'multifiles': forms.ClearableFileInput(attrs={'multiple': True}),
         }
 
 class RetentionWorkflowMilestoneForm(forms.ModelForm):

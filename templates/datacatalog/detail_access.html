@@ -48,6 +48,11 @@
         {% if dataaccess.shareable_link %}
             <a href="{{ dataaccess.shareable_link }}" class="btn btn-info">Go to data</a>
         {% endif %}
+        {% if dataaccess.fileupload_log %}
+            <br/><br/>
+            <h6>Files uploaded:</h6>
+            <p class="card-text">{{ dataaccess.fileupload_log | linebreaks }}</p>
+        {% endif %}
         <p> {{ dataaccess.filepaths|linebreaks }}</p>
     </div> {# card body #}
     </div> {# card #}
