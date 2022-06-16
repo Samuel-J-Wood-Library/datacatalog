@@ -281,7 +281,7 @@ class StorageType(models.Model):
     record_update = models.DateField(auto_now=True)
 
     # the user who was signed in at time of record modification
-    record_author = models.ForeignKey(User, on_delete=models.CASCADE)
+    record_author = models.ForeignKey(User, on_delete=models.PROTECT)
 
     # general name for identification of storage type
     name = models.CharField(max_length=128)
@@ -651,6 +651,12 @@ class DataAccess(models.Model):
                                   null=True,
                                   help_text="upload files directly for archiving",
                                   )
+
+    # field to record all files uploaded via multifiles field
+    fileupload_log = models.TextField(blank=True,
+                                      null=True,
+                                      default="",
+                                      )
 
     # points to the dataset object that describes this set of data files
     metadata = models.ManyToManyField(Dataset,
