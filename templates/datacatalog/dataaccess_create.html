@@ -9,29 +9,24 @@
 
     {{ form.media }}
 
-    <form enctype="" action="" method="post">
+    <form enctype="multipart/form-data" action="" method="post">
         {% csrf_token %}
         {% crispy form %}
     </form>
 
     <script>
 
-        {#function start() {#}
-        {#    console.log(document.getElementById('id_storage_type').value)#}
-        {#    document.getElementById('id_storage_type').addEventListener("change", Hide);#}
-        {#}#}
-
         function Hide() {
 
             var storage = document.getElementById('id_storage_type');
-            if(["1", "2"].includes((storage.options[document.getElementById('id_storage_type').selectedIndex].value))){
+            if(["1", "2", "8"].includes((storage.options[document.getElementById('id_storage_type').selectedIndex].value))){
                 document.getElementById('div_id_unique_id').style.display="none"
                 document.getElementById('div_id_shareable_link').style.display="block"
                 document.getElementById('div_id_filepaths').style.display="none"
                 document.getElementById('div_id_multifiles').style.display="none"
 
             }
-            else if (["3", "5", "6", "8"].includes((storage.options[document.getElementById('id_storage_type').selectedIndex].value))){
+            else if (["3", "5", "6"].includes((storage.options[document.getElementById('id_storage_type').selectedIndex].value))){
                 document.getElementById('div_id_unique_id').style.display="none"
                 document.getElementById('div_id_shareable_link').style.display="none"
                 document.getElementById('div_id_filepaths').style.display="block"
@@ -61,16 +56,9 @@
             }
 
         }
-        {#window.addEventListener('change', start);#}
 
     </script>
 
-
-
  </script> <script type="text/javascript"> var el = document.getElementById("id_storage_type"); el.addEventListener("change", Hide);</script>
 
-
-
 {% endblock %}
-
-{#<script type="text/javascript"> window.addEventListener("load", Hide);#}
