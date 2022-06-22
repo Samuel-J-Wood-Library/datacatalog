@@ -1,3 +1,5 @@
+import re
+
 from dal import autocomplete
 
 from crispy_forms.helper import FormHelper
@@ -177,13 +179,36 @@ div_choose_add_dset = Div(
                             css_class="row",
 )
 
+def clean_tooltip(text):
+    "remove multiple whitespace and carriage returns introduced by python string format"
+    text = re.sub("\s+", " ", text)
+    text = re.sub("\n", "", text)
+    return text
+
 class DataAccessForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DataAccessForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.fields['name'].label = "Descriptive dataset name"
         self.fields['steward_email'].label = "Contact email"
-        self.fields['multifiles'].label = "Directly upload files"
+        multifile_tooltip = """Click and drag files into the field below, or click the 'browse' 
+                               button. If you have folders and/or subfolders that need 
+                               to be saved, we recommend
+                               using the OneDrive or Starfish storage types, or you can
+                               first zip all files and folders together, then upload the zipped
+                               file."""
+        self.fields['multifiles'].label = f"""Directly upload multiple files from a single folder<div 
+                                           data-toggle="tooltip" 
+                                           data-html="true"
+                                           data-trigger="click"
+                                           data-placement="left"
+                                           data-container="body"
+                                           title="{clean_tooltip(multifile_tooltip)}"> 
+                                            <img src="/static/img/information.svg" 
+                                            height="20" 
+                                            width="20">
+                                           </div>
+                                            """.replace('\n','')
         self.fields['metadata'].label = "Data Catalog record of dataset"
         self.fields['public'].label = "Add public link for data sharing to catalog:"
         self.helper.form_id = 'dataaccessForm'
@@ -229,7 +254,7 @@ class DataAccessForm(forms.ModelForm):
                    'project': autocomplete.ModelSelect2(
                                 url='datacatalog:autocomplete-project-byuser'
                                 ),
-                   'multifiles': forms.ClearableFileInput(attrs={'multiple':True}),
+                   'multifiles': forms.ClearableFileInput(attrs={'multiple':True,}),
 
         }
 
@@ -565,7 +590,22 @@ class RetentionWorkflowNewDataForm(forms.ModelForm):
         self.helper = FormHelper()
         self.fields['name'].label = "Descriptive dataset name"
         self.fields['steward_email'].label = "Contact email"
-        self.fields['multifiles'].label = "Directly upload files"
+        multifile_tooltip = """Click and drag files into the field below, or click the 'browse' 
+                               button. If you have folders and/or subfolders that need 
+                               to be saved, we recommend
+                               using the OneDrive or Starfish storage types, or you can
+                               first zip all files and folders together, then upload the zipped
+                               file.""".replace('\n','')
+        self.fields['multifiles'].label = f"""Directly upload multiple files from a single folder
+                                            <div data-toggle="tooltip" 
+                                           data-html="true"
+                                           data-trigger="click"
+                                           data-placement="left"
+                                           data-container="body"
+                                           title="{clean_tooltip(multifile_tooltip)}">
+                                            <img src="{{% static 'img/information.svg' %}}" height="20" width="20">
+                                            </div>
+                                            """
         self.fields['metadata'].label = "Data Catalog record of dataset"
         self.fields['public'].label = "Add public link for data sharing to catalog:"
         self.helper.form_id = 'retentionWorkflowNewDataForm'
