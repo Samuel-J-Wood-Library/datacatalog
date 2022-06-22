@@ -15,17 +15,9 @@
     <div class="card-body">
         <h6>Overview</h6>
         <p>
-            As per the Cornell University
+            This form helps WCM principal investigators to comply with the Cornell University
             <a href="https://policy.cornell.edu/policy-library/research-data-retention" target="_blank">
-                Data Retention Policy</a>, to ensure the integrity of the research process and to comply
-            with sponsor and/or federal regulations, the university must retain research data in sufficient
-            detail and for an adequate period of time to enable appropriate responses to questions about
-            accuracy, authenticity, primacy, and compliance with laws and regulations governing the
-            research.
-        </p>
-{{ retentionrequest.get_milestone_context }}
-        <p>
-            This form helps WCM principal investigators to comply with policy. Data to be submitted is intended to
+                Data Retention Policy</a>. Data to be submitted is intended to
             support only the research milestone attested here, and is not intended as general backup. Once archived
             by WCM, decisions about retrieval and any associated costs will be made by the Research Compliance Officer
             according to the specific situation.
@@ -34,30 +26,39 @@
         <p>
             After this form is submitted, we will contact you within 10 business days about next steps.
         </p>
-        <h6>Selecting milestones</h6>
-        <p>
-            Please specify the milestone that has triggered this retention request. The milestone pointer needed depends
-            on the milestone type:
-        </p>
-        <ul>
-            <li>Project completion: The WRG project ID</li>
-            <li>Publication: The DOI of the published article</li>
-            <li>PI departure: The HR offboarding form ID</li>
-        </ul>
-        <p>The milestone date refers to the expected completion of the milestone, not the desired date of retention.</p>
+
 
     </div>
 </div>
 
     <br/>
 
+    <script>
+    function Field_switch() {
+
+        var label = document.getElementById('id_milestone')
+
+        if(label.options[document.getElementById('id_milestone').selectedIndex].value == "PU"){
+                document.getElementsByTagName('label')[1].innerHTML="DOI of the publication"
+                document.getElementsByTagName('label')[2].innerHTML="Publication date"
+        }
+        else if (label.options[document.getElementById('id_milestone').selectedIndex].value == "CO"){
+                document.getElementsByTagName('label')[1].innerHTML="WRG project ID"
+                document.getElementsByTagName('label')[2].innerHTML="Project/Grant end date"
+        }
+        else if (label.options[document.getElementById('id_milestone').selectedIndex].value == "TR"){
+                document.getElementsByTagName('label')[1].innerHTML="HR offboarding form ID"
+                document.getElementsByTagName('label')[2].innerHTML="Departure date"
+        }
+
+    };  </script>
+
 {{ form.media }}
 
 <form action="" method="post">
 	{% csrf_token %}
     {% crispy form %}
-</form>
 
-
+<script type="text/javascript"> window.addEventListener("load", Field_switch); </script> <script type="text/javascript"> var el = document.getElementById("id_milestone"); el.addEventListener("change", Field_switch);</script>
 
 {% endblock %}

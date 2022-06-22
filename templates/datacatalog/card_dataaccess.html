@@ -18,6 +18,13 @@
                target="_blank"
                class="card-link">Go to data</a>
         {%  endif %}
+
+        {% if da.fileupload_log %}
+            <br/><br/>
+            <h6>Files uploaded:</h6>
+            <p class="card-text">{{ da.fileupload_log | linebreaks }}</p>
+        {% endif %}
+
         <p class="card-text">{{ da.filepaths|linebreaks }}</p>
     </div>
     <ul class="list-group list-group-flush">
