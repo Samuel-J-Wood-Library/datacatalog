@@ -83,6 +83,7 @@ class DatasetForm(forms.ModelForm):
         self.fields['cil'].label = "Cofidentiality Impact Level"
         self.fields['data_source'].label = "Data Source / Data Creator"
         self.fields['publisher'].label = "Data Publisher / Data Provider"
+        self.fields['public'].label = "Visible to WCM community"
         self.helper.form_id = 'datasetForm'
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('submit', 'Submit'))
@@ -189,31 +190,40 @@ class DataAccessForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DataAccessForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.fields['name'].label = "Descriptive dataset name"
-        self.fields['steward_email'].label = "Contact email"
+        tooltip_div_start = """<div 
+                       data-toggle="tooltip" 
+                       data-html="true"
+                       data-trigger="click"
+                       data-placement="left"
+                       data-container="body"
+                       """
+        tooltip_div_end = """><img src="/static/img/information.svg" 
+                            height="20" 
+                            width="20">
+                           </div>
+                           """
         multifile_tooltip = """Click and drag files into the field below, or click the 'browse' 
                                button. If you have folders and/or subfolders that need 
                                to be saved, we recommend
                                using the OneDrive or Starfish storage types, or you can
                                first zip all files and folders together, then upload the zipped
                                file."""
-        self.fields['multifiles'].label = f"""Directly upload multiple files from a single folder<div 
-                                           data-toggle="tooltip" 
-                                           data-html="true"
-                                           data-trigger="click"
-                                           data-placement="left"
-                                           data-container="body"
-                                           title="{clean_tooltip(multifile_tooltip)}"> 
-                                            <img src="/static/img/information.svg" 
-                                            height="20" 
-                                            width="20">
-                                           </div>
+        self.fields['multifiles'].label = f"""Directly upload multiple files from a single folder
+                                            {tooltip_div_start}
+                                            title="{clean_tooltip(multifile_tooltip)}" 
+                                            {tooltip_div_end}
                                             """.replace('\n','')
+        self.fields['name'].label = "Descriptive dataset name"
+        self.fields['steward_email'].label = "Contact email"
         self.fields['metadata'].label = "Data Catalog record of dataset"
-        self.fields['public'].label = "Add public link for data sharing to catalog:"
+        self.fields['public'].label = "Add URL for data sharing to catalog (visible to WCM only)?"
         self.helper.form_id = 'dataaccessForm'
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('submit', 'Submit'))
+        discovery_header = """<div class="alert alert-info">Discovery and Access
+                            <h6>OPTIONAL: Enable other researchers at WCM to view a description of 
+                            this dataset, or share access to the data itself via URL.</h6>
+                            </div>"""
         self.helper.layout = Layout(
             Fieldset('<div class="alert alert-info">Create New Record for Data Access</div>',
                      'name',
@@ -224,7 +234,7 @@ class DataAccessForm(forms.ModelForm):
                      'multifiles',
                      style="font-weight: normal;",
                      ),
-            Fieldset('<div class="alert alert-info">Discover and Access</div>',
+            Fieldset(discovery_header,
                      div_choose_add_dset,
                      'steward_email',
                      'access_instructions',
@@ -590,24 +600,31 @@ class RetentionWorkflowNewDataForm(forms.ModelForm):
         self.helper = FormHelper()
         self.fields['name'].label = "Descriptive dataset name"
         self.fields['steward_email'].label = "Contact email"
+        tooltip_div_start = """<div 
+                       data-toggle="tooltip" 
+                       data-html="true"
+                       data-trigger="click"
+                       data-placement="left"
+                       data-container="body"
+                       """
+        tooltip_div_end = """><img src="/static/img/information.svg" 
+                            height="20" 
+                            width="20">
+                           </div>
+                           """
         multifile_tooltip = """Click and drag files into the field below, or click the 'browse' 
                                button. If you have folders and/or subfolders that need 
                                to be saved, we recommend
                                using the OneDrive or Starfish storage types, or you can
                                first zip all files and folders together, then upload the zipped
-                               file.""".replace('\n','')
+                               file."""
         self.fields['multifiles'].label = f"""Directly upload multiple files from a single folder
-                                            <div data-toggle="tooltip" 
-                                           data-html="true"
-                                           data-trigger="click"
-                                           data-placement="left"
-                                           data-container="body"
-                                           title="{clean_tooltip(multifile_tooltip)}">
-                                            <img src="{{% static 'img/information.svg' %}}" height="20" width="20">
-                                            </div>
-                                            """
+                                            {tooltip_div_start}
+                                            title="{clean_tooltip(multifile_tooltip)}" 
+                                            {tooltip_div_end}
+                                            """.replace('\n', '')
         self.fields['metadata'].label = "Data Catalog record of dataset"
-        self.fields['public'].label = "Add public link for data sharing to catalog:"
+        self.fields['public'].label = "Add URL for data sharing to catalog (visible to WCM only)?"
         self.helper.form_id = 'retentionWorkflowNewDataForm'
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('submitnew', 'Create and add to project'))
@@ -624,7 +641,7 @@ class RetentionWorkflowNewDataForm(forms.ModelForm):
                      'filepaths',
                      style="font-weight: normal;",
                      ),
-            Fieldset('<div class="alert alert-info"><h4>Discovery and Access</h4><h6>OPTIONAL. If you would like to make your data findable and accessible to other researchers at WCM through the Data Catalog, fill in the fields below.</h6></div>',
+            Fieldset('<div class="alert alert-info"><h4>Discovery and Access</h4><h6>OPTIONAL: Enable other researchers at WCM to view a description of this dataset, or share access to the data itself via URL.</h6></div>',
                      div_choose_add_dset,
                      'access_instructions',
                      'steward_email',

@@ -483,7 +483,7 @@ class Dataset(models.Model):
     public = models.BooleanField(null=True,
                                  blank=True,
                                  default=True,
-                                 help_text="Whether to make this record visible in the Data Catalog",
+                                 help_text="If yes, this record will only be visible to WCM researchers via the Data Catalog",
                                  )
 
     # specify the users who have access. If none specified, then all users have
@@ -696,7 +696,11 @@ class DataAccess(models.Model):
                                            help_text="Any additional instructions for accessing the data")
 
     # whether this record is to be publicly available
-    public = models.BooleanField(null=True, blank=True, default=False)
+    public = models.BooleanField(null=True,
+                                 blank=True,
+                                 default=False,
+                                 help_text="The URL provided above will be added to the catalog entry",
+                                 )
 
     # typical time period from request to access of data
     time_required = models.DurationField(null=True, blank=True)
