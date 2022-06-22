@@ -628,7 +628,7 @@ class DataAccess(models.Model):
                                  max_length=256,
                                  blank=True,
                                  null=True,
-                                 help_text="system-generated unique identifier for e.g. Starfish",
+                                 help_text="system-generated unique identifier for Starfish",
                                  )
 
     # shareable link that gives access to the digital objects/collection
@@ -636,7 +636,7 @@ class DataAccess(models.Model):
                                      blank=True,
                                      null=True,
                                      max_length=1024,
-                                     help_text="system-generated shareable link to the data, e.g. OneDrive, LabArchives",
+                                     help_text="system-generated shareable link to the data, e.g. OneDrive, LabArchives/OneNote, Public repository",
                                      )
 
     # description of digital object locations - as filepaths
@@ -1020,7 +1020,7 @@ class RetentionRequest(models.Model):
     # unambiguous pointer to milestone record
     milestone_pointer = models.CharField(max_length=64,
                                          help_text="DOI of published article, WRG project ID, or HR offboarding form ID",
-                                         )
+                                        )
 
     # digital objects for archiving
     to_archive = models.ManyToManyField(DataAccess,
