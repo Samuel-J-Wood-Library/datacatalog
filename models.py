@@ -646,10 +646,9 @@ class DataAccess(models.Model):
                                  )
 
     # form for uploading multiple files directly through Django
-    multifiles = models.FileField(upload_to=multifile_directory_path,
-                                  blank=True,
+    multifiles = models.FileField(blank=True,
                                   null=True,
-                                  help_text="upload files directly for archiving",
+                                  help_text="upload multiple files from your computer (no folders)",
                                   )
 
     # field to record all files uploaded via multifiles field
