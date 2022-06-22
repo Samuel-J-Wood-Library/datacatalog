@@ -769,7 +769,7 @@ def save_multifiles(pk, filelist):
 class DataAccessCreateView(LoginRequiredMixin, CreateView):
     model = DataAccess
     form_class = DataAccessForm
-    template_name = "datacatalog/basic_crispy_file_form.html"
+    template_name = "datacatalog/dataaccess_create.html"
 
     def form_valid(self, form):
         self.object = form.save(commit=False)

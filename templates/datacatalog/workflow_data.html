@@ -39,16 +39,12 @@
         </div>
         <div class="card-body">
 
-
             {{ form_new.media }}
 
             <form enctype="multipart/form-data" action="" method="post">
                 {% csrf_token %}
                 {% crispy form_new %}
-
-
             </form>
-
         </div>
 
     </div>
@@ -81,22 +77,29 @@
                 document.getElementById('div_id_shareable_link').style.display="block"
                 document.getElementById('div_id_filepaths').style.display="none"
                 document.getElementById('div_id_multifiles').style.display="none"
-                document.getElementById('div_id_public').style.display="block"
+
         }
-        else if (["3", "5", "6"].includes((storage.options[document.getElementById('id_storage_type').selectedIndex].value))){
+        else if (["3", "6"].includes((storage.options[document.getElementById('id_storage_type').selectedIndex].value))){
                 document.getElementById('div_id_unique_id').style.display="none"
                 document.getElementById('div_id_shareable_link').style.display="none"
                 document.getElementById('div_id_filepaths').style.display="block"
                 document.getElementById('div_id_multifiles').style.display="none"
-                document.getElementById('div_id_public').style.display="none"
 
         }
+
+        else if (["5"].includes((storage.options[document.getElementById('id_storage_type').selectedIndex].value))){
+                document.getElementById('div_id_unique_id').style.display="block"
+                document.getElementById('div_id_shareable_link').style.display="none"
+                document.getElementById('div_id_filepaths').style.display="block"
+                document.getElementById('div_id_multifiles').style.display="none"
+
+        }
+
         else if (storage.options[document.getElementById('id_storage_type').selectedIndex].value == "4"){
                 document.getElementById('div_id_unique_id').style.display="block"
                 document.getElementById('div_id_shareable_link').style.display="none"
                 document.getElementById('div_id_filepaths').style.display="none"
                 document.getElementById('div_id_multifiles').style.display="none"
-                document.getElementById('div_id_public').style.display="none"
 
         }
         else if (storage.options[document.getElementById('id_storage_type').selectedIndex].value == "7"){
@@ -104,7 +107,6 @@
                 document.getElementById('div_id_shareable_link').style.display="none"
                 document.getElementById('div_id_filepaths').style.display="block"
                 document.getElementById('div_id_multifiles').style.display="none"
-                document.getElementById('div_id_public').style.display="none"
 
         }
         else if (storage.options[document.getElementById('id_storage_type').selectedIndex].value == "9"){
@@ -112,7 +114,6 @@
                 document.getElementById('div_id_shareable_link').style.display="none"
                 document.getElementById('div_id_filepaths').style.display="none"
                 document.getElementById('div_id_multifiles').style.display="block"
-                document.getElementById('div_id_public').style.display="none"
 
         }
 
