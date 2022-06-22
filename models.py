@@ -1041,7 +1041,10 @@ class RetentionRequest(models.Model):
                             )
 
     # for additional information necessary for archiving
-    comments = models.TextField(null=True, blank=True)
+    comments = models.TextField(null=True,
+                                blank=True,
+                                help_text="further instructions for archiving the data",
+                                )
 
     # ITS ticket ID
     ticket = models.CharField(max_length=32, null=True, blank=True)
