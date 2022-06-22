@@ -899,7 +899,7 @@ class RetentionUpdateView(LoginRequiredMixin, UpdateView):
 # ## RetentionWorkflow views ## #
 # ############################# #
 
-class RetentionWorkflowMilestoneView(generic.TemplateView):
+class RetentionWorkflowMilestoneView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'datacatalog/workflow_milestone.html'
 
     def get_context_data(self, **kwargs):
@@ -926,7 +926,7 @@ class RetentionWorkflowMilestoneView(generic.TemplateView):
 
         return HttpResponseRedirect(reverse('datacatalog:wizard-project', kwargs={'pk': retention_request.pk}))
 
-class RetentionWorkflowProjectView(generic.TemplateView):
+class RetentionWorkflowProjectView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'datacatalog/workflow_project.html'
 
     def get_context_data(self, **kwargs):
@@ -988,7 +988,7 @@ class RetentionWorkflowProjectView(generic.TemplateView):
         return HttpResponseRedirect(reverse('datacatalog:wizard-data', kwargs={'pk': retention_request.pk}))
 
 
-class RetentionWorkflowDataView(generic.TemplateView):
+class RetentionWorkflowDataView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'datacatalog/workflow_data.html'
 
     def get_context_data(self, **kwargs):
