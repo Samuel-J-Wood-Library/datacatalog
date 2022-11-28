@@ -8,7 +8,6 @@ from django.http import HttpResponseRedirect, FileResponse, Http404, HttpRespons
 
 from django.shortcuts import render, get_object_or_404
 from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
 
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView
