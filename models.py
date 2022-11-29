@@ -566,7 +566,7 @@ class Project(models.Model):
     sponsor = models.CharField(max_length=128, null=True, blank=True)
 
     # sponsored project identifier
-    funding_id = models.CharField(max_length=64, null=True, blank=True, help_text="WRG project ID",)
+    funding_id = models.CharField(max_length=64, null=True, blank=True, help_text="e.g. 1R01MH131907-01",)
 
     # expected date of project completion
     completion = models.DateField(null=True, blank=True, help_text="expected completion date of project",)

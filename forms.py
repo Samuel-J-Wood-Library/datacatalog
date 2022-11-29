@@ -73,6 +73,25 @@ def layout_three_equal(field1, field2, field3):
             )
     return form
 
+def layout_button_plus_two(field1, field2):
+    form = Div(
+               Div(field1,
+                   css_class='col-6',
+                   ),
+               Div(field2,
+                   css_class='col-4',
+                   ),
+               HTML("""<div class="col-2">
+                                  <button type="button" class="btn btn-success" onclick="fetch_nih();">
+                                     Show my NIH grants
+                                  </button>
+                               </div>
+                            """,
+               ),
+               css_class="row"
+              )
+    return form
+
 class DateInput(forms.DateInput):
     input_type = 'date'
 
@@ -272,7 +291,7 @@ class DataAccessForm(forms.ModelForm):
 class ProjectForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProjectForm, self).__init__(*args, **kwargs)
-        self.fields['funding_id'].label = "WRG ID"
+        self.fields['funding_id'].label = "Sponsor's project ID"
         self.helper = FormHelper()
         self.helper.form_id = 'projectForm'
         self.helper.form_method = 'post'
@@ -286,7 +305,7 @@ class ProjectForm(forms.ModelForm):
             Fieldset('<div class="alert alert-info">Project Details</div>',
                      layout_two_equal('pi', 'other_pis'),
                      'other_editors',
-                     layout_two_equal('funding_id', 'completion'),
+                     layout_button_plus_two('funding_id', 'completion'),
                      style="font-weight: normal;",
                      ),
         )
@@ -495,7 +514,7 @@ class RetentionWorkflowNewProjectForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(RetentionWorkflowNewProjectForm, self).__init__(*args, **kwargs)
         self.fields['pi'].label = "PI"
-        self.fields['funding_id'].label = "WRG ID"
+        self.fields['funding_id'].label = "Sponsor's project ID"
         self.helper = FormHelper()
         self.helper.form_id = 'retentionWorkflowNewProjectForm'
         self.helper.form_method = 'post'
@@ -510,7 +529,7 @@ class RetentionWorkflowNewProjectForm(forms.ModelForm):
                      'pi',
                      'other_pis',
                      'other_editors',
-                     layout_two_equal('funding_id', 'completion'),
+                     layout_button_plus_two('funding_id', 'completion'),
                      style="font-weight: normal;",
                      ),
         )

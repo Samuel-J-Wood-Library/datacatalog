@@ -692,7 +692,7 @@ def check_or_add_to_project(person, project):
 class ProjectCreateView(LoginRequiredMixin, CreateView):
     model = Project
     form_class = ProjectForm
-    template_name = "datacatalog/basic_crispy_form.html"
+    template_name = "datacatalog/form_project_details.html"
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -847,7 +847,7 @@ class RetentionRequestCreateView(LoginRequiredMixin, CreateView):
 class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     model = Project
     form_class = ProjectForm
-    template_name = "datacatalog/basic_crispy_form.html"
+    template_name = "datacatalog/form_project_details.html"
 
 
 class DatasetUpdateView(LoginRequiredMixin, UpdateView):

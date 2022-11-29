@@ -1,0 +1,98 @@
+{% extends 'datacatalog/base-catalog.html' %}
+
+{% load static %}
+{% load bootstrap4 %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+
+{{ form.media }}
+
+<form action="" method="post">
+	{% csrf_token %}
+    {% crispy form %}
+</form>
+
+    <h5>My NIH projects</h5>
+    <p id="nihprojects">Starting text.</p>
+
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title" id="prj1-num">NIH project number</h5>
+        <h6 class="card-subtitle mb-2 text-muted" id="prj1-subproject">Subproject ID</h6>
+        <p class="card-text" id="prj1-title">Title of the grant.</p>
+        <a href="#" class="card-link" id="prj1-pi1">1st PI</a>
+          <a href="#" class="card-link" id="prj1-start">START</a>
+        <a href="#" class="card-link" id="prj1-end">END</a>
+      </div>
+    </div>
+    <p>The end.</p>
+
+<script>
+    const api_url = "https://api.reporter.nih.gov/v2/projects/search"
+    const input_json = JSON.stringify({
+                          "criteria": {
+                            "pi_names": [
+                              {
+                                "last_name": "Pathak"
+                              }
+                            ],
+                            "org_names": [
+                              "CORNELL","NEW YORK PRESBYTERIAN"
+                            ],
+                          },
+                          "include_fields": [
+                            "ProjectNum","ProjectTitle","SubprojectId","PrincipalInvestigators","OrgName","OrgCountry",
+                                    "ProjectStartDate","ProjectEndDate"
+                          ],
+                          "offset": 0,
+                          "limit": 25,
+                          "sort_field": "project_start_date",
+                          "sort_order": "desc"
+                        })
+
+    function fetch_nih() {
+        alert("I'm making the call to NIH now..." + input_json)
+
+        // Make sure that CORS policy is disabled in the browser when testing!
+        $.ajax({
+            'url': api_url,
+            'method': 'POST',
+            'dataType': 'json',
+            processData: false,
+            'contentType': 'application/json',
+            'data':input_json,
+            'success': parse_results
+        });
+    }
+
+    function parse_results (response) {
+        alert("YAY! post was successful!")
+
+        // Retrieving data from JSON
+        const prj1 = response.results[0];
+        let { full_name } = prj1.principal_investigators[0];
+        let { subproject_id, project_num, project_start_date, project_end_date, project_title } = prj1;
+
+        // Accessing the div container and modify/add
+        // elements to the containers
+        document.getElementById("prj1-num").innerHTML = project_num;
+        document.getElementById("prj1-subproject").innerHTML = subproject_id;
+        document.getElementById("prj1-title").innerHTML = project_title;
+        document.getElementById("prj1-start").innerHTML = project_start_date;
+        document.getElementById("prj1-end").innerHTML = project_end_date;
+        document.getElementById("prj1-pi1").innerHTML = full_name;
+
+    }
+
+    function fetch_nih_backup() {
+
+                var nihlist = document.getElementById('nihprojects');
+                alert(nihlist.innerText);
+                nihlist.innerText = "some text here."
+            }
+</script>
+
+{% endblock %}
