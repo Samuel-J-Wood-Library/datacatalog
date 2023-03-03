@@ -45,14 +45,14 @@ class DatasetAdmin(admin.ModelAdmin):
     list_filter = ('curated', 'published',)
     search_fields = ('title', 'description', 'comments')
     actions = [make_published, make_unpublished, make_curated]
-    
+
 @admin.register(DataUseAgreement)
 class DataUseAgreementAdmin(admin.ModelAdmin):
-    list_display = ("duaid", 
+    list_display = ("duaid",
                     "title",
                     "start_date",
-                    "end_date", 
-                    "destruction_required", 
+                    "end_date",
+                    "destruction_required",
                     "mixing_allowed",
                     "curated",
                     "published",
@@ -60,10 +60,10 @@ class DataUseAgreementAdmin(admin.ModelAdmin):
     list_filter = ('curated', 'published',)
     search_fields = ('title', 'description', 'duaid')
     actions = [make_published, make_unpublished, make_curated]
-    
+
 @admin.register(DataAccess)
 class DataAccessAdmin(admin.ModelAdmin):
-    list_display = ("name", 
+    list_display = ("name",
                     "storage_type",
                     "is_requested",
                     "data_retained",
@@ -86,6 +86,7 @@ class ProjectAdmin(admin.ModelAdmin):
 @admin.register(RetentionRequest)
 class RetentionRequestAdmin(admin.ModelAdmin):
     list_display = ("name",
+                    "record_author",
                     "record_creation",
                     "milestone",
                     "locked",
@@ -101,7 +102,7 @@ class StorageTypeAdmin(admin.ModelAdmin):
 
 @admin.register(DataProvider)
 class DataProviderAdmin(admin.ModelAdmin):
-    list_display = ("name", 
+    list_display = ("name",
                     "dept",
                     "curated",
                     "published",
@@ -112,7 +113,7 @@ class DataProviderAdmin(admin.ModelAdmin):
 
 @admin.register(Keyword)
 class KeywordAdmin(admin.ModelAdmin):
-    list_display = ("keyword", 
+    list_display = ("keyword",
                     "curated",
                     "published",
                     "definition",
@@ -120,10 +121,10 @@ class KeywordAdmin(admin.ModelAdmin):
     list_filter = ('curated', 'published',)
     search_fields = ('keyword', 'definition',)
     actions = [make_published, make_unpublished, make_curated]
-    
+
 @admin.register(MediaSubType)
 class MediaSubTypeAdmin(admin.ModelAdmin):
-    list_display = ("name", 
+    list_display = ("name",
                     "template",
                     "reference",
                     "obsolete",
@@ -133,12 +134,12 @@ class MediaSubTypeAdmin(admin.ModelAdmin):
 
 @admin.register(DataField)
 class DataFieldAdmin(admin.ModelAdmin):
-    list_display = ("name", 
+    list_display = ("name",
                     "description",
                     "scope",
     )
     search_fields = ('name', 'description',)
-    
+
 @admin.register(ConfidentialityImpact)
 class ConfidentialityImpactAdmin(admin.ModelAdmin):
     list_display = ("standard",
@@ -149,4 +150,3 @@ class ConfidentialityImpactAdmin(admin.ModelAdmin):
     )
     list_filter = ('standard',)
     search_fields = ("standard", "definition")
-    
